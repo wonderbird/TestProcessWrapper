@@ -8,7 +8,7 @@ namespace kata_rabbitmq.Lib.Tests
         [Fact]
         public void Test1()
         {
-
+            Assert.Equal("World", Class1.Hello());
         }
     }
 }
