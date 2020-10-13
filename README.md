@@ -6,11 +6,19 @@
 [![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq/issues)
 [![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq)
 
-In this kata you learn how to setup and use [RabbitMQ](https://www.rabbitmq.com).
+In this kata you learn how to use [RabbitMQ](https://www.rabbitmq.com).
 
 **Attention**
 
 This project is in an early stage. Please come back by mid November.
+
+# Required Steps
+
+1. Launch an instance of RabbitMQ (e.g. https://hub.docker.com/_/rabbitmq)
+2. Create a "robot" application which ...
+   1. programmatically creates a message queue to transmit light sensor information (just some arbitrary values of ambient light)
+   2. periodically sends light sensor information to the queue
+3. Create a robot monitor application which consumes the message from the queue and displays them on the screen
 
 # Development
 
@@ -41,3 +49,10 @@ tools\dupfinder.bat
 ```
 
 The report will be created as `dupfinder-report.html` in the current directory.
+
+# References
+
+* VMWare, Inc. or its affiliates: [RabbitMQ](https://www.rabbitmq.com/)
+* DockerHub: [RabbitMQ](https://hub.docker.com/_/rabbitmq)
+* [ ]( )
+* [ ]( )
