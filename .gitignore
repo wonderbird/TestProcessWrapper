@@ -1,3 +1,6 @@
+#SpecFlow Stuff
+*.feature.cs
+
 ### MacOS filesystem helpers ###
 .DS_Store
 
