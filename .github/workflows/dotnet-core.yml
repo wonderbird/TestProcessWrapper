@@ -27,5 +27,5 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ./kata-rabbitmq.Lib.Tests/TestResults/coverage.info
+        path-to-lcov: ./kata-rabbitmq.bdd.tests/TestResults/coverage.info
  

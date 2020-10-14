@@ -52,7 +52,21 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 # References
 
+## RabbitMQ
+
 * VMWare, Inc. or its affiliates: [RabbitMQ](https://www.rabbitmq.com/)
+* VMWare, Inc. or its affiliates: [RabbitMQ .NET/C# Client API Guide](https://www.rabbitmq.com/dotnet-api-guide.html)
+* [RabbitMQ .NET Client API Documentation](http://rabbitmq.github.io/rabbitmq-dotnet-client/api/RabbitMQ.Client.html)
 * DockerHub: [RabbitMQ](https://hub.docker.com/_/rabbitmq)
+
+## Behavior Driven Development (BDD)
+
+* Tricentis: [SpecFlow - Getting Started](https://specflow.org/getting-started/)
+* The SpecFlow Team: [SpecFlow.xUnit — documentation](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html)
+* The SpecFlow Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
+
+## Template For New Links
+
+* [ ]( )
 * [ ]( )
 * [ ]( )
