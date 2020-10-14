@@ -6,4 +6,8 @@
     <RootNamespace>kata_rabbitmq.robot.app</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="rabbitmq.client" Version="6.2.1" />
+  </ItemGroup>
+
 </Project>
