@@ -1,7 +1,7 @@
 Feature: Fresh System
-    In order to provision the product
-    As a system administrator
-    I want to setup the underlying infrastructure correctly.
+    In order to prevent unexpected side effects while testing
+    As a developer
+    I want to setup the test-infrastructure correctly.
 
 Scenario: Fresh RabbitMQ
     Given a fresh system is installed
