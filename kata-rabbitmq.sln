@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.robot.app", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.bdd.tests", "kata-rabbitmq.bdd.tests\kata-rabbitmq.bdd.tests.csproj", "{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{86E95D10-0F0E-484D-9F2C-1CFB8B228733}"
+ProjectSection(SolutionItems) = preProject
+	README.md = README.md
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

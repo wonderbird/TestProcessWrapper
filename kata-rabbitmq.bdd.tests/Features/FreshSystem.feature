@@ -5,5 +5,8 @@ Feature: Fresh System
 
 Scenario: Fresh RabbitMQ
     Given a fresh system is installed
-    When exchanges are queried
-    Then there should exist only the RabbitMQ default exchanges
+    Then the RabbitMQ channel is open
+    
+    Given a fresh system is installed
+    When robot exchanges are queried
+    Then the robot exchanges do not exist

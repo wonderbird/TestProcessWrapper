@@ -15,6 +15,8 @@ namespace kata_rabbitmq.bdd.tests
         private ScenarioContext _scenarioContext;
         private static RabbitMqTestcontainer _rabbitmqContainer;
         private static IConnection _connection;
+        private static IModel _channel;
+        private bool _isRobotExchangePresent = false;
 
         FreshSystemStepDefinitions(ScenarioContext scenarioContext)
         {
@@ -36,6 +38,8 @@ namespace kata_rabbitmq.bdd.tests
 
             var connectionFactory = new ConnectionFactory { Uri = new Uri(_rabbitmqContainer.ConnectionString) };
             _connection = connectionFactory.CreateConnection();
+
+            _channel = _connection.CreateModel();
         }
 
         [AfterFeature]
@@ -49,16 +53,31 @@ namespace kata_rabbitmq.bdd.tests
         public void GivenAFreshSystemIsInstalled()
         {
         }
-
-        [When("exchanges are queried")]
-        public void WhenExchangesAreQueried()
+        
+        [Then("the RabbitMQ channel is open")]
+        public void TheRabbitMqChannelIsOpen()
         {
+            Assert.True(_channel.IsOpen);
+        }
+        
+        [When("robot exchanges are queried")]
+        public void WhenRobotExchangesAreQueried()
+        {
+            try
+            {
+                _channel.ExchangeDeclarePassive("robot");
+                _isRobotExchangePresent = true;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
-        [Then("there should exist only the RabbitMQ default exchanges")]
-        public async Task ThenThereShouldExistOnlyTheRabbitMQDefaultExchanges()
+        [Then("the robot exchanges do not exist")]
+        public void TheRobotExchangesDoNotExist()
         {
-            Assert.True(_connection.IsOpen);
+            Assert.False(_isRobotExchangePresent);
         }
     }
 }
