@@ -18,7 +18,7 @@ namespace kata_rabbitmq.bdd.tests
         private static IModel _channel;
         private bool _isRobotExchangePresent = false;
 
-        FreshSystemStepDefinitions(ScenarioContext scenarioContext)
+        public FreshSystemStepDefinitions(ScenarioContext scenarioContext)
         {
             _scenarioContext = scenarioContext;
         }
