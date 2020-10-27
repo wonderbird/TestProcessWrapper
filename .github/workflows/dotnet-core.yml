@@ -23,9 +23,9 @@ jobs:
       run: dotnet test --collect:"XPlat Code Coverage" --settings kata-rabbitmq.bdd.tests/coverlet.runsettings --no-restore --verbosity normal
     - name: Upload coverage report files
       uses: actions/upload-artifact@v2
-        with:
-          name: coverage-reports-lcov
-          path: *.tests/TestResults/**/coverage.info
+      with:
+        name: coverage-reports-lcov
+        path: *.tests/TestResults/**/coverage.info
           
   upload-coverage-report:
     needs: build-and-test
