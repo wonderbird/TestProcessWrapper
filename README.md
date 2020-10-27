@@ -12,6 +12,10 @@ In this kata you learn how to use [RabbitMQ](https://www.rabbitmq.com).
 
 This project is in an early stage. Please come back by mid November.
 
+## Thanks
+
+Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who provide an [Open Source License](https://www.jetbrains.com/community/opensource/) for this project ❤️.
+
 # Required Steps
 
 1. Launch an instance of RabbitMQ (e.g. https://hub.docker.com/_/rabbitmq)
