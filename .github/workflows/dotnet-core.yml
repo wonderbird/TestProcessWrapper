@@ -25,7 +25,8 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: coverage-reports-lcov
-        path: *.tests/TestResults/**/coverage.info
+        path: |
+          ./*.tests/TestResults/**/coverage.info
           
   upload-coverage-report:
     needs: build-and-test
