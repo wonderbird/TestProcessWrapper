@@ -7,10 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -22,10 +20,24 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test with coverage
-      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov --no-restore --verbosity normal
+      run: dotnet test --collect:"XPlat Code Coverage" --settings kata-rabbitmq.bdd.tests/coverlet.runsettings --no-restore --verbosity normal
+    - name: Upload coverage report files
+      uses: actions/upload-artifact@v2
+        with:
+          name: coverage-reports-lcov
+          path: *.tests/TestResults/**/coverage.info
+          
+  upload-coverage-report:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download coverage report files
+      uses: actions/download-artifact@v2
+        with:
+          name: coverage-reports-lcov
     - name: Publish coverage report to coveralls.io
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ./kata-rabbitmq.bdd.tests/TestResults/coverage.info
+        path-to-lcov: coverage.info
  
