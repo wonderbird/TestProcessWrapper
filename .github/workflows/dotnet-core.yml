@@ -34,8 +34,8 @@ jobs:
     steps:
     - name: Download coverage report files
       uses: actions/download-artifact@v2
-        with:
-          name: coverage-reports-lcov
+      with:
+        name: coverage-reports-lcov
     - name: Publish coverage report to coveralls.io
       uses: coverallsapp/github-action@master
       with:
