@@ -24,6 +24,8 @@ jobs:
     - name: Get coverage report parent directory (GUID)
       id: coverage-report-parent-dir
       run: echo "::set-output name=dirname::$(ls kata-rabbitmq.bdd.tests/TestResults)"
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
     - name: Upload coverage report files
       uses: actions/upload-artifact@v2
       with:
