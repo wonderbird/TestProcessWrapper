@@ -20,18 +20,16 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test with coverage
-      run: dotnet test --collect:"XPlat Code Coverage" --settings kata-rabbitmq.bdd.tests/coverlet.runsettings --no-restore --verbosity normal
-    - name: Get coverage report parent directory (GUID)
-      id: coverage-report-parent-dir
-      run: echo "::set-output name=dirname::$(ls kata-rabbitmq.bdd.tests/TestResults)"
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
+      run: |
+        dotnet test --collect:"XPlat Code Coverage" --settings kata-rabbitmq.bdd.tests/coverlet.runsettings --no-restore --verbosity normal
+        echo "COVERAGE_REPORT_PATH=./kata-rabbitmq.bdd.tests/TestResults/$( ls ./kata-rabbitmq.bdd.tests/TestResults/ )/coverage.info" >> $GITHUB_ENV
+        echo "Coverage report stored at $COVERAGE_REPORT_PATH"
+        ls -l "$COVERAGE_REPORT_PATH"
     - name: Upload coverage report files
       uses: actions/upload-artifact@v2
       with:
         name: coverage-reports-lcov
-        path: |
-          ./kata-rabbitmq.bdd.tests/TestResults/${{steps.coverage-report-parent-dir.output.dirname}}/coverage.info
+        path: ${{ env.COVERAGE_REPORT_PATH }}
           
   send-coverage-report-to-coveralls:
     needs: build-and-test
