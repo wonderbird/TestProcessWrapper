@@ -29,7 +29,7 @@ jobs:
       with:
         name: coverage-reports-lcov
         path: |
-          ./kata-rabbitmq.bdd.tests/TestResults/${{jobs.build-and-test.steps.coverage-report-parent-dir.dirname}}/coverage.info
+          ./kata-rabbitmq.bdd.tests/TestResults/${{steps.coverage-report-parent-dir.output.dirname}}/coverage.info
           
   send-coverage-report-to-coveralls:
     needs: build-and-test
