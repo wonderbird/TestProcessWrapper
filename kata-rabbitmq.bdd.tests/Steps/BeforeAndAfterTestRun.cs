@@ -6,7 +6,7 @@ namespace kata_rabbitmq.bdd.tests
     public class BeforeAndAfterTestRun
     {
         [BeforeTestRun]
-        public void BeforeTestRun()
+        public static void BeforeTestRun()
         {
             
         }
