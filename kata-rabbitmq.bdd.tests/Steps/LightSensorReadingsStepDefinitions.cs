@@ -1,64 +1,70 @@
 using System;
-using System.Threading.Tasks;
-using DotNet.Testcontainers.Containers.Builders;
-using DotNet.Testcontainers.Containers.Configurations.MessageBrokers;
-using DotNet.Testcontainers.Containers.Modules.MessageBrokers;
-using kata_rabbitmq.robot.app;
-using RabbitMQ.Client;
+using System.Diagnostics;
+using System.IO;
+using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using TechTalk.SpecFlow;
 using Xunit;
+using Xunit.Abstractions;
 
-namespace kata_rabbitmq.bdd.tests
+namespace kata_rabbitmq.bdd.tests.Steps
 {
     [Binding]
     public class LightSensorReadingsStepDefinitions
     {
-        private ScenarioContext _scenarioContext;
-        private static RabbitMqTestcontainer _rabbitmqContainer;
-        private static IConnection _connection;
-        private static IModel _channel;
-        private bool _isSensorQueuePresent = false;
+        private bool _isSensorQueuePresent;
+        private ITestOutputHelper _testOutputHelper;
+        private Process _robotProcess;
 
-        public LightSensorReadingsStepDefinitions(ScenarioContext scenarioContext)
+        public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper)
         {
-            _scenarioContext = scenarioContext;
+            _testOutputHelper = testOutputHelper;
         }
 
-        [BeforeFeature]
-        public static async Task SetupRabbitMq()
+        [AfterScenario("LightSensorReadings")]
+        public void AfterScenario()
         {
-            var testcontainersBuilder = new TestcontainersBuilder<RabbitMqTestcontainer>()
-                .WithMessageBroker(new RabbitMqTestcontainerConfiguration
-                {
-                    Username = "rabbitmq",
-                    Password = "rabbitmq",
-                });
+            _testOutputHelper.WriteLine("Stopping robot application ...");
+            _robotProcess.StandardInput.WriteLine("");
+            _robotProcess.WaitForExit(2000);
+            _robotProcess.Kill();
 
-            _rabbitmqContainer = testcontainersBuilder.Build();
-            await _rabbitmqContainer.StartAsync();
-
-            var connectionFactory = new ConnectionFactory { Uri = new Uri(_rabbitmqContainer.ConnectionString) };
-            _connection = connectionFactory.CreateConnection();
-
-            _channel = _connection.CreateModel();
-        }
-
-        [AfterFeature]
-        public static async Task TearDownRabbitMq()
-        {
-            await _rabbitmqContainer.CleanUpAsync();
-            await _rabbitmqContainer.DisposeAsync();
+            _testOutputHelper.WriteLine(_robotProcess.StandardOutput.ReadToEnd());
+            _testOutputHelper.WriteLine(_robotProcess.StandardError.ReadToEnd());
+            
+            _testOutputHelper.WriteLine("OK");
         }
 
         [Given("the robot app is started")]
         public void GivenTheRobotAppIsStarted()
         {
-            Environment.SetEnvironmentVariable("RABBITMQ_HOSTNAME", _rabbitmqContainer.Hostname);
-            Environment.SetEnvironmentVariable("RABBITMQ_PORT", _rabbitmqContainer.Port.ToString());
-            Environment.SetEnvironmentVariable("RABBITMQ_USERNAME", _rabbitmqContainer.Username);
-            Environment.SetEnvironmentVariable("RABBITMQ_PASSWORD", _rabbitmqContainer.Password);
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var robotAppRelativeDir = Path.Combine(currentDirectory, "..", "..", "..", "..");
+            var robotAppFullDir = Path.GetFullPath(robotAppRelativeDir);
+            
+            var robotProcessStartInfo = new ProcessStartInfo("dotnet");
+            robotProcessStartInfo.UseShellExecute = false;
+            robotProcessStartInfo.RedirectStandardInput = true;
+            robotProcessStartInfo.RedirectStandardOutput = true;
+            robotProcessStartInfo.RedirectStandardError = true;
+            robotProcessStartInfo.Arguments = $"run --project \"kata-rabbitmq.robot.app\"";
+            robotProcessStartInfo.WorkingDirectory = robotAppFullDir;
 
-            Program.Main(null);
+            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_HOSTNAME", RabbitMq.Container.Hostname);
+            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PORT", RabbitMq.Container.Port.ToString());
+            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_USERNAME", RabbitMq.Container.Username);
+            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PASSWORD", RabbitMq.Container.Password);
+            
+            _robotProcess = Process.Start(robotProcessStartInfo);
+            Assert.NotNull(_robotProcess);
+
+            const string expectedMessageAfterRabbitMqConnected = "Press ENTER to shutdown the robot.";
+            string startupMessage;
+            do
+            {
+                startupMessage = _robotProcess.StandardOutput.ReadLine();
+                _testOutputHelper.WriteLine(startupMessage);
+            }
+            while (!startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
         }
         
         [When("the sensor queue is checked")]
@@ -66,17 +72,21 @@ namespace kata_rabbitmq.bdd.tests
         {
             try
             {
-                _channel.ExchangeDeclarePassive("robot");
-                _channel.QueueDeclarePassive("sensors");
+                _testOutputHelper.WriteLine("Testing whether robot:sensors exists ...");
+                RabbitMq.Channel.ExchangeDeclarePassive("robot");
+                RabbitMq.Channel.QueueDeclarePassive("sensors");
+
+                _testOutputHelper.WriteLine("robot:sensors exists");
                 _isSensorQueuePresent = true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // ignored
+                _testOutputHelper.WriteLine($"robot:sensors does not exist. Exception: {e.Message}");
+                _isSensorQueuePresent = false;
             }
         }
 
-        [Then("the sensors queue exists")]
+        [Then("the sensor queue exists")]
         public void ThenTheSensorsQueueExists()
         {
             Assert.True(_isSensorQueuePresent);

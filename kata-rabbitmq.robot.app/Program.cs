@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace kata_rabbitmq.robot.app
@@ -8,9 +8,22 @@ namespace kata_rabbitmq.robot.app
     {
         public static void Main(string[] args)
         {
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("kata_rabbitmq.robot.app.Program", LogLevel.Debug)
+                    .AddConsole();
+            });
+            var logger = loggerFactory.CreateLogger<Program>();
+            
+            logger.LogDebug("Connecting to RabbitMQ ...");
+
             var connectionFactory = new ConnectionFactory();
             connectionFactory.HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME");
-            connectionFactory.Port = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_PORT"));
+            var portString = Environment.GetEnvironmentVariable("RABBITMQ_PORT");
+            if (portString != null) connectionFactory.Port = int.Parse(portString);
             connectionFactory.UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME");
             connectionFactory.Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD");
             connectionFactory.VirtualHost = "/";
@@ -22,8 +35,10 @@ namespace kata_rabbitmq.robot.app
             channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true, arguments: null);
             channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true, arguments: null);
 
-            Thread.Sleep(2000);
-
+            logger.Log(LogLevel.Information, "Press ENTER to shutdown the robot.");
+            Console.ReadLine();
+            logger.Log(LogLevel.Information, "Shutting down ...");
+            
             channel.Close();
             connection.Close();
         }
