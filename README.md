@@ -34,14 +34,10 @@ To compile, test and run this project the latest [.NET Core SDK](https://dotnet.
 
 On any computer with the [.NET Core SDK](https://dotnet.microsoft.com/download) run the following commands from the folder containing the `kata-rabbitmq.sln` file in order to build, test and run the application:
 
-The information below is a WORK IN PROGRESS ...
-
-TODO: Create a Dockerfile for the kata-rabbitmq.robot.app and integrate it into the docker-compose.yml and the README.md
-
 ```sh
 dotnet build
 dotnet test
-dotnet run --project "kata-rabbitmq.robot.app"
+dotnet run --project "kata-rabbitmq.App"
 ```
 
 ## Identify Code Duplication (Windows only)

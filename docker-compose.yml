@@ -6,11 +6,3 @@ services:
     ports:
     - "15672:15672"
     - "5672:5672"
-
-  robot:
-    build: .
-    environment:
-      - RABBITMQ_HOSTNAME=robot
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USERNAME=guest
-      - RABBITMQ_PASSWORD=guest

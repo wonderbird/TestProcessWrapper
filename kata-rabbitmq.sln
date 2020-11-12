@@ -3,16 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.robot.app", "kata-rabbitmq.robot.app\kata-rabbitmq.robot.app.csproj", "{D3B8E17A-6258-4979-A1F8-DDF36763F54D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.robot.app", "kata-rabbitmq.robot.app\kata-rabbitmq.robot.app.csproj", "{D3B8E17A-6258-4979-A1F8-DDF36763F54D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.bdd.tests", "kata-rabbitmq.bdd.tests\kata-rabbitmq.bdd.tests.csproj", "{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.bdd.tests", "kata-rabbitmq.bdd.tests\kata-rabbitmq.bdd.tests.csproj", "{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0F0E-484D-9F2C-1CFB8B228733}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
-		README.md = README.md
-	EndProjectSection
+ProjectSection(SolutionItems) = preProject
+	README.md = README.md
+	.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
