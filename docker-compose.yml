@@ -8,9 +8,9 @@ services:
     - "5672:5672"
 
   robot:
-    build: ./kata-rabbitmq.robot.app
+    build: .
     environment:
-      - RABBITMQ_HOSTNAME=rabbit
+      - RABBITMQ_HOSTNAME=robot
       - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=guest
       - RABBITMQ_PASSWORD=guest
