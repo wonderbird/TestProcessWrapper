@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
@@ -7,7 +10,21 @@ namespace kata_rabbitmq.robot.app
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
+        {
+            var builder = new HostBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<SensorDataSender>();
+                });
+
+            await builder.RunConsoleAsync();
+        }
+    }
+
+    public class SensorDataSender : BackgroundService
+    {
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -52,17 +69,13 @@ namespace kata_rabbitmq.robot.app
                 }
             }
 
-            logger.Log(LogLevel.Information, "Enter 'stop' to shutdown the robot.");
-            string command;
-            do
-            {
-                command = Console.ReadLine();
-            }
-            while (command != "stop");
+            logger.Log(LogLevel.Information, "Waiting for cancellation request");
+            stoppingToken.WaitHandle.WaitOne();
             logger.Log(LogLevel.Information, "Shutting down ...");
             
             channel.Close();
             connection.Close();
+            return Task.CompletedTask;
         }
     }
 }

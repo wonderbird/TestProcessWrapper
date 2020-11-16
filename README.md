@@ -60,6 +60,10 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 # References
 
+## .NET Core
+
+* GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
+
 ## RabbitMQ
 
 * VMWare, Inc. or its affiliates: [RabbitMQ](https://www.rabbitmq.com/)
@@ -75,6 +79,5 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 ## Template For New Links
 
-* [ ]( )
 * [ ]( )
 * [ ]( )
