@@ -24,7 +24,7 @@ namespace kata_rabbitmq.robot.app
 
     public class SensorDataSender : BackgroundService
     {
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -35,47 +35,70 @@ namespace kata_rabbitmq.robot.app
                     .AddConsole();
             });
             var logger = loggerFactory.CreateLogger<Program>();
-            
-            logger.LogDebug("Connecting to RabbitMQ ...");
+
+            logger.LogInformation("Waiting for cancellation request");
+            stoppingToken.Register(() => logger.LogInformation("STOP request received"));
+            stoppingToken.ThrowIfCancellationRequested();
 
             IModel channel = null;
             IConnection connection = null;
-            while (channel == null)
+
+            try
             {
-                try
+                while (true)
                 {
-                    var connectionFactory = new ConnectionFactory();
-                    connectionFactory.HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME");
-                    var portString = Environment.GetEnvironmentVariable("RABBITMQ_PORT");
-                    if (portString != null) connectionFactory.Port = int.Parse(portString);
-                    connectionFactory.UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME");
-                    connectionFactory.Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD");
-                    connectionFactory.VirtualHost = "/";
-                    connectionFactory.ClientProvidedName = "app:robot";
+                    if (channel == null)
+                    {
+                        logger.LogDebug("Connecting to RabbitMQ ...");
+                        try
+                        {
+                            var connectionFactory = new ConnectionFactory();
+                            connectionFactory.HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME");
+                            var portString = Environment.GetEnvironmentVariable("RABBITMQ_PORT");
+                            if (portString != null) connectionFactory.Port = int.Parse(portString);
+                            connectionFactory.UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME");
+                            connectionFactory.Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD");
+                            connectionFactory.VirtualHost = "/";
+                            connectionFactory.ClientProvidedName = "app:robot";
 
-                    connection = connectionFactory.CreateConnection();
-                    channel = connection.CreateModel();
+                            connection = connectionFactory.CreateConnection();
+                            channel = connection.CreateModel();
 
-                    channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true, arguments: null);
-                    channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true, arguments: null);
+                            channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true,
+                                arguments: null);
+                            channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true,
+                                arguments: null);
 
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    channel = null;
-                    connection = null;
-                    Thread.Sleep(500);
+                            logger.LogDebug("Established connection to RabbitMQ");
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogDebug(e.Message);
+                            channel = null;
+                            connection = null;
+                        }
+                    }
+
+                    await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                // This exception is desired, when shutdown is requested. No action is necessary.
+            }
+            catch (Exception e)
+            {
+                logger.LogCritical(e.ToString());
+            }
+            finally
+            {
+                logger.LogInformation("Shutting down ...");
 
-            logger.Log(LogLevel.Information, "Waiting for cancellation request");
-            stoppingToken.WaitHandle.WaitOne();
-            logger.Log(LogLevel.Information, "Shutting down ...");
-            
-            channel.Close();
-            connection.Close();
-            return Task.CompletedTask;
+                channel?.Close();
+                connection?.Close();
+                
+                logger.LogDebug("Shutdown complete.");
+            } 
         }
     }
 }

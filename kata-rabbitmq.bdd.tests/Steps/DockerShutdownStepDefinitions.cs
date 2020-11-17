@@ -12,6 +12,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
     {
         private ITestOutputHelper _testOutputHelper;
         private Process _robotProcess;
+        private bool _hasExitedGracefully;
 
         public DockerShutdownStepDefinitions(ITestOutputHelper testOutputHelper)
         {
@@ -41,7 +42,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
             _robotProcess = Process.Start(robotProcessStartInfo);
             Assert.NotNull(_robotProcess);
 
-            const string expectedMessageAfterRabbitMqConnected = "Enter 'stop' to shutdown the robot.";
+            const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
             string startupMessage;
             do
             {
@@ -54,21 +55,33 @@ namespace kata_rabbitmq.bdd.tests.Steps
         [When("a TERM signal is sent")]
         public void WhenATermSignalIsSent()
         {
-            _testOutputHelper.WriteLine("Stopping robot application ...");
-            _robotProcess.StandardInput.WriteLine("stop");
-            _robotProcess.WaitForExit(2000);
-            _robotProcess.Kill();
+            _testOutputHelper.WriteLine("Sending TERM signal to robot process ...");
 
-            _testOutputHelper.WriteLine(_robotProcess.StandardOutput.ReadToEnd());
-            _testOutputHelper.WriteLine(_robotProcess.StandardError.ReadToEnd());
+            var killCommand = "kill";
+            var killArguments = $"-s TERM {_robotProcess.Id}";
+            _testOutputHelper.WriteLine($"Invoking system call: {killCommand} {killArguments}");
+            var killProcess = Process.Start(killCommand, killArguments);
             
-            _testOutputHelper.WriteLine("OK");
+            if (killProcess != null)
+            {
+                _testOutputHelper.WriteLine("Waiting for system call to complete.");
+                killProcess.WaitForExit(2000);
+                _testOutputHelper.WriteLine("System call has " + (killProcess.HasExited ? "" : "NOT ") + "completed.");
+                killProcess.Kill();
+            }
+
+            _testOutputHelper.WriteLine("Waiting for robot process to shutdown ...");
+            _robotProcess.WaitForExit(2000);
+            _hasExitedGracefully = _robotProcess.HasExited;
+
+            _testOutputHelper.WriteLine("Robot process has " + (killProcess.HasExited ? "" : "NOT ") + "completed.");
+            _robotProcess.Kill();
         }
 
         [Then("the application shuts down.")]
         public void TheApplicationShutsDown()
         {
-            Assert.True(_robotProcess.HasExited);
+            Assert.True(_hasExitedGracefully);
         }
     }
 }
