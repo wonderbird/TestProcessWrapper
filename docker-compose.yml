@@ -6,3 +6,11 @@ services:
     ports:
     - "15672:15672"
     - "5672:5672"
+
+  robot:
+    build: ./kata-rabbitmq.robot.app
+    environment:
+      - RABBITMQ_HOSTNAME=rabbit
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
