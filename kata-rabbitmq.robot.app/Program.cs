@@ -6,15 +6,16 @@ namespace kata_rabbitmq.robot.app
 {
     public class Program
     {
-        public static async Task Main()
+        public static void Main()
         {
-            var builder = new HostBuilder()
+            CreateHostBuilder().Build().Run();
+        }
+
+        private static IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<SensorDataSender>();
                 });
-
-            await builder.RunConsoleAsync();
-        }
     }
 }
