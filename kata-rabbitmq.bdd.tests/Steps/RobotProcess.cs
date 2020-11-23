@@ -9,6 +9,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
     public static class RobotProcess
     {
         public static bool HasExited => _process == null || _process.HasExited;
+        
         public static bool IsRunning => _process != null && !_process.HasExited;
 
         private static Process _process;
@@ -17,10 +18,25 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         public static void Start()
         {
+            var robotAppFullDir = GetRobotAppFullDir();
+            var robotProcessStartInfo = CreateProcessStartInfo(robotAppFullDir);
+
+            _process = Process.Start(robotProcessStartInfo);
+            Assert.NotNull(_process);
+
+            WaitUntilConnectedToRabbitMq();
+        }
+
+        private static string GetRobotAppFullDir()
+        {
             var currentDirectory = Directory.GetCurrentDirectory();
             var robotAppRelativeDir = Path.Combine(currentDirectory, "..", "..", "..", "..");
             var robotAppFullDir = Path.GetFullPath(robotAppRelativeDir);
+            return robotAppFullDir;
+        }
 
+        private static ProcessStartInfo CreateProcessStartInfo(string robotAppFullDir)
+        {
             var robotProcessStartInfo = new ProcessStartInfo("dotnet")
             {
                 UseShellExecute = false,
@@ -35,20 +51,20 @@ namespace kata_rabbitmq.bdd.tests.Steps
             robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PORT", RabbitMq.Container.Port.ToString());
             robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_USERNAME", RabbitMq.Container.Username);
             robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PASSWORD", RabbitMq.Container.Password);
-            
-            _process = Process.Start(robotProcessStartInfo);
-            Assert.NotNull(_process);
+            return robotProcessStartInfo;
+        }
 
+        private static void WaitUntilConnectedToRabbitMq()
+        {
             const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
             string startupMessage;
             do
             {
                 startupMessage = _process.StandardOutput.ReadLine();
                 TestOutputHelper.WriteLine(startupMessage);
-            }
-            while (startupMessage == null || !startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
+            } while (startupMessage == null || !startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
         }
-        
+
         public static void SendTermSignal()
         {
             TestOutputHelper?.WriteLine("Sending TERM signal to robot process ...");
