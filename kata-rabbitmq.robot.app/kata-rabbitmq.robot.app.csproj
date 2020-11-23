@@ -13,4 +13,10 @@
     <PackageReference Include="rabbitmq.client" Version="6.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="./appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
