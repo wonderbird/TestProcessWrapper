@@ -10,7 +10,7 @@ In this kata you learn how to use [RabbitMQ](https://www.rabbitmq.com).
 
 **Attention**
 
-This project is in an early stage. Please come back by mid November.
+This project is incomplete at the moment.
 
 ## Thanks
 
@@ -34,15 +34,32 @@ To compile, test and run this project the latest [.NET Core SDK](https://dotnet.
 
 On any computer with the [.NET Core SDK](https://dotnet.microsoft.com/download) run the following commands from the folder containing the `kata-rabbitmq.sln` file in order to build, test and run the application:
 
-The information below is a WORK IN PROGRESS ...
-
-TODO: Create a Dockerfile for the kata-rabbitmq.robot.app and integrate it into the docker-compose.yml and the README.md
+To build the project and run the acceptance tests
 
 ```sh
 dotnet build
 dotnet test
-dotnet run --project "kata-rabbitmq.robot.app"
 ```
+
+To run the application in a production environment
+
+```sh
+docker-compose build
+docker-compose up
+```
+
+To run the application and RabbitMQ on your development PC
+
+```sh
+docker-compose rabbit up -d
+cd kata-rabbitmq.robot.app/bin/Debug/net5.0
+DOTNET_ENVIRONMENT=Development dotnet "kata-rabbitmq.robot.app"
+docker-compose down
+```
+
+If you would like to run and debug the application in your IDE, make sure that
+the environment variable `DOTNET_ENVIRONMENT` is set to `Development` so that
+the application uses the RabbitMQ settings from `appsettings.Development.json`.
 
 ## Identify Code Duplication (Windows only)
 

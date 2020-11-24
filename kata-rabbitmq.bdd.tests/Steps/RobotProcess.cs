@@ -30,8 +30,9 @@ namespace kata_rabbitmq.bdd.tests.Steps
         private static string GetRobotAppFullDir()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
-            var robotAppRelativeDir = Path.Combine(currentDirectory, "..", "..", "..", "..");
+            var robotAppRelativeDir = Path.Combine(currentDirectory, "..", "..", "..", "..", "kata-rabbitmq.robot.app", "bin", "Debug", "net5.0");
             var robotAppFullDir = Path.GetFullPath(robotAppRelativeDir);
+            
             return robotAppFullDir;
         }
 
@@ -43,14 +44,15 @@ namespace kata_rabbitmq.bdd.tests.Steps
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = $"run --project \"kata-rabbitmq.robot.app\"",
+                Arguments = $"\"kata-rabbitmq.robot.app.dll\"",
                 WorkingDirectory = robotAppFullDir
             };
-
-            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_HOSTNAME", RabbitMq.Container.Hostname);
-            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PORT", RabbitMq.Container.Port.ToString());
-            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_USERNAME", RabbitMq.Container.Username);
-            robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PASSWORD", RabbitMq.Container.Password);
+            
+            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
+            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString());
+            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
+            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
+            
             return robotProcessStartInfo;
         }
 
