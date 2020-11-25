@@ -46,5 +46,24 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             Assert.True(_isSensorQueuePresent);
         }
+
+        [Given("the client app is started")]
+        public void GivenTheClientAppIsStarted()
+        {
+            _testOutputHelper.WriteLine("The client app is started");
+        }
+        
+        [When("the client app has run for 1 second")]
+        public void WhenTheClientAppHasRunFor1Second()
+        {
+            _testOutputHelper.WriteLine("The client app has run for 1 second");
+        }
+        
+        [Then("the client app received at least 10 sensor values")]
+        public void WhenTheClientAppReceivedAtLeast10SensorValues()
+        {
+            _testOutputHelper.WriteLine("The client app received at least 10 sensor values");
+            Assert.False(true);
+        }
     }
 }
