@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0
 		docker-compose.yml = docker-compose.yml
 		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
 		README.md = README.md
+		tools\dupfinder.bat = tools\dupfinder.bat
+		tools\dupfinder.xslt = tools\dupfinder.xslt
+		tools\msxsl.exe = tools\msxsl.exe
+		tools\dupfinder.sh = tools\dupfinder.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.client.app", "kata-rabbitmq.client.app\kata-rabbitmq.client.app.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"

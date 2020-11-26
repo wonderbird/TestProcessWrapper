@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DuplicatesReport ToolsVersion="202.0.20200928.101108">
+  <Statistics>
+    <CodebaseCost>7594</CodebaseCost>
+    <TotalDuplicatesCost>1825</TotalDuplicatesCost>
+    <TotalFragmentsCost>3650</TotalFragmentsCost>
+  </Statistics>
+  <Duplicates>
+    <Duplicate Cost="563">
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Features\DockerShutdown.feature.cs</FileName>
+        <OffsetRange Start="3364" End="5052"></OffsetRange>
+        <LineRange Start="88" End="123"></LineRange>
+        <Text>{
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Docker shutdown", null, tagsOfScenario, argumentsOfScenario);
+#line 6
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry =&gt; __entry != null).Where(__entry =&gt; String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry =&gt; __entry != null).Where(__entry =&gt; String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 7
+    testRunner.Given("the server is running", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 8
+    testRunner.When("a TERM signal is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 9
+    testRunner.Then("the application shuts down.", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Features\LightSensorReadings.feature.cs</FileName>
+        <OffsetRange Start="3413" End="5115"></OffsetRange>
+        <LineRange Start="88" End="123"></LineRange>
+        <Text>{
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Robot creates sensor queue", null, tagsOfScenario, argumentsOfScenario);
+#line 6
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry =&gt; __entry != null).Where(__entry =&gt; String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry =&gt; __entry != null).Where(__entry =&gt; String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 7
+    testRunner.Given("the robot app is started", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 8
+    testRunner.When("the sensor queue is checked", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 9
+    testRunner.Then("the sensor queue exists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="263">
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Steps\ClientProcess.cs</FileName>
+        <OffsetRange Start="2787" End="3806"></OffsetRange>
+        <LineRange Start="70" End="91"></LineRange>
+        <Text>public static void SendTermSignal()
+        {
+            TestOutputHelper?.WriteLine("Sending TERM signal to client process ...");
+
+            var killCommand = "kill";
+            var killArguments = $"-s TERM {_process.Id}";
+            TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
+            var killProcess = Process.Start(killCommand, killArguments);
+            
+            if (killProcess != null)
+            {
+                TestOutputHelper?.WriteLine("Waiting for system call to complete.");
+                killProcess.WaitForExit(2000);
+                TestOutputHelper?.WriteLine("System call has " + (killProcess.HasExited ? "" : "NOT ") + "completed.");
+                killProcess.Kill();
+            }
+
+            TestOutputHelper?.WriteLine("Waiting for client process to shutdown ...");
+            _process.WaitForExit(2000);
+
+            TestOutputHelper?.WriteLine("Client process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Steps\RobotProcess.cs</FileName>
+        <OffsetRange Start="2766" End="3782"></OffsetRange>
+        <LineRange Start="70" End="91"></LineRange>
+        <Text>public static void SendTermSignal()
+        {
+            TestOutputHelper?.WriteLine("Sending TERM signal to robot process ...");
+
+            var killCommand = "kill";
+            var killArguments = $"-s TERM {_process.Id}";
+            TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
+            var killProcess = Process.Start(killCommand, killArguments);
+            
+            if (killProcess != null)
+            {
+                TestOutputHelper?.WriteLine("Waiting for system call to complete.");
+                killProcess.WaitForExit(2000);
+                TestOutputHelper?.WriteLine("System call has " + (killProcess.HasExited ? "" : "NOT ") + "completed.");
+                killProcess.Kill();
+            }
+
+            TestOutputHelper?.WriteLine("Waiting for robot process to shutdown ...");
+            _process.WaitForExit(2000);
+
+            TestOutputHelper?.WriteLine("Robot process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="212">
+      <Fragment>
+        <FileName>kata-rabbitmq.client.app\SensorDataConsumer.cs</FileName>
+        <OffsetRange Start="2028" End="2922"></OffsetRange>
+        <LineRange Start="66" End="89"></LineRange>
+        <Text>private void ConnectToRabbitMq()
+        {
+            try
+            {
+                _logger.LogDebug("Connecting to RabbitMQ ...");
+
+                var connectionFactory = CreateRabbitMqConnectionFactory();
+                _connection = connectionFactory.CreateConnection();
+                _channel = _connection.CreateModel();
+
+                _channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true,
+                    arguments: null);
+                _channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true,
+                    arguments: null);
+
+                _logger.LogInformation("Established connection to RabbitMQ");
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug(e.Message);
+                _channel = null;
+                _connection = null;
+            }
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.robot.app\SensorDataSender.cs</FileName>
+        <OffsetRange Start="2011" End="2905"></OffsetRange>
+        <LineRange Start="66" End="89"></LineRange>
+        <Text>private void ConnectToRabbitMq()
+        {
+            try
+            {
+                _logger.LogDebug("Connecting to RabbitMQ ...");
+
+                var connectionFactory = CreateRabbitMqConnectionFactory();
+                _connection = connectionFactory.CreateConnection();
+                _channel = _connection.CreateModel();
+
+                _channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true,
+                    arguments: null);
+                _channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true,
+                    arguments: null);
+
+                _logger.LogInformation("Established connection to RabbitMQ");
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug(e.Message);
+                _channel = null;
+                _connection = null;
+            }
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="169">
+      <Fragment>
+        <FileName>kata-rabbitmq.client.app\SensorDataConsumer.cs</FileName>
+        <OffsetRange Start="2932" End="3746"></OffsetRange>
+        <LineRange Start="91" End="108"></LineRange>
+        <Text>private ConnectionFactory CreateRabbitMqConnectionFactory()
+        {
+            var connectionFactory = new ConnectionFactory
+            {
+                VirtualHost = "/",
+                ClientProvidedName = "app:robot",
+                HostName = _configuration["RabbitMq:HostName"],
+                Port = _configuration.GetValue&lt;int&gt;("RabbitMq:Port"),
+                UserName = _configuration["RabbitMq:UserName"],
+                Password = _configuration["RabbitMq:Password"]
+            };
+            
+            _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
+            _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
+            _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
+            
+            return connectionFactory;
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.robot.app\SensorDataSender.cs</FileName>
+        <OffsetRange Start="2915" End="3729"></OffsetRange>
+        <LineRange Start="91" End="108"></LineRange>
+        <Text>private ConnectionFactory CreateRabbitMqConnectionFactory()
+        {
+            var connectionFactory = new ConnectionFactory
+            {
+                VirtualHost = "/",
+                ClientProvidedName = "app:robot",
+                HostName = _configuration["RabbitMq:HostName"],
+                Port = _configuration.GetValue&lt;int&gt;("RabbitMq:Port"),
+                UserName = _configuration["RabbitMq:UserName"],
+                Password = _configuration["RabbitMq:Password"]
+            };
+            
+            _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
+            _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
+            _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
+            
+            return connectionFactory;
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="140">
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Features\DockerShutdown.feature.cs</FileName>
+        <OffsetRange Start="1558" End="2114"></OffsetRange>
+        <LineRange Start="40" End="46"></LineRange>
+        <Text>public static void FeatureSetup()
+        {
+            testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Docker Shutdown", "  In order to test the server in paralllel with clients\n  As a developer\n  I want" +
+                    " to run the server in as a docker container.", ProgrammingLanguage.CSharp, ((string[])(null)));
+            testRunner.OnFeatureStart(featureInfo);
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Features\LightSensorReadings.feature.cs</FileName>
+        <OffsetRange Start="1583" End="2126"></OffsetRange>
+        <LineRange Start="40" End="46"></LineRange>
+        <Text>public static void FeatureSetup()
+        {
+            testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Light Sensor Readings", "    In order to steer my robot\n    As a robot owner\n    I want to see light senso" +
+                    "r readings on the client.", ProgrammingLanguage.CSharp, ((string[])(null)));
+            testRunner.OnFeatureStart(featureInfo);
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="113">
+      <Fragment>
+        <FileName>kata-rabbitmq.client.app\SensorDataConsumer.cs</FileName>
+        <OffsetRange Start="701" End="1413"></OffsetRange>
+        <LineRange Start="24" End="47"></LineRange>
+        <Text>protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            try
+            {
+                RegisterCancellationRequest(stoppingToken);
+                
+                while (true)
+                {
+                    await ExecuteSensorLoopBody(stoppingToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // This exception is desired, when shutdown is requested. No action is necessary.
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e.ToString());
+            }
+            finally
+            {
+                ShutdownService();
+            }
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.robot.app\SensorDataSender.cs</FileName>
+        <OffsetRange Start="692" End="1404"></OffsetRange>
+        <LineRange Start="24" End="47"></LineRange>
+        <Text>protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            try
+            {
+                RegisterCancellationRequest(stoppingToken);
+                
+                while (true)
+                {
+                    await ExecuteSensorLoopBody(stoppingToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // This exception is desired, when shutdown is requested. No action is necessary.
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e.ToString());
+            }
+            finally
+            {
+                ShutdownService();
+            }
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="97">
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Steps\ClientProcess.cs</FileName>
+        <OffsetRange Start="2298" End="2777"></OffsetRange>
+        <LineRange Start="59" End="68"></LineRange>
+        <Text>private static void WaitUntilConnectedToRabbitMq()
+        {
+            const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
+            string startupMessage;
+            do
+            {
+                startupMessage = _process.StandardOutput.ReadLine();
+                TestOutputHelper.WriteLine(startupMessage);
+            } while (startupMessage == null || !startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Steps\RobotProcess.cs</FileName>
+        <OffsetRange Start="2277" End="2756"></OffsetRange>
+        <LineRange Start="59" End="68"></LineRange>
+        <Text>private static void WaitUntilConnectedToRabbitMq()
+        {
+            const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
+            string startupMessage;
+            do
+            {
+                startupMessage = _process.StandardOutput.ReadLine();
+                TestOutputHelper.WriteLine(startupMessage);
+            } while (startupMessage == null || !startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="72">
+      <Fragment>
+        <FileName>kata-rabbitmq.client.app\SensorDataConsumer.cs</FileName>
+        <OffsetRange Start="1431" End="1745"></OffsetRange>
+        <LineRange Start="49" End="54"></LineRange>
+        <Text>private void RegisterCancellationRequest(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation("Waiting for cancellation request");
+            stoppingToken.Register(() =&gt; _logger.LogInformation("STOP request received"));
+            stoppingToken.ThrowIfCancellationRequested();
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.robot.app\SensorDataSender.cs</FileName>
+        <OffsetRange Start="1414" End="1728"></OffsetRange>
+        <LineRange Start="49" End="54"></LineRange>
+        <Text>private void RegisterCancellationRequest(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation("Waiting for cancellation request");
+            stoppingToken.Register(() =&gt; _logger.LogInformation("STOP request received"));
+            stoppingToken.ThrowIfCancellationRequested();
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="71">
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Features\DockerShutdown.feature.cs</FileName>
+        <OffsetRange Start="2462" End="2758"></OffsetRange>
+        <LineRange Start="63" End="67"></LineRange>
+        <Text>public virtual void ScenarioInitialize(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
+        {
+            testRunner.OnScenarioInitialize(scenarioInfo);
+            testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs&lt;Xunit.Abstractions.ITestOutputHelper&gt;(_testOutputHelper);
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.bdd.tests\Features\LightSensorReadings.feature.cs</FileName>
+        <OffsetRange Start="2474" End="2770"></OffsetRange>
+        <LineRange Start="63" End="67"></LineRange>
+        <Text>public virtual void ScenarioInitialize(TechTalk.SpecFlow.ScenarioInfo scenarioInfo)
+        {
+            testRunner.OnScenarioInitialize(scenarioInfo);
+            testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs&lt;Xunit.Abstractions.ITestOutputHelper&gt;(_testOutputHelper);
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="70">
+      <Fragment>
+        <FileName>kata-rabbitmq.client.app\SensorDataConsumer.cs</FileName>
+        <OffsetRange Start="1755" End="2018"></OffsetRange>
+        <LineRange Start="56" End="64"></LineRange>
+        <Text>private async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
+        {
+            if (_channel == null)
+            {
+                ConnectToRabbitMq();
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.robot.app\SensorDataSender.cs</FileName>
+        <OffsetRange Start="1738" End="2001"></OffsetRange>
+        <LineRange Start="56" End="64"></LineRange>
+        <Text>private async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
+        {
+            if (_channel == null)
+            {
+                ConnectToRabbitMq();
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
+        }</Text>
+      </Fragment>
+    </Duplicate>
+    <Duplicate Cost="55">
+      <Fragment>
+        <FileName>kata-rabbitmq.client.app\SensorDataConsumer.cs</FileName>
+        <OffsetRange Start="3965" End="4148"></OffsetRange>
+        <LineRange Start="119" End="125"></LineRange>
+        <Text>private void DisconnectFromRabbitMq()
+        {
+            _channel?.Close();
+            _connection?.Close();
+            _channel = null;
+            _connection = null;
+        }</Text>
+      </Fragment>
+      <Fragment>
+        <FileName>kata-rabbitmq.robot.app\SensorDataSender.cs</FileName>
+        <OffsetRange Start="3948" End="4131"></OffsetRange>
+        <LineRange Start="119" End="125"></LineRange>
+        <Text>private void DisconnectFromRabbitMq()
+        {
+            _channel?.Close();
+            _connection?.Close();
+            _channel = null;
+            _connection = null;
+        }</Text>
+      </Fragment>
+    </Duplicate>
+  </Duplicates>
+</DuplicatesReport>
