@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.client.app", "kata-rabbitmq.client.app\kata-rabbitmq.client.app.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,18 @@ Global
 		{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}.Release|x64.Build.0 = Release|Any CPU
 		{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}.Release|x86.ActiveCfg = Release|Any CPU
 		{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}.Release|x86.Build.0 = Release|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Debug|x64.Build.0 = Debug|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Debug|x86.Build.0 = Debug|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Release|x64.ActiveCfg = Release|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Release|x64.Build.0 = Release|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Release|x86.ActiveCfg = Release|Any CPU
+		{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

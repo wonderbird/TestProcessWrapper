@@ -6,16 +6,16 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace kata_rabbitmq.robot.app
+namespace kata_rabbitmq.client.app
 {
-    public class SensorDataSender : BackgroundService
+    public class SensorDataConsumer : BackgroundService
     {
-        private readonly ILogger<SensorDataSender> _logger;
+        private readonly ILogger<SensorDataConsumer> _logger;
         private readonly IConfiguration _configuration;
         private IConnection _connection;
         private IModel _channel;
 
-        public SensorDataSender(ILogger<SensorDataSender> logger, IConfiguration configuration)
+        public SensorDataConsumer(ILogger<SensorDataConsumer> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
@@ -45,7 +45,7 @@ namespace kata_rabbitmq.robot.app
                 ShutdownService();
             }
         }
-
+        
         private void RegisterCancellationRequest(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Waiting for cancellation request");
