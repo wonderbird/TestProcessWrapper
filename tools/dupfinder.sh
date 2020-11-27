@@ -27,5 +27,5 @@
 #
 
 PROJECT_NAME=kata-rabbitmq
-jb dupfinder --exclude="*\obj\**" --discard-cost=50 --discard-literals=true --show-text --o=dupfinder-report.xml "$PROJECT_NAME.sln"
+jb dupfinder --exclude="*\obj\**;*\Features\*.feature.cs" --discard-cost=50 --discard-literals=true --show-text --o=dupfinder-report.xml "$PROJECT_NAME.sln"
 xsltproc "tools/dupfinder.xslt" "dupfinder-report.xml" > "dupfinder-report.html" 
