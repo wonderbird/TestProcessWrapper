@@ -19,7 +19,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         [Given("the robot app is started")]
         public void GivenTheRobotAppIsStarted()
         {
-            Assert.True(RobotProcess.IsRunning);
+            Assert.True(RobotProcess.Process.IsRunning);
         }
         
         [When("the sensor queue is checked")]
