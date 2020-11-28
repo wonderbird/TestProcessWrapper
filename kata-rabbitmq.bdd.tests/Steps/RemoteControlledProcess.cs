@@ -14,52 +14,54 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         private Process _process;
         
-        private string _appRelativeDir;
+        private string _appFullDir;
+        private string _appDllName;
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
-        public RemoteControlledProcess(string appRelativeDir)
+        public RemoteControlledProcess(string appDllName, string appRelativeDir)
         {
-            _appRelativeDir = appRelativeDir;
+            _appDllName = appDllName;
+            _appFullDir = NormalizeDir(appRelativeDir);
         }
+
+        private string NormalizeDir(string relativeDir)
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var fullDir = Path.Combine(currentDirectory, relativeDir);
+            var normalizedDir = Path.GetFullPath(fullDir);
+            
+            return normalizedDir;
+        }
+
         public void Start()
         {
-            var robotAppFullDir = NormalizeAppFullDir();
-            var robotProcessStartInfo = CreateProcessStartInfo(robotAppFullDir);
+            var processStartInfo = CreateProcessStartInfo();
 
-            _process = Process.Start(robotProcessStartInfo);
+            _process = Process.Start(processStartInfo);
             Assert.NotNull(_process);
 
             WaitUntilConnectedToRabbitMq();
         }
 
-        private string NormalizeAppFullDir()
+        private ProcessStartInfo CreateProcessStartInfo()
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var appFullDir = Path.Combine(currentDirectory, _appRelativeDir);
-            var appNormalizedDir = Path.GetFullPath(appFullDir);
-            
-            return appNormalizedDir;
-        }
-
-        private ProcessStartInfo CreateProcessStartInfo(string robotAppFullDir)
-        {
-            var robotProcessStartInfo = new ProcessStartInfo("dotnet")
+            var processStartInfo = new ProcessStartInfo("dotnet")
             {
                 UseShellExecute = false,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = $"\"kata-rabbitmq.robot.app.dll\"",
-                WorkingDirectory = robotAppFullDir
+                Arguments = _appDllName,
+                WorkingDirectory = _appFullDir
             };
             
-            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
-            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString());
-            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
-            robotProcessStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString());
+            processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
             
-            return robotProcessStartInfo;
+            return processStartInfo;
         }
 
         private void WaitUntilConnectedToRabbitMq()
@@ -76,7 +78,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         public void SendTermSignal()
         {
-            TestOutputHelper?.WriteLine("Sending TERM signal to robot process ...");
+            TestOutputHelper?.WriteLine("Sending TERM signal to process ...");
 
             var killCommand = "kill";
             var killArguments = $"-s TERM {_process.Id}";
@@ -91,10 +93,10 @@ namespace kata_rabbitmq.bdd.tests.Steps
                 killProcess.Kill();
             }
 
-            TestOutputHelper?.WriteLine("Waiting for robot process to shutdown ...");
+            TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
 
-            TestOutputHelper?.WriteLine("Robot process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+            TestOutputHelper?.WriteLine("Robot has " + (_process.HasExited ? "" : "NOT ") + "completed.");
         }
 
         public void Kill()
