@@ -69,7 +69,8 @@ namespace kata_rabbitmq.bdd.tests.Steps
             do
             {
                 startupMessage = _process.StandardOutput.ReadLine();
-                TestOutputHelper.WriteLine(startupMessage);
+                if (startupMessage != null)
+                    TestOutputHelper.WriteLine(startupMessage);
             } while (startupMessage == null || !startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
         }
 
