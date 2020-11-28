@@ -19,7 +19,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         [Given("the robot app is started")]
         public void GivenTheRobotAppIsStarted()
         {
-            Assert.True(RobotProcess.Process.IsRunning);
+            Assert.True(Processes.Robot.IsRunning);
         }
         
         [When("the sensor queue is checked")]
@@ -63,7 +63,8 @@ namespace kata_rabbitmq.bdd.tests.Steps
         public void WhenTheClientAppReceivedAtLeast10SensorValues()
         {
             _testOutputHelper.WriteLine("The client app received at least 10 sensor values");
-            Assert.False(true, "TODO: Remove code duplication (see dupfinder results)");
+            // Assert.False(true, "TODO: Use a transparent proxy (wrapper) which works with reflection for RemoteControlledProcess");
+            // Assert.False(true, "TODO: Remove code duplication (see dupfinder results)");
         }
     }
 }

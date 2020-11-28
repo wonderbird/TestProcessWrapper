@@ -8,20 +8,20 @@ namespace kata_rabbitmq.bdd.tests.Steps
     {
         public SetupAndTearDownRobotProcess(ITestOutputHelper testOutputHelper)
         {
-            RobotProcess.Process.TestOutputHelper = testOutputHelper;
+            Processes.Robot.TestOutputHelper = testOutputHelper;
         }
 
         [BeforeScenario]
         public void StartRobotProcess()
         {
-            RobotProcess.Process.Start();
+            Processes.Robot.Start();
         }
 
         [AfterScenario]
         public void StopRobotProcess()
         {
-            RobotProcess.Process.SendTermSignal();
-            RobotProcess.Process.Kill();
+            Processes.Robot.SendTermSignal();
+            Processes.Robot.Kill();
         }
     }
 }

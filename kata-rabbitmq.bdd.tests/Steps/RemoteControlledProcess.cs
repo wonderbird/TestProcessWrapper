@@ -14,11 +14,17 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         private Process _process;
         
+        private string _appRelativeDir;
+
         public ITestOutputHelper TestOutputHelper { get; set; }
-        
+
+        public RemoteControlledProcess(string appRelativeDir)
+        {
+            _appRelativeDir = appRelativeDir;
+        }
         public void Start()
         {
-            var robotAppFullDir = GetRobotAppFullDir();
+            var robotAppFullDir = NormalizeAppFullDir();
             var robotProcessStartInfo = CreateProcessStartInfo(robotAppFullDir);
 
             _process = Process.Start(robotProcessStartInfo);
@@ -27,13 +33,13 @@ namespace kata_rabbitmq.bdd.tests.Steps
             WaitUntilConnectedToRabbitMq();
         }
 
-        private string GetRobotAppFullDir()
+        private string NormalizeAppFullDir()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
-            var robotAppRelativeDir = Path.Combine(currentDirectory, "..", "..", "..", "..", "kata-rabbitmq.robot.app", "bin", "Debug", "net5.0");
-            var robotAppFullDir = Path.GetFullPath(robotAppRelativeDir);
+            var appFullDir = Path.Combine(currentDirectory, _appRelativeDir);
+            var appNormalizedDir = Path.GetFullPath(appFullDir);
             
-            return robotAppFullDir;
+            return appNormalizedDir;
         }
 
         private ProcessStartInfo CreateProcessStartInfo(string robotAppFullDir)
