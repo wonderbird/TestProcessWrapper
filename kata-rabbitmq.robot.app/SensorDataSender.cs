@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace kata_rabbitmq.robot.app
 {
-    public class SensorDataSender : BackgroundService
+    public class SensorDataSender : RabbitMqConnectedService
     {
         private readonly IRabbitMqConnection _rabbit;
         private readonly ILogger<SensorDataSender> _logger;
@@ -20,6 +20,8 @@ namespace kata_rabbitmq.robot.app
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await base.ExecuteAsync(stoppingToken);
+            
             try
             {
                 RegisterCancellationRequest(stoppingToken);
