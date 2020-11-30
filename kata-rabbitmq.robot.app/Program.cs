@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using kata_rabbitmq.infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace kata_rabbitmq.robot.app
@@ -13,8 +14,7 @@ namespace kata_rabbitmq.robot.app
         private static IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
-                {
-                    services.AddHostedService<SensorDataSender>();
-                });
+                    services.AddHostedService<SensorDataSender>()
+                        .AddRabbitMqInfrastructure());
     }
 }

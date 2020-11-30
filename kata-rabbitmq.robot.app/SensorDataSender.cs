@@ -1,24 +1,21 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using kata_rabbitmq.infrastructure;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 
 namespace kata_rabbitmq.robot.app
 {
     public class SensorDataSender : BackgroundService
     {
+        private readonly IRabbitMqConnection _rabbit;
         private readonly ILogger<SensorDataSender> _logger;
-        private readonly IConfiguration _configuration;
-        private IConnection _connection;
-        private IModel _channel;
 
-        public SensorDataSender(ILogger<SensorDataSender> logger, IConfiguration configuration)
+        public SensorDataSender(IRabbitMqConnection rabbit, ILogger<SensorDataSender> logger)
         {
             _logger = logger;
-            _configuration = configuration;
+            _rabbit = rabbit;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -55,73 +52,21 @@ namespace kata_rabbitmq.robot.app
 
         private async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
         {
-            if (_channel == null)
+            if (!_rabbit.IsConnected)
             {
-                ConnectToRabbitMq();
+                _rabbit.TryConnect();
             }
-
+            
             await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
-        }
-
-        private void ConnectToRabbitMq()
-        {
-            try
-            {
-                _logger.LogDebug("Connecting to RabbitMQ ...");
-
-                var connectionFactory = CreateRabbitMqConnectionFactory();
-                _connection = connectionFactory.CreateConnection();
-                _channel = _connection.CreateModel();
-
-                _channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true,
-                    arguments: null);
-                _channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true,
-                    arguments: null);
-
-                _logger.LogInformation("Established connection to RabbitMQ");
-            }
-            catch (Exception e)
-            {
-                _logger.LogDebug(e.Message);
-                _channel = null;
-                _connection = null;
-            }
-        }
-
-        private ConnectionFactory CreateRabbitMqConnectionFactory()
-        {
-            var connectionFactory = new ConnectionFactory
-            {
-                VirtualHost = "/",
-                ClientProvidedName = "app:robot",
-                HostName = _configuration["RabbitMq:HostName"],
-                Port = _configuration.GetValue<int>("RabbitMq:Port"),
-                UserName = _configuration["RabbitMq:UserName"],
-                Password = _configuration["RabbitMq:Password"]
-            };
-            
-            _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
-            _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
-            _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
-            
-            return connectionFactory;
         }
 
         private void ShutdownService()
         {
             _logger.LogInformation("Shutting down ...");
 
-            DisconnectFromRabbitMq();
+            _rabbit.Disconnect();
 
             _logger.LogDebug("Shutdown complete.");
-        }
-
-        private void DisconnectFromRabbitMq()
-        {
-            _channel?.Close();
-            _connection?.Close();
-            _channel = null;
-            _connection = null;
         }
     }
 }
