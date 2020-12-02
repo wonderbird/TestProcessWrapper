@@ -38,8 +38,12 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             var processStartInfo = CreateProcessStartInfo();
 
+            TestOutputHelper?.WriteLine($"Starting .NET application {processStartInfo.Arguments} ...");
+
             _process = Process.Start(processStartInfo);
             Assert.NotNull(_process);
+            
+            TestOutputHelper?.WriteLine($"Process id: {_process.Id}, name: {_process.ProcessName}, has exited: {_process.HasExited} ...");
 
             WaitUntilConnectedToRabbitMq();
         }
@@ -99,7 +103,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
 
-            TestOutputHelper?.WriteLine("Robot has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+            TestOutputHelper?.WriteLine("Process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
         }
 
         public void Kill()
