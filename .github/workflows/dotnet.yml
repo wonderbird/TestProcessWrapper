@@ -19,11 +19,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
     - name: Test with coverage
       run: |
-        dotnet test --collect:"XPlat Code Coverage" --settings kata-rabbitmq.bdd.tests/coverlet.runsettings --no-restore --verbosity normal
+        dotnet test --configuration Release --collect:"XPlat Code Coverage" --settings kata-rabbitmq.bdd.tests/coverlet.runsettings --no-restore --verbosity normal
         echo "COVERAGE_REPORT_PATH=./kata-rabbitmq.bdd.tests/TestResults/$( ls ./kata-rabbitmq.bdd.tests/TestResults/ )/coverage.info" >> $GITHUB_ENV
     - name: Publish coverage report to coveralls.io
       uses: coverallsapp/github-action@master

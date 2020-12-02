@@ -19,9 +19,19 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
-        public RemoteControlledProcess(string appDllName, string appRelativeDir)
+        public RemoteControlledProcess(string appProjectName)
         {
-            _appDllName = appDllName;
+            const string appExtension = ".dll";
+            _appDllName = appProjectName + appExtension;
+
+            string buildConfigurationDependentOutputFolder;
+            #if DEBUG
+            buildConfigurationDependentOutputFolder = Path.Combine("bin", "Debug", "net5.0");
+            #else
+            buildConfigurationDependentOutputFolder = Path.Combine("bin", "Release", "net5.0");
+            #endif
+            
+            var appRelativeDir = Path.Combine("..", "..", "..", "..", appProjectName, buildConfigurationDependentOutputFolder);
             _appFullDir = NormalizeDir(appRelativeDir);
         }
 

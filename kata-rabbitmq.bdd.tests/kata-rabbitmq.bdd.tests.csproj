@@ -20,8 +20,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\kata-rabbitmq.robot.app\kata-rabbitmq.robot.app.csproj" />
-  </ItemGroup>
-
 </Project>
