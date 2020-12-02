@@ -61,6 +61,9 @@ namespace kata_rabbitmq.bdd.tests.Steps
             processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
             processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
             
+            TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
+            TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");
+            
             return processStartInfo;
         }
 
