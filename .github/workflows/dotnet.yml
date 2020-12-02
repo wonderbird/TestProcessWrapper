@@ -19,6 +19,8 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
     - name: Test with coverage
       run: |
         dotnet test --collect:"XPlat Code Coverage" --settings kata-rabbitmq.bdd.tests/coverlet.runsettings --no-restore --verbosity normal
