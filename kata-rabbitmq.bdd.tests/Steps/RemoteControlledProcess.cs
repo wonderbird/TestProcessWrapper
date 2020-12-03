@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
@@ -16,6 +17,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         
         private string _appFullDir;
         private string _appDllName;
+        private int _processId;
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
@@ -53,20 +55,20 @@ namespace kata_rabbitmq.bdd.tests.Steps
             _process = Process.Start(processStartInfo);
             Assert.NotNull(_process);
             
-            TestOutputHelper?.WriteLine($"Process id: {_process.Id}, name: {_process.ProcessName}, has exited: {_process.HasExited} ...");
+            TestOutputHelper?.WriteLine($"Process ID: {_processId} has exited: {_process.HasExited} ...");
 
             WaitUntilConnectedToRabbitMq();
         }
 
         private ProcessStartInfo CreateProcessStartInfo()
         {
-            var processStartInfo = new ProcessStartInfo("dotnet")
+            var processStartInfo = new ProcessStartInfo("coverlet")
             {
                 UseShellExecute = false,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = _appDllName,
+                Arguments = $"\"{_appDllName}\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output /Users/stefan/source/katas/technology/kata-rabbitmq/client.json",
                 WorkingDirectory = _appFullDir
             };
             
@@ -89,7 +91,19 @@ namespace kata_rabbitmq.bdd.tests.Steps
             {
                 startupMessage = _process.StandardOutput.ReadLine();
                 if (startupMessage != null)
-                    TestOutputHelper.WriteLine(startupMessage);
+                {
+                    TestOutputHelper?.WriteLine(startupMessage);
+                }
+                
+                if (startupMessage != null && startupMessage.Contains("Process ID"))
+                {
+                    var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
+                    var processIdString = startupMessage.Substring(processIdStartIndex + 10);
+                    _processId = int.Parse(processIdString);
+                    
+                    TestOutputHelper?.WriteLine($"Process ID: {_processId}");
+                }
+                
             } while (startupMessage == null || !startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
         }
 
@@ -98,7 +112,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
             TestOutputHelper?.WriteLine("Sending TERM signal to process ...");
 
             var killCommand = "kill";
-            var killArguments = $"-s TERM {_process.Id}";
+            var killArguments = $"-s TERM {_processId}";
             TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
             var killProcess = Process.Start(killCommand, killArguments);
             

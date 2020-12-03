@@ -15,6 +15,7 @@ namespace kata_rabbitmq.robot.app
             Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
                     services.AddHostedService<SensorDataSender>()
+                        .AddHostedService<LogApplicationInfoService>()
                         .AddRabbitMqInfrastructure());
     }
 }
