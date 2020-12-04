@@ -8,6 +8,7 @@ namespace kata_rabbitmq.robot.app
     {
         public static void Main()
         {
+            TODO: Finish (restore) reporting code coverage from the github build action
             CreateHostBuilder().Build().Run();
         }
 
