@@ -13,44 +13,51 @@ namespace kata_rabbitmq.bdd.tests.Steps
         
         public bool IsRunning => _process != null && !_process.HasExited;
 
-        private Process _process;
+        private static string BinFolder
+        {
+            get
+            {
+                string binFolder;
+#if DEBUG
+                binFolder = Path.Combine("bin", "Debug", "net5.0");
+#else
+                binFolder = Path.Combine("bin", "Release", "net5.0");
+#endif
+                return binFolder;
+            }
+        }
+
+        private string _projectDir;
         
-        private string _appFullDir;
+        private Process _process;
+
+        private string _appProjectName;
+
+        private string _appDir;
+
         private string _appDllName;
+
         private int _dotnetHostProcessId;
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
         public RemoteControlledProcess(string appProjectName)
         {
-            const string appExtension = ".dll";
-            _appDllName = appProjectName + appExtension;
-
-            string buildConfigurationDependentOutputFolder;
-            #if DEBUG
-            buildConfigurationDependentOutputFolder = Path.Combine("bin", "Debug", "net5.0");
-            #else
-            buildConfigurationDependentOutputFolder = Path.Combine("bin", "Release", "net5.0");
-            #endif
+            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
+            _projectDir = Path.GetFullPath(projectRelativeDir);
             
-            var appRelativeDir = Path.Combine("..", "..", "..", "..", appProjectName, buildConfigurationDependentOutputFolder);
-            _appFullDir = NormalizeDir(appRelativeDir);
-        }
+            _appProjectName = appProjectName;
 
-        private string NormalizeDir(string relativeDir)
-        {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var fullDir = Path.Combine(currentDirectory, relativeDir);
-            var normalizedDir = Path.GetFullPath(fullDir);
-            
-            return normalizedDir;
+            _appDllName = _appProjectName + ".dll";
+
+            _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
         }
 
         public void Start()
         {
             var processStartInfo = CreateProcessStartInfo();
 
-            TestOutputHelper?.WriteLine($"Starting .NET application {processStartInfo.Arguments} ...");
+            TestOutputHelper?.WriteLine($"Starting .NET application: {processStartInfo.FileName} {processStartInfo.Arguments} ...");
 
             _process = Process.Start(processStartInfo);
             Assert.NotNull(_process);
@@ -62,14 +69,17 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         private ProcessStartInfo CreateProcessStartInfo()
         {
+            var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.json";
+            var coverageReportPath = Path.Combine(_projectDir, "kata-rabbitmq.bdd.tests", "TestResults", coverageReportFileName);
+            
             var processStartInfo = new ProcessStartInfo("coverlet")
             {
                 UseShellExecute = false,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = $"\"{_appDllName}\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output /Users/stefan/source/katas/technology/kata-rabbitmq/client.json",
-                WorkingDirectory = _appFullDir
+                Arguments = $"\"{_appDllName}\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath}",
+                WorkingDirectory = _appDir
             };
             
             processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
