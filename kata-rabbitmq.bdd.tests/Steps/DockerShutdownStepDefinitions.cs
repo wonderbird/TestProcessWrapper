@@ -1,9 +1,5 @@
-using System.Diagnostics;
-using System.IO;
-using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using TechTalk.SpecFlow;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace kata_rabbitmq.bdd.tests.Steps
 {
@@ -13,19 +9,19 @@ namespace kata_rabbitmq.bdd.tests.Steps
         [Given("the server is running")]
         public void GivenTheServerIsRunning()
         {
-            Assert.True(RobotProcess.IsRunning);
+            Assert.True(Processes.Robot.IsRunning);
         }
 
         [When("a TERM signal is sent")]
         public void WhenATermSignalIsSent()
         {
-            RobotProcess.SendTermSignal();
+            Processes.Robot.SendTermSignal();
         }
 
         [Then("the application shuts down.")]
         public void TheApplicationShutsDown()
         {
-            Assert.True(RobotProcess.HasExited);
+            Assert.True(Processes.Robot.HasExited);
         }
     }
 }

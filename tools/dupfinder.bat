@@ -21,6 +21,6 @@ REM For detailed information see ReSharper Command Line Tools:
 REM https://www.jetbrains.com/help/resharper/dupFinder.html
 REM
 
-set SOLUTION_NAME=kata-rabbitmq
-dupfinder --exclude="%SOLUTION_NAME%\obj\**" --discard-cost=50 --discard-literals=true --show-text --o=dupfinder-report.xml --caches-home=c:\temp\dupfinder-cache "%SOLUTION_NAME%.sln"
+set PROJECT_NAME=kata-gof-pattern-facade-windforecast
+dupfinder.exe --exclude="%PROJECT_NAME%\obj\**" --discard-cost=50 --discard-literals=true --show-text --o=dupfinder-report.xml --caches-home=c:\temp\dupfinder-cache "%PROJECT_NAME%.sln"
 tools\msxsl.exe "dupfinder-report.xml" "tools\dupfinder.xslt" -o "dupfinder-report.html"

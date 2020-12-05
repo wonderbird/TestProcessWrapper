@@ -1,3 +1,6 @@
+# Code Duplication - dupfinder
+dupfinder-report.*
+
 #SpecFlow Stuff
 *.feature.cs
 
