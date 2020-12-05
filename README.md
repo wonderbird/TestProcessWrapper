@@ -103,6 +103,12 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * The SpecFlow Team: [SpecFlow.xUnit — documentation](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html)
 * The SpecFlow Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
 
+## Code Analysis
+
+* JetBrains s.r.o.: [dupFinder Command-Line Tool](https://www.jetbrains.com/help/resharper/dupFinder.html)
+* GitHub: [coverlet-coverage / coverlet](https://github.com/coverlet-coverage/coverlet)
+* GitHub: [danielpalme / ReportGenerator](https://github.com/danielpalme/ReportGenerator)
+
 ## Template For New Links
 
 * [ ]( )
