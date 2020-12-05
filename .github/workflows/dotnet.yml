@@ -15,13 +15,25 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.100
-    - name: Install coverlet.console
-      run: dotnet tool install --global coverlet.console
+    - name: Install dotnet global tools (coverlet, reportgenerator)
+      run: |
+        dotnet tool install --global coverlet.console
+        dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Install dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Debug --no-restore
     - name: Test with coverage
-      run: |
-        dotnet test --no-restore --verbosity normal
- 
+      run: dotnet test --no-restore --verbosity normal
+    - name: Generate coverage reports
+      run: reportgenerator "-reports:kata-rabbitmq.bdd.tests/TestResults/*.xml" "-targetdir:kata-rabbitmq.bdd.tests/TestResults/report" "-reporttypes:Html;lcov" "-title:Kata RabbitMQ"
+    - name: Attach coverage report to build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: kata-rabbitmq.bdd.tests/TestResults/report
+    - name: Publish coverage report to coveralls.io
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: kata-rabbitmq.bdd.tests/TestResults/report/lcov.info

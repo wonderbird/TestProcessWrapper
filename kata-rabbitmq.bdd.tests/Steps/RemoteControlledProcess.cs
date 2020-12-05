@@ -69,7 +69,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         private ProcessStartInfo CreateProcessStartInfo()
         {
-            var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.json";
+            var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
             var coverageReportPath = Path.Combine(_projectDir, "kata-rabbitmq.bdd.tests", "TestResults", coverageReportFileName);
             
             var processStartInfo = new ProcessStartInfo("coverlet")
@@ -78,7 +78,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = $"\"{_appDllName}\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath}",
+                Arguments = $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura",
                 WorkingDirectory = _appDir
             };
             
