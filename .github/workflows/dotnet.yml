@@ -37,3 +37,9 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: kata-rabbitmq.bdd.tests/TestResults/report/lcov.info
+    - name: Publish coverage report to CodeClimate
+      uses: paambaati/codeclimate-action@v2.7.4
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      with:
+        coverageLocations: kata-rabbitmq.bdd.tests/TestResults/report/lcov.info:lcov
