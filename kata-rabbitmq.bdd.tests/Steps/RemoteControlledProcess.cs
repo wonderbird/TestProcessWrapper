@@ -13,6 +13,8 @@ namespace kata_rabbitmq.bdd.tests.Steps
         
         public bool IsRunning => _process != null && !_process.HasExited;
 
+        private bool _isConnectionEstablished;
+
         private static string BinFolder
         {
             get
@@ -28,7 +30,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         }
 
         private string _projectDir;
-        
+
         private Process _process;
 
         private string _appProjectName;
@@ -37,8 +39,8 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
         private string _appDllName;
 
-        private int _dotnetHostProcessId;
-
+        private int? _dotnetHostProcessId;
+        
         public ITestOutputHelper TestOutputHelper { get; set; }
 
         public RemoteControlledProcess(string appProjectName)
@@ -57,14 +59,14 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             var processStartInfo = CreateProcessStartInfo();
 
-            TestOutputHelper?.WriteLine($"Starting .NET application: {processStartInfo.FileName} {processStartInfo.Arguments} ...");
+            TestOutputHelper?.WriteLine($"Starting process: {processStartInfo.FileName} {processStartInfo.Arguments} ...");
 
             _process = Process.Start(processStartInfo);
             Assert.NotNull(_process);
             
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
-            WaitUntilConnectedToRabbitMq();
+            WaitAndProcessRequiredStartupMessages();
         }
 
         private ProcessStartInfo CreateProcessStartInfo()
@@ -93,36 +95,36 @@ namespace kata_rabbitmq.bdd.tests.Steps
             return processStartInfo;
         }
 
-        private void WaitUntilConnectedToRabbitMq()
+        private void WaitAndProcessRequiredStartupMessages()
         {
-            const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
-            string startupMessage;
-            bool isConnectionEstablished = false;
-            bool isDotnetHostProcessIdKnown = false;
             do
             {
-                startupMessage = _process.StandardOutput.ReadLine();
+                var startupMessage = _process.StandardOutput.ReadLine();
                 if (startupMessage != null)
                 {
                     TestOutputHelper?.WriteLine(startupMessage);
-
-                    if (!isConnectionEstablished)
-                    {
-                        isConnectionEstablished = startupMessage.Contains(expectedMessageAfterRabbitMqConnected);
-                    }
-
-                    if (!isDotnetHostProcessIdKnown && startupMessage.Contains("Process ID"))
-                    {
-                        var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
-                        var processIdString = startupMessage.Substring(processIdStartIndex + 10);
-                        _dotnetHostProcessId = int.Parse(processIdString);
-                        isDotnetHostProcessIdKnown = true;
-                    
-                        TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId}");
-                    }
+                    ParseStartupMessage(startupMessage);
                 }
             }
-            while (!isConnectionEstablished || !isDotnetHostProcessIdKnown);
+            while (!_isConnectionEstablished || !_dotnetHostProcessId.HasValue);
+        }
+
+        private void ParseStartupMessage(string startupMessage)
+        {
+            const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
+
+            if (!_isConnectionEstablished)
+            {
+                _isConnectionEstablished = startupMessage.Contains(expectedMessageAfterRabbitMqConnected);
+            }
+
+            if (!_dotnetHostProcessId.HasValue && startupMessage.Contains("Process ID"))
+            {
+                var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
+                var processIdString = startupMessage.Substring(processIdStartIndex + 10);
+                _dotnetHostProcessId = int.Parse(processIdString);
+                TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
+            }
         }
 
         public void SendTermSignal()
@@ -130,7 +132,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
             TestOutputHelper?.WriteLine("Sending TERM signal to process ...");
 
             var killCommand = "kill";
-            var killArguments = $"-s TERM {_dotnetHostProcessId}";
+            var killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
             TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
             var killProcess = Process.Start(killCommand, killArguments);
             
