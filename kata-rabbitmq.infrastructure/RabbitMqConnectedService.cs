@@ -1,28 +1,28 @@
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace kata_rabbitmq.infrastructure
 {
     public abstract class RabbitMqConnectedService : BackgroundService
     {
-        private readonly IRabbitMqConnection _rabbit;
         private readonly ILogger<RabbitMqConnectedService> _logger;
+        private readonly IRabbitMqConnection _rabbit;
 
         protected RabbitMqConnectedService(IRabbitMqConnection rabbit, ILogger<RabbitMqConnectedService> logger)
         {
             _rabbit = rabbit;
             _logger = logger;
         }
-        
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
                 RegisterCancellationRequest(stoppingToken);
-                
+
                 while (true)
                 {
                     await ExecuteSensorLoopBody(stoppingToken);
@@ -41,7 +41,7 @@ namespace kata_rabbitmq.infrastructure
                 ShutdownService();
             }
         }
-        
+
         private void RegisterCancellationRequest(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Waiting for cancellation request");
@@ -55,7 +55,7 @@ namespace kata_rabbitmq.infrastructure
             {
                 _rabbit.TryConnect();
             }
-            
+
             await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
         }
 

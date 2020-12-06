@@ -108,6 +108,9 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * JetBrains s.r.o.: [dupFinder Command-Line Tool](https://www.jetbrains.com/help/resharper/dupFinder.html)
 * GitHub: [coverlet-coverage / coverlet](https://github.com/coverlet-coverage/coverlet)
 * GitHub: [danielpalme / ReportGenerator](https://github.com/danielpalme/ReportGenerator)
+* Scott Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
+* [EditorConfig.org](https://editorconfig.org)
+* GitHub: [dotnet / roslyn - .editorconfig](https://github.com/dotnet/roslyn/blob/master/.editorconfig)
 
 ## Template For New Links
 

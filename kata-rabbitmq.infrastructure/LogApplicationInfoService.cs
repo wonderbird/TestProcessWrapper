@@ -1,8 +1,8 @@
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace kata_rabbitmq.infrastructure
 {
@@ -19,7 +19,7 @@ namespace kata_rabbitmq.infrastructure
         {
             var processId = Process.GetCurrentProcess().Id;
             _logger.LogInformation($"Process ID {processId}");
-            
+
             return Task.CompletedTask;
         }
     }

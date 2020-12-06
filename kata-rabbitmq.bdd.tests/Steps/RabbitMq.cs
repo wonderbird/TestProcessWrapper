@@ -1,4 +1,4 @@
-using DotNet.Testcontainers.Containers.Modules.MessageBrokers;
+﻿using DotNet.Testcontainers.Containers.Modules.MessageBrokers;
 using RabbitMQ.Client;
 
 namespace kata_rabbitmq.bdd.tests.Steps

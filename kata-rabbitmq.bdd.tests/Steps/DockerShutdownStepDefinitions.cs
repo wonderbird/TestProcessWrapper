@@ -1,4 +1,4 @@
-using TechTalk.SpecFlow;
+﻿using TechTalk.SpecFlow;
 using Xunit;
 
 namespace kata_rabbitmq.bdd.tests.Steps

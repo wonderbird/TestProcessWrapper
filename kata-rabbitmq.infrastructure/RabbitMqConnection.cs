@@ -1,25 +1,25 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using System;
 
 namespace kata_rabbitmq.infrastructure
 {
     public class RabbitMqConnection : IRabbitMqConnection
     {
-        private readonly ILogger<RabbitMqConnection> _logger;
         private readonly IConfiguration _configuration;
-        private IConnection _connection;
+        private readonly ILogger<RabbitMqConnection> _logger;
         private IModel _channel;
-
-        public bool IsConnected => _connection != null;
+        private IConnection _connection;
 
         public RabbitMqConnection(ILogger<RabbitMqConnection> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
         }
-        
+
+        public bool IsConnected => _connection != null;
+
         public void TryConnect()
         {
             if (IsConnected)
@@ -35,10 +35,10 @@ namespace kata_rabbitmq.infrastructure
                 _connection = connectionFactory.CreateConnection();
                 _channel = _connection.CreateModel();
 
-                _channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true,
-                    arguments: null);
-                _channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true,
-                    arguments: null);
+                _channel.ExchangeDeclare("robot", ExchangeType.Direct, false, true,
+                    null);
+                _channel.QueueDeclare("sensors", false, false, true,
+                    null);
 
                 _logger.LogInformation("Established connection to RabbitMQ");
             }
@@ -48,6 +48,14 @@ namespace kata_rabbitmq.infrastructure
                 _channel = null;
                 _connection = null;
             }
+        }
+
+        public void Disconnect()
+        {
+            _channel?.Close();
+            _connection?.Close();
+            _channel = null;
+            _connection = null;
         }
 
         private ConnectionFactory CreateConnectionFactory()
@@ -61,20 +69,12 @@ namespace kata_rabbitmq.infrastructure
                 UserName = _configuration["RabbitMq:UserName"],
                 Password = _configuration["RabbitMq:Password"]
             };
-            
+
             _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
             _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
             _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
-            
-            return connectionFactory;
-        }
 
-        public void Disconnect()
-        {
-            _channel?.Close();
-            _connection?.Close();
-            _channel = null;
-            _connection = null;
+            return connectionFactory;
         }
     }
 }

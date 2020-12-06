@@ -1,4 +1,4 @@
-using TechTalk.SpecFlow;
+﻿using TechTalk.SpecFlow;
 using Xunit.Abstractions;
 
 namespace kata_rabbitmq.bdd.tests.Steps
@@ -24,7 +24,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             Processes.Robot.SendTermSignal();
             Processes.Robot.Kill();
-            
+
             Processes.Client.SendTermSignal();
             Processes.Client.Kill();
         }

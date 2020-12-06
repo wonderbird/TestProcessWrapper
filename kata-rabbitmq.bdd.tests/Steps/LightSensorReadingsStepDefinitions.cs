@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
@@ -8,8 +8,8 @@ namespace kata_rabbitmq.bdd.tests.Steps
     [Binding]
     public class LightSensorReadingsStepDefinitions
     {
-        private bool _isSensorQueuePresent;
         private readonly ITestOutputHelper _testOutputHelper;
+        private bool _isSensorQueuePresent;
 
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper)
         {
@@ -21,7 +21,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             Assert.True(Processes.Robot.IsRunning);
         }
-        
+
         [When("the sensor queue is checked")]
         public void WhenTheSensorQueueIsChecked()
         {
@@ -52,13 +52,13 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             _testOutputHelper.WriteLine("The client app is started");
         }
-        
+
         [When("the client app has run for 1 second")]
         public void WhenTheClientAppHasRunFor1Second()
         {
             _testOutputHelper.WriteLine("The client app has run for 1 second");
         }
-        
+
         [Then("the client app received at least 10 sensor values")]
         public void WhenTheClientAppReceivedAtLeast10SensorValues()
         {

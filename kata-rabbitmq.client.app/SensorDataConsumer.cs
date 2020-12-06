@@ -1,4 +1,4 @@
-using kata_rabbitmq.infrastructure;
+﻿using kata_rabbitmq.infrastructure;
 using Microsoft.Extensions.Logging;
 
 namespace kata_rabbitmq.client.app

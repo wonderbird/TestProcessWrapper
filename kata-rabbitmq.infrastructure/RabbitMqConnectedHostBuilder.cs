@@ -1,17 +1,21 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace kata_rabbitmq.infrastructure
 {
     public static class RabbitMqConnectedHostBuilder
     {
-        public static IHostBuilder Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THostedService>()
-            where THostedService : class, IHostedService =>
-            Host.CreateDefaultBuilder()
+        public static IHostBuilder Create<
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+            THostedService>()
+            where THostedService : class, IHostedService
+        {
+            return Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
                     services.AddHostedService<THostedService>()
                         .AddHostedService<LogApplicationInfoService>()
                         .AddRabbitMqInfrastructure());
+        }
     }
 }

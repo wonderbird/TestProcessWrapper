@@ -1,7 +1,7 @@
+﻿using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using System;
 using System.Diagnostics;
 using System.IO;
-using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -9,11 +9,35 @@ namespace kata_rabbitmq.bdd.tests.Steps
 {
     public class RemoteControlledProcess
     {
-        public bool HasExited => _process == null || _process.HasExited;
-        
-        public bool IsRunning => _process != null && !_process.HasExited;
+        private readonly string _appDir;
+
+        private readonly string _appDllName;
+
+        private readonly string _appProjectName;
+
+        private readonly string _projectDir;
+
+        private int? _dotnetHostProcessId;
 
         private bool _isConnectionEstablished;
+
+        private Process _process;
+
+        public RemoteControlledProcess(string appProjectName)
+        {
+            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
+            _projectDir = Path.GetFullPath(projectRelativeDir);
+
+            _appProjectName = appProjectName;
+
+            _appDllName = _appProjectName + ".dll";
+
+            _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
+        }
+
+        public bool HasExited => _process == null || _process.HasExited;
+
+        public bool IsRunning => _process != null && !_process.HasExited;
 
         private static string BinFolder
         {
@@ -29,41 +53,18 @@ namespace kata_rabbitmq.bdd.tests.Steps
             }
         }
 
-        private string _projectDir;
-
-        private Process _process;
-
-        private string _appProjectName;
-
-        private string _appDir;
-
-        private string _appDllName;
-
-        private int? _dotnetHostProcessId;
-        
         public ITestOutputHelper TestOutputHelper { get; set; }
-
-        public RemoteControlledProcess(string appProjectName)
-        {
-            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
-            _projectDir = Path.GetFullPath(projectRelativeDir);
-            
-            _appProjectName = appProjectName;
-
-            _appDllName = _appProjectName + ".dll";
-
-            _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
-        }
 
         public void Start()
         {
             var processStartInfo = CreateProcessStartInfo();
 
-            TestOutputHelper?.WriteLine($"Starting process: {processStartInfo.FileName} {processStartInfo.Arguments} ...");
+            TestOutputHelper?.WriteLine(
+                $"Starting process: {processStartInfo.FileName} {processStartInfo.Arguments} ...");
 
             _process = Process.Start(processStartInfo);
             Assert.NotNull(_process);
-            
+
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
             WaitAndProcessRequiredStartupMessages();
@@ -72,26 +73,28 @@ namespace kata_rabbitmq.bdd.tests.Steps
         private ProcessStartInfo CreateProcessStartInfo()
         {
             var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportPath = Path.Combine(_projectDir, "kata-rabbitmq.bdd.tests", "TestResults", coverageReportFileName);
-            
+            var coverageReportPath = Path.Combine(_projectDir, "kata-rabbitmq.bdd.tests", "TestResults",
+                coverageReportFileName);
+
             var processStartInfo = new ProcessStartInfo("coverlet")
             {
                 UseShellExecute = false,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments = $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura",
+                Arguments =
+                    $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura",
                 WorkingDirectory = _appDir
             };
-            
+
             processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
             processStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString());
             processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
             processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
-            
+
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
             TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");
-            
+
             return processStartInfo;
         }
 
@@ -105,8 +108,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
                     TestOutputHelper?.WriteLine(startupMessage);
                     ParseStartupMessage(startupMessage);
                 }
-            }
-            while (!_isConnectionEstablished || !_dotnetHostProcessId.HasValue);
+            } while (!_isConnectionEstablished || !_dotnetHostProcessId.HasValue);
         }
 
         private void ParseStartupMessage(string startupMessage)
@@ -135,7 +137,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
             var killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
             TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
             var killProcess = Process.Start(killCommand, killArguments);
-            
+
             if (killProcess != null)
             {
                 TestOutputHelper?.WriteLine("Waiting for system call to complete.");
