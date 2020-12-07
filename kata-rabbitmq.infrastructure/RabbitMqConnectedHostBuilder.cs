@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
 
-namespace kata_rabbitmq.infrastructure
+namespace katarabbitmq.infrastructure
 {
     public static class RabbitMqConnectedHostBuilder
     {

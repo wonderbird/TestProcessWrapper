@@ -3,7 +3,7 @@ using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace kata_rabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
     public class LightSensorReadingsStepDefinitions
@@ -17,7 +17,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         }
 
         [Given("the robot app is started")]
-        public void GivenTheRobotAppIsStarted()
+        public static void GivenTheRobotAppIsStarted()
         {
             Assert.True(Processes.Robot.IsRunning);
         }

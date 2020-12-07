@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
-namespace kata_rabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
     public class SetupAndTearDownRabbitMq

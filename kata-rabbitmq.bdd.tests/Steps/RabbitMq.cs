@@ -1,7 +1,7 @@
 ﻿using DotNet.Testcontainers.Containers.Modules.MessageBrokers;
 using RabbitMQ.Client;
 
-namespace kata_rabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Steps
 {
     public static class RabbitMq
     {

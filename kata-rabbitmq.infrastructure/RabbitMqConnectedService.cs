@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace kata_rabbitmq.infrastructure
+namespace katarabbitmq.infrastructure
 {
     public abstract class RabbitMqConnectedService : BackgroundService
     {

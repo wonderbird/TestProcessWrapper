@@ -1,11 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace kata_rabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Steps
 {
     public class RemoteControlledProcess
     {
@@ -43,11 +44,10 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             get
             {
-                string binFolder;
 #if DEBUG
-                binFolder = Path.Combine("bin", "Debug", "net5.0");
+                var binFolder = Path.Combine("bin", "Debug", "net5.0");
 #else
-                binFolder = Path.Combine("bin", "Release", "net5.0");
+                var binFolder = Path.Combine("bin", "Release", "net5.0");
 #endif
                 return binFolder;
             }
@@ -88,7 +88,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
             };
 
             processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
-            processStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString());
+            processStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString(CultureInfo.CurrentCulture));
             processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
             processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
 
@@ -124,7 +124,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
             {
                 var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
                 var processIdString = startupMessage.Substring(processIdStartIndex + 10);
-                _dotnetHostProcessId = int.Parse(processIdString);
+                _dotnetHostProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
                 TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
             }
         }
@@ -133,7 +133,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
         {
             TestOutputHelper?.WriteLine("Sending TERM signal to process ...");
 
-            var killCommand = "kill";
+            const string killCommand = "kill";
             var killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
             TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
             var killProcess = Process.Start(killCommand, killArguments);

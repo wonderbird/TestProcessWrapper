@@ -1,4 +1,4 @@
-﻿namespace kata_rabbitmq.bdd.tests.Steps
+﻿namespace katarabbitmq.bdd.tests.Steps
 {
     public static class Processes
     {

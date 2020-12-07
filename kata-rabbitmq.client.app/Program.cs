@@ -1,7 +1,7 @@
-﻿using kata_rabbitmq.infrastructure;
+﻿using katarabbitmq.infrastructure;
 using Microsoft.Extensions.Hosting;
 
-namespace kata_rabbitmq.client.app
+namespace katarabbitmq.client.app
 {
     public static class Program
     {

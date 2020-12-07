@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace kata_rabbitmq.infrastructure
+namespace katarabbitmq.infrastructure
 {
     public static class ServiceCollectionExtensions
     {

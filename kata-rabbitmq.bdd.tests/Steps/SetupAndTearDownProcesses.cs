@@ -1,7 +1,7 @@
 ﻿using TechTalk.SpecFlow;
 using Xunit.Abstractions;
 
-namespace kata_rabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
     public class SetupAndTearDownRobotProcess
@@ -13,14 +13,14 @@ namespace kata_rabbitmq.bdd.tests.Steps
         }
 
         [BeforeScenario]
-        public void StartProcesses()
+        public static void StartProcesses()
         {
             Processes.Robot.Start();
             Processes.Client.Start();
         }
 
         [AfterScenario]
-        public void StopProcesses()
+        public static void StopProcesses()
         {
             Processes.Robot.SendTermSignal();
             Processes.Robot.Kill();

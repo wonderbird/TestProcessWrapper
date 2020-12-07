@@ -1,25 +1,25 @@
 ﻿using TechTalk.SpecFlow;
 using Xunit;
 
-namespace kata_rabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
     public class DockerShutdownStepDefinitions
     {
         [Given("the server is running")]
-        public void GivenTheServerIsRunning()
+        public static void GivenTheServerIsRunning()
         {
             Assert.True(Processes.Robot.IsRunning);
         }
 
         [When("a TERM signal is sent")]
-        public void WhenATermSignalIsSent()
+        public static void WhenATermSignalIsSent()
         {
             Processes.Robot.SendTermSignal();
         }
 
         [Then("the application shuts down.")]
-        public void TheApplicationShutsDown()
+        public static void TheApplicationShutsDown()
         {
             Assert.True(Processes.Robot.HasExited);
         }

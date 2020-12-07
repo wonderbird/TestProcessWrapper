@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace kata_rabbitmq.infrastructure
+namespace katarabbitmq.infrastructure
 {
     public class LogApplicationInfoService : BackgroundService
     {
@@ -17,7 +16,7 @@ namespace kata_rabbitmq.infrastructure
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var processId = Process.GetCurrentProcess().Id;
+            var processId = System.Environment.ProcessId;
             _logger.LogInformation($"Process ID {processId}");
 
             return Task.CompletedTask;

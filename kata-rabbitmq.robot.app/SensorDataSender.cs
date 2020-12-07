@@ -1,7 +1,7 @@
-﻿using kata_rabbitmq.infrastructure;
+﻿using katarabbitmq.infrastructure;
 using Microsoft.Extensions.Logging;
 
-namespace kata_rabbitmq.robot.app
+namespace katarabbitmq.robot.app
 {
     public class SensorDataSender : RabbitMqConnectedService
     {

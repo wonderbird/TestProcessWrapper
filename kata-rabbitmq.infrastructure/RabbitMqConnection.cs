@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
 
-namespace kata_rabbitmq.infrastructure
+namespace katarabbitmq.infrastructure
 {
     public class RabbitMqConnection : IRabbitMqConnection
     {

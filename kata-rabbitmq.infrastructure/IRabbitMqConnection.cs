@@ -1,4 +1,4 @@
-﻿namespace kata_rabbitmq.infrastructure
+﻿namespace katarabbitmq.infrastructure
 {
     public interface IRabbitMqConnection
     {
