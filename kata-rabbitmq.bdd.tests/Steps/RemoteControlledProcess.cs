@@ -53,6 +53,8 @@ namespace katarabbitmq.bdd.tests.Steps
             }
         }
 
+        public StreamReader StandardOutput => _process.StandardOutput;
+
         public ITestOutputHelper TestOutputHelper { get; set; }
 
         public void Start()

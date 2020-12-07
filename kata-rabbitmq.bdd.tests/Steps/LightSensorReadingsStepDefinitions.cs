@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
@@ -10,6 +11,7 @@ namespace katarabbitmq.bdd.tests.Steps
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private bool _isSensorQueuePresent;
+        private int _countReceivedSensorReadings;
 
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper)
         {
@@ -48,22 +50,30 @@ namespace katarabbitmq.bdd.tests.Steps
         }
 
         [Given("the client app is started")]
-        public void GivenTheClientAppIsStarted()
+        public static void GivenTheClientAppIsStarted()
         {
-            _testOutputHelper.WriteLine("The client app is started");
+            Assert.True(Processes.Client.IsRunning);
         }
 
         [When("the client app has run for 1 second")]
         public void WhenTheClientAppHasRunFor1Second()
         {
-            _testOutputHelper.WriteLine("The client app has run for 1 second");
+            Task.Delay(TimeSpan.FromSeconds(1.0));
+            
+            while (Processes.Client.StandardOutput.Peek() != 0)
+            {
+                var currentLine = Processes.Client.StandardOutput.ReadLine();
+                if (currentLine != null && currentLine.Contains("Sensor reading"))
+                {
+                    ++_countReceivedSensorReadings;
+                }
+            }
         }
 
         [Then("the client app received at least 10 sensor values")]
-        public void WhenTheClientAppReceivedAtLeast10SensorValues()
+        public void ThenTheClientAppReceivedAtLeast10SensorValues()
         {
-            _testOutputHelper.WriteLine("The client app received at least 10 sensor values");
-            //Assert.False(true, "TODO: implement client test");
+            Assert.True(_countReceivedSensorReadings >= 10);
         }
     }
 }
