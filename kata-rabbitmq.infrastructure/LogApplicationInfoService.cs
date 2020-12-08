@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace katarabbitmq.infrastructure
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var processId = System.Environment.ProcessId;
+            var processId = Environment.ProcessId;
             _logger.LogInformation($"Process ID {processId}");
 
             return Task.CompletedTask;

@@ -11,6 +11,6 @@ Scenario: Robot creates sensor queue
 Scenario: Client receives light sensor readings
     Given the robot app is started
     And the client app is started
-    When the client app has run for 1 second
+    When the client app has been connected for 1 second
     Then the client app received at least 10 sensor values
     

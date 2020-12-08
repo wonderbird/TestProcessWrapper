@@ -20,8 +20,6 @@ namespace katarabbitmq.bdd.tests.Steps
 
         private int? _dotnetHostProcessId;
 
-        private bool _isConnectionEstablished;
-
         private Process _process;
 
         public RemoteControlledProcess(string appProjectName)
@@ -35,6 +33,8 @@ namespace katarabbitmq.bdd.tests.Steps
 
             _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
         }
+
+        public bool IsConnectionEstablished { get; private set; }
 
         public bool HasExited => _process == null || _process.HasExited;
 
@@ -90,7 +90,8 @@ namespace katarabbitmq.bdd.tests.Steps
             };
 
             processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
-            processStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString(CultureInfo.CurrentCulture));
+            processStartInfo.AddEnvironmentVariable("RabbitMq__Port",
+                RabbitMq.Container.Port.ToString(CultureInfo.CurrentCulture));
             processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
             processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
 
@@ -110,16 +111,16 @@ namespace katarabbitmq.bdd.tests.Steps
                     TestOutputHelper?.WriteLine(startupMessage);
                     ParseStartupMessage(startupMessage);
                 }
-            } while (!_isConnectionEstablished || !_dotnetHostProcessId.HasValue);
+            } while (!IsConnectionEstablished || !_dotnetHostProcessId.HasValue);
         }
 
         private void ParseStartupMessage(string startupMessage)
         {
             const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
 
-            if (!_isConnectionEstablished)
+            if (!IsConnectionEstablished)
             {
-                _isConnectionEstablished = startupMessage.Contains(expectedMessageAfterRabbitMqConnected);
+                IsConnectionEstablished = startupMessage.Contains(expectedMessageAfterRabbitMqConnected);
             }
 
             if (!_dotnetHostProcessId.HasValue && startupMessage.Contains("Process ID"))

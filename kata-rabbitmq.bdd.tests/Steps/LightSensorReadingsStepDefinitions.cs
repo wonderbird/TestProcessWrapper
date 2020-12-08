@@ -10,8 +10,8 @@ namespace katarabbitmq.bdd.tests.Steps
     public class LightSensorReadingsStepDefinitions
     {
         private readonly ITestOutputHelper _testOutputHelper;
-        private bool _isSensorQueuePresent;
         private int _countReceivedSensorReadings;
+        private bool _isSensorQueuePresent;
 
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper)
         {
@@ -55,15 +55,25 @@ namespace katarabbitmq.bdd.tests.Steps
             Assert.True(Processes.Client.IsRunning);
         }
 
-        [When("the client app has run for 1 second")]
-        public void WhenTheClientAppHasRunFor1Second()
+        [When("the client app has been connected for 1 second")]
+        public async Task WhenTheClientAppHasBeenConnectedFor1Second()
         {
-            Task.Delay(TimeSpan.FromSeconds(1.0));
-            
-            while (Processes.Client.StandardOutput.Peek() != 0)
+            while (!Processes.Client.IsConnectionEstablished)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(1.0));
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(5.0));
+
+            ParseSensorDataFromClientProcess();
+        }
+
+        private void ParseSensorDataFromClientProcess()
+        {
+            while (Processes.Client.StandardOutput.Peek() != -1)
             {
                 var currentLine = Processes.Client.StandardOutput.ReadLine();
-                if (currentLine != null && currentLine.Contains("Sensor reading"))
+                if (currentLine != null && currentLine.Contains("Sensor data"))
                 {
                     ++_countReceivedSensorReadings;
                 }
@@ -73,7 +83,8 @@ namespace katarabbitmq.bdd.tests.Steps
         [Then("the client app received at least 10 sensor values")]
         public void ThenTheClientAppReceivedAtLeast10SensorValues()
         {
-            Assert.True(_countReceivedSensorReadings >= 10);
+            Assert.True(_countReceivedSensorReadings >= 10,
+                $"Client app must receive at least 10 sensor values. It actually received {_countReceivedSensorReadings} values");
         }
     }
 }
