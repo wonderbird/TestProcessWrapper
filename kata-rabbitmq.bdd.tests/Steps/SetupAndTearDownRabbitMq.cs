@@ -8,9 +8,18 @@ using TechTalk.SpecFlow;
 
 namespace katarabbitmq.bdd.tests.Steps
 {
+    // Comment out the following [Binding] attribute to make the tests use
+    // an existing RabbitMq service
+    //
+    // When commenting out this [Binding] attribute, please uncomment the
+    // [Binding] attribute on class
+    // SetupAndTearDownRabbitMqWithoutTestContainer.
+
     [Binding]
     public class SetupAndTearDownRabbitMq
     {
+        private static RabbitMqTestcontainer RabbitMqContainer;
+
         [BeforeTestRun]
         public static async Task StartRabbitMqContainer()
         {
@@ -19,17 +28,22 @@ namespace katarabbitmq.bdd.tests.Steps
                     .WithMessageBroker(
                         new RabbitMqTestcontainerConfiguration {Username = "rabbitmq", Password = "rabbitmq"});
 
-            RabbitMq.Container = testcontainersBuilder.Build();
-            await RabbitMq.Container.StartAsync();
+            RabbitMqContainer = testcontainersBuilder.Build();
+            await RabbitMqContainer.StartAsync();
         }
 
         [BeforeFeature]
         public static void ConnectToRabbitMq()
         {
             var connectionFactory =
-                new ConnectionFactory {Uri = new Uri(RabbitMq.Container.ConnectionString)};
+                new ConnectionFactory {Uri = new Uri(RabbitMqContainer.ConnectionString)};
             RabbitMq.Connection = connectionFactory.CreateConnection();
             RabbitMq.Channel = RabbitMq.Connection.CreateModel();
+
+            RabbitMq.Hostname = RabbitMqContainer.Hostname;
+            RabbitMq.Port = RabbitMqContainer.Port;
+            RabbitMq.Username = RabbitMqContainer.Username;
+            RabbitMq.Password = RabbitMqContainer.Password;
         }
 
         [AfterFeature]
@@ -42,8 +56,8 @@ namespace katarabbitmq.bdd.tests.Steps
         [AfterTestRun]
         public static async Task ShutdownRabbitMqContainer()
         {
-            await RabbitMq.Container.CleanUpAsync();
-            await RabbitMq.Container.DisposeAsync();
+            await RabbitMqContainer.CleanUpAsync();
+            await RabbitMqContainer.DisposeAsync();
         }
     }
 }

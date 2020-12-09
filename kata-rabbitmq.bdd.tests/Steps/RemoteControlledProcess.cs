@@ -89,11 +89,11 @@ namespace katarabbitmq.bdd.tests.Steps
                 WorkingDirectory = _appDir
             };
 
-            processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Hostname);
             processStartInfo.AddEnvironmentVariable("RabbitMq__Port",
-                RabbitMq.Container.Port.ToString(CultureInfo.CurrentCulture));
-            processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
-            processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
+                RabbitMq.Port.ToString(CultureInfo.InvariantCulture));
+            processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Username);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Password);
 
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
             TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");

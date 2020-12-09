@@ -9,8 +9,8 @@ namespace katarabbitmq.infrastructure
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<RabbitMqConnection> _logger;
-        private IModel _channel;
-        private IConnection _connection;
+        public IModel Channel { get; private set; }
+        public IConnection Connection { get; private set; }
 
         public RabbitMqConnection(ILogger<RabbitMqConnection> logger, IConfiguration configuration)
         {
@@ -18,7 +18,7 @@ namespace katarabbitmq.infrastructure
             _configuration = configuration;
         }
 
-        public bool IsConnected => _connection != null;
+        public bool IsConnected => Connection != null;
 
         public void TryConnect()
         {
@@ -32,12 +32,12 @@ namespace katarabbitmq.infrastructure
                 _logger.LogDebug("Connecting to RabbitMQ ...");
 
                 var connectionFactory = CreateConnectionFactory();
-                _connection = connectionFactory.CreateConnection();
-                _channel = _connection.CreateModel();
+                Connection = connectionFactory.CreateConnection();
+                Channel = Connection.CreateModel();
 
-                _channel.ExchangeDeclare("robot", ExchangeType.Direct, false, true,
+                Channel.ExchangeDeclare("robot", ExchangeType.Direct, false, true,
                     null);
-                _channel.QueueDeclare("sensors", false, false, true,
+                Channel.QueueDeclare("sensors", false, false, true,
                     null);
 
                 _logger.LogInformation("Established connection to RabbitMQ");
@@ -45,17 +45,17 @@ namespace katarabbitmq.infrastructure
             catch (Exception e)
             {
                 _logger.LogDebug(e.Message);
-                _channel = null;
-                _connection = null;
+                Channel = null;
+                Connection = null;
             }
         }
 
         public void Disconnect()
         {
-            _channel?.Close();
-            _connection?.Close();
-            _channel = null;
-            _connection = null;
+            Channel?.Close();
+            Connection?.Close();
+            Channel = null;
+            Connection = null;
         }
 
         private ConnectionFactory CreateConnectionFactory()

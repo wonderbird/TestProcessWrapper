@@ -35,21 +35,21 @@ To compile, test and run this project the latest [.NET Core SDK](https://dotnet.
 
 On any computer with the [.NET Core SDK](https://dotnet.microsoft.com/download) run the following commands from the folder containing the `kata-rabbitmq.sln` file in order to build, test and run the application:
 
-To build the project and run the acceptance tests
+### Build the Project and Run the Acceptance Tests
 
 ```sh
 dotnet build
 dotnet test
 ```
 
-To run the application in a production environment
+### Run the Application in a Production Environment
 
 ```sh
 docker-compose build
 docker-compose up
 ```
 
-To run the application and RabbitMQ on your development PC
+### Run the Application and RabbitMQ on Your Development PC
 
 ```sh
 docker-compose rabbit up -d
@@ -61,6 +61,27 @@ docker-compose down
 If you would like to run and debug the application in your IDE, make sure that
 the environment variable `DOTNET_ENVIRONMENT` is set to `Development` so that
 the application uses the RabbitMQ settings from `appsettings.Development.json`.
+
+### Debug Acceptance Tests
+
+The acceptance tests use [Testcontainers](https://www.testcontainers.org/) to
+start and tear down RabbitMq. For debugging this means that on every test run
+a container would be started. This leads to waiting times of about 20 seconds
+per test run.
+
+To avoid this delay, you can run a RabbitMq container via
+
+```sh
+docker-compose up -d rabbit
+```
+
+Then comment out the `[Binding]` attribute in class `SetupAndTearDownRabbitMq`
+and uncomment the `[Binding]` attribute in class `SetupAndTearDownRabbitMqWithoutTestcontainer`.
+
+**Attention**
+
+Please never checkin these comment changes in `SetupAndTearDownRabbitMq*`. Otherwise
+the automatic build will fail.
 
 ## Identify Code Duplication
 
@@ -103,6 +124,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * Tricentis: [SpecFlow - Getting Started](https://specflow.org/getting-started/)
 * The SpecFlow Team: [SpecFlow.xUnit — documentation](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html)
 * The SpecFlow Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
+* [Testcontainers](https://www.testcontainers.org/)
 
 ## Code Analysis
 
