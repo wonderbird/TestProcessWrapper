@@ -13,8 +13,8 @@ namespace katarabbitmq.bdd.tests.Steps
     //
     // When uncommenting this [Binding] attribute, please comment out the
     // [Binding] attribute on class SetupAndTearDownRabbitMq.
-    
-    //[Binding]
+
+    [Binding]
     public class SetupAndTearDownRabbitMqWithoutTestcontainer
     {
         [BeforeFeature]
@@ -35,11 +35,11 @@ namespace katarabbitmq.bdd.tests.Steps
             var configurationRoot = new ConfigurationBuilder().AddInMemoryCollection(configuration).Build();
 
             var logger = new NullLogger<RabbitMqConnection>();
-            
+
             var rabbitMqConnection = new RabbitMqConnection(logger, configurationRoot);
             rabbitMqConnection.TryConnect();
             Assert.True(rabbitMqConnection.IsConnected, "failed to connect to RabbitMQ");
-            
+
             RabbitMq.Channel = rabbitMqConnection.Channel;
             RabbitMq.Connection = rabbitMqConnection.Connection;
         }

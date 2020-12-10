@@ -18,7 +18,7 @@ namespace katarabbitmq.client.app
         {
             await base.ExecuteSensorLoopBody(stoppingToken);
 
-            Logger.LogInformation("Sensor data: 1");
+            //Logger.LogInformation("Sensor data: 1");
         }
     }
 }

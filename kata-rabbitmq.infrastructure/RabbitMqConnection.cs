@@ -9,14 +9,15 @@ namespace katarabbitmq.infrastructure
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<RabbitMqConnection> _logger;
-        public IModel Channel { get; private set; }
-        public IConnection Connection { get; private set; }
 
         public RabbitMqConnection(ILogger<RabbitMqConnection> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
         }
+
+        public IModel Channel { get; private set; }
+        public IConnection Connection { get; private set; }
 
         public bool IsConnected => Connection != null;
 

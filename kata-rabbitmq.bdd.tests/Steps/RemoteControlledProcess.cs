@@ -3,22 +3,28 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using Xunit;
+using System.Text;
+using System.Threading;
 using Xunit.Abstractions;
 
 namespace katarabbitmq.bdd.tests.Steps
 {
-    public class RemoteControlledProcess
+    public class RemoteControlledProcess : IDisposable
     {
         private readonly string _appDir;
 
         private readonly string _appDllName;
 
         private readonly string _appProjectName;
+        private readonly object _outputLock = new();
 
         private readonly string _projectDir;
 
         private int? _dotnetHostProcessId;
+
+        private bool _isDisposed;
+        private StringBuilder _output;
+        private AutoResetEvent _outputWaitHandle;
 
         private Process _process;
 
@@ -57,16 +63,38 @@ namespace katarabbitmq.bdd.tests.Steps
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         public void Start()
         {
-            var processStartInfo = CreateProcessStartInfo();
+            _process = new Process {StartInfo = CreateProcessStartInfo()};
+
+            // Regarding reading the StandardOutput, see https://stackoverflow.com/questions/7160187/standardoutput-readtoend-hangs
+            _output = new StringBuilder();
+            _outputWaitHandle = new AutoResetEvent(false);
+            _process.OutputDataReceived += (sender, e) =>
+            {
+                if (e.Data == null)
+                {
+                    _outputWaitHandle.Set();
+                }
+                else
+                {
+                    lock (_outputLock)
+                    {
+                        _output.AppendLine(e.Data);
+                    }
+                }
+            };
 
             TestOutputHelper?.WriteLine(
-                $"Starting process: {processStartInfo.FileName} {processStartInfo.Arguments} ...");
-
-            _process = Process.Start(processStartInfo);
-            Assert.NotNull(_process);
-
+                $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
+            _process.Start();
+            _process.BeginOutputReadLine();
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
             WaitAndProcessRequiredStartupMessages();
@@ -105,13 +133,23 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             do
             {
-                var startupMessage = _process.StandardOutput.ReadLine();
-                if (startupMessage != null)
-                {
-                    TestOutputHelper?.WriteLine(startupMessage);
-                    ParseStartupMessage(startupMessage);
-                }
+                var startupMessage = ReadOutput();
+                TestOutputHelper?.WriteLine(startupMessage);
+                ParseStartupMessage(startupMessage);
+
+                Thread.Sleep(100);
             } while (!IsConnectionEstablished || !_dotnetHostProcessId.HasValue);
+        }
+
+        public string ReadOutput()
+        {
+            string outputString;
+            lock (_outputLock)
+            {
+                outputString = _output.ToString();
+            }
+
+            return outputString;
         }
 
         private void ParseStartupMessage(string startupMessage)
@@ -126,7 +164,10 @@ namespace katarabbitmq.bdd.tests.Steps
             if (!_dotnetHostProcessId.HasValue && startupMessage.Contains("Process ID"))
             {
                 var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
-                var processIdString = startupMessage.Substring(processIdStartIndex + 10);
+                var newLineAfterProcessIdIndex =
+                    startupMessage.IndexOf("\n", processIdStartIndex, StringComparison.Ordinal);
+                var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
+                var processIdString = startupMessage.Substring(processIdStartIndex + 10, processIdNumberOfDigits);
                 _dotnetHostProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
                 TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
             }
@@ -158,6 +199,22 @@ namespace katarabbitmq.bdd.tests.Steps
         public void Kill()
         {
             _process.Kill();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _process?.Dispose();
+                _outputWaitHandle?.Dispose();
+            }
+
+            _isDisposed = true;
         }
     }
 }

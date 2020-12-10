@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -63,21 +64,16 @@ namespace katarabbitmq.bdd.tests.Steps
                 await Task.Delay(TimeSpan.FromMilliseconds(1.0));
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(5.0));
+            await Task.Delay(TimeSpan.FromSeconds(1.0));
 
             ParseSensorDataFromClientProcess();
         }
 
         private void ParseSensorDataFromClientProcess()
         {
-            while (Processes.Client.StandardOutput.Peek() != -1)
-            {
-                var currentLine = Processes.Client.StandardOutput.ReadLine();
-                if (currentLine != null && currentLine.Contains("Sensor data"))
-                {
-                    ++_countReceivedSensorReadings;
-                }
-            }
+            var output = Processes.Client.ReadOutput();
+            var lines = output.Split('\n').ToList();
+            _countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
         }
 
         [Then("the client app received at least 10 sensor values")]
