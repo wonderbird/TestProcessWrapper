@@ -3,30 +3,27 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading;
 using Xunit.Abstractions;
 
 namespace katarabbitmq.bdd.tests.Steps
 {
-    public class RemoteControlledProcess : IDisposable
+    public sealed class RemoteControlledProcess : IDisposable
     {
         private readonly string _appDir;
 
         private readonly string _appDllName;
 
         private readonly string _appProjectName;
-        private readonly object _outputLock = new();
 
         private readonly string _projectDir;
 
         private int? _dotnetHostProcessId;
 
         private bool _isDisposed;
-        private StringBuilder _output;
-        private AutoResetEvent _outputWaitHandle;
 
         private Process _process;
+        private ProcessStreamBuffer _processStreamBuffer;
 
         public RemoteControlledProcess(string appProjectName)
         {
@@ -39,6 +36,8 @@ namespace katarabbitmq.bdd.tests.Steps
 
             _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
         }
+        
+        ~RemoteControlledProcess() => Dispose(false);
 
         public bool IsConnectionEstablished { get; private set; }
 
@@ -59,8 +58,6 @@ namespace katarabbitmq.bdd.tests.Steps
             }
         }
 
-        public StreamReader StandardOutput => _process.StandardOutput;
-
         public ITestOutputHelper TestOutputHelper { get; set; }
 
         public void Dispose()
@@ -71,30 +68,16 @@ namespace katarabbitmq.bdd.tests.Steps
 
         public void Start()
         {
+            TODO: Lightsensor Test kann nicht nach anderen Tests ausgeführt werden, einzeln aber schon. Problem nach Einführen des ProcessStreamBuffer.
             _process = new Process {StartInfo = CreateProcessStartInfo()};
-
-            // Regarding reading the StandardOutput, see https://stackoverflow.com/questions/7160187/standardoutput-readtoend-hangs
-            _output = new StringBuilder();
-            _outputWaitHandle = new AutoResetEvent(false);
-            _process.OutputDataReceived += (sender, e) =>
-            {
-                if (e.Data == null)
-                {
-                    _outputWaitHandle.Set();
-                }
-                else
-                {
-                    lock (_outputLock)
-                    {
-                        _output.AppendLine(e.Data);
-                    }
-                }
-            };
 
             TestOutputHelper?.WriteLine(
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
             _process.Start();
-            _process.BeginOutputReadLine();
+
+            _processStreamBuffer = new ProcessStreamBuffer();
+            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine, handler => _process.OutputDataReceived += handler);
+
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
             WaitAndProcessRequiredStartupMessages();
@@ -141,16 +124,7 @@ namespace katarabbitmq.bdd.tests.Steps
             } while (!IsConnectionEstablished || !_dotnetHostProcessId.HasValue);
         }
 
-        public string ReadOutput()
-        {
-            string outputString;
-            lock (_outputLock)
-            {
-                outputString = _output.ToString();
-            }
-
-            return outputString;
-        }
+        public string ReadOutput() => _processStreamBuffer.StreamContent;
 
         private void ParseStartupMessage(string startupMessage)
         {
@@ -201,7 +175,7 @@ namespace katarabbitmq.bdd.tests.Steps
             _process.Kill();
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_isDisposed)
             {
@@ -211,7 +185,7 @@ namespace katarabbitmq.bdd.tests.Steps
             if (disposing)
             {
                 _process?.Dispose();
-                _outputWaitHandle?.Dispose();
+                _processStreamBuffer.Dispose();
             }
 
             _isDisposed = true;
