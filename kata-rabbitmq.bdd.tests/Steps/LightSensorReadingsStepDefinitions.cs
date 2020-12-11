@@ -56,17 +56,23 @@ namespace katarabbitmq.bdd.tests.Steps
             Assert.True(Processes.Client.IsRunning);
         }
 
-        [When("the client app has been connected for 1 second")]
-        public async Task WhenTheClientAppHasBeenConnectedFor1Second()
+        [When("the robot and client app have been connected for 1 second")]
+        public async Task WhenTheRobotAndClientAppHasBeenConnectedFor1Second()
         {
-            while (!Processes.Client.IsConnectionEstablished)
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(1.0));
-            }
+            await WaitUntilProcessConnectedToRabbitMq(Processes.Robot);
+            await WaitUntilProcessConnectedToRabbitMq(Processes.Client);
 
             await Task.Delay(TimeSpan.FromSeconds(1.0));
 
             ParseSensorDataFromClientProcess();
+        }
+
+        private static async Task WaitUntilProcessConnectedToRabbitMq(RemoteControlledProcess remoteControlledProcess)
+        {
+            while (!remoteControlledProcess.IsConnectionEstablished)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(1.0));
+            }
         }
 
         private void ParseSensorDataFromClientProcess()
