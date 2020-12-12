@@ -12,6 +12,7 @@ namespace katarabbitmq.bdd.tests.Steps
         private StringBuilder _output;
         private AutoResetEvent _outputWaitHandle;
         private bool _isDisposed;
+        private Action<DataReceivedEventHandler> _unsubscribeFromEventAction;
 
         public string StreamContent
         {
@@ -26,8 +27,9 @@ namespace katarabbitmq.bdd.tests.Steps
 
         ~ProcessStreamBuffer() => Dispose(false);
 
-        public void BeginCapturing(Action beginReadLine, Action<DataReceivedEventHandler> attachEvent)
+        public void BeginCapturing(Action beginReadLine, Action<DataReceivedEventHandler> subscribeToEventAction, Action<DataReceivedEventHandler> unsubscribeFromEventAction)
         {
+            _unsubscribeFromEventAction = unsubscribeFromEventAction;
             _outputWaitHandle = new AutoResetEvent(false);
 
             lock (_outputLock)
@@ -35,21 +37,23 @@ namespace katarabbitmq.bdd.tests.Steps
                 _output = new StringBuilder();
             }
 
-            attachEvent((_, e) =>
-            {
-                if (e.Data == null)
-                {
-                    _outputWaitHandle.Set();
-                }
-                else
-                {
-                    lock (_outputLock)
-                    {
-                        _output.AppendLine(e.Data);
-                    }
-                }
-            });
+            subscribeToEventAction(appendEventDataToOutputBuffer);
             beginReadLine();
+        }
+
+        private void appendEventDataToOutputBuffer(object sender, DataReceivedEventArgs eventArg)
+        {
+            if (eventArg.Data == null)
+            {
+                _outputWaitHandle.Set();
+            }
+            else
+            {
+                lock (_outputLock)
+                {
+                    _output.AppendLine(eventArg.Data);
+                }
+            }
         }
 
         public void Dispose()
@@ -67,6 +71,7 @@ namespace katarabbitmq.bdd.tests.Steps
 
             if (disposing)
             {
+                _unsubscribeFromEventAction(appendEventDataToOutputBuffer);
                 _outputWaitHandle?.Dispose();
             }
 

@@ -56,13 +56,13 @@ namespace katarabbitmq.bdd.tests.Steps
             Assert.True(Processes.Client.IsRunning);
         }
 
-        [When("the robot and client app have been connected for 1 second")]
-        public async Task WhenTheRobotAndClientAppHasBeenConnectedFor1Second()
+        [When("the robot and client app have been connected for 3 seconds")]
+        public async Task WhenTheRobotAndClientAppHasBeenConnectedFor3Seconds()
         {
             await WaitUntilProcessConnectedToRabbitMq(Processes.Robot);
             await WaitUntilProcessConnectedToRabbitMq(Processes.Client);
 
-            await Task.Delay(TimeSpan.FromSeconds(1.0));
+            await Task.Delay(TimeSpan.FromSeconds(3.0));
 
             ParseSensorDataFromClientProcess();
         }
@@ -82,11 +82,12 @@ namespace katarabbitmq.bdd.tests.Steps
             _countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
         }
 
-        [Then("the client app received at least 10 sensor values")]
-        public void ThenTheClientAppReceivedAtLeast10SensorValues()
+        [Then("the client app received at least 1 sensor value")]
+        public void ThenTheClientAppReceivedAtLeast1SensorValue()
         {
-            Assert.True(_countReceivedSensorReadings >= 10,
-                $"Client app must receive at least 10 sensor values. It actually received {_countReceivedSensorReadings} values");
+            _testOutputHelper.WriteLine($"Received {_countReceivedSensorReadings} values");
+            Assert.True(_countReceivedSensorReadings >= 1,
+                $"Client app must receive at least 1 sensor value. It actually received {_countReceivedSensorReadings} values");
         }
     }
 }

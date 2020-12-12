@@ -68,7 +68,6 @@ namespace katarabbitmq.bdd.tests.Steps
 
         public void Start()
         {
-            TODO: Lightsensor Test kann nicht nach anderen Tests ausgeführt werden, einzeln aber schon. Problem nach Einführen des ProcessStreamBuffer.
             _process = new Process {StartInfo = CreateProcessStartInfo()};
 
             TestOutputHelper?.WriteLine(
@@ -76,7 +75,7 @@ namespace katarabbitmq.bdd.tests.Steps
             _process.Start();
 
             _processStreamBuffer = new ProcessStreamBuffer();
-            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine, handler => _process.OutputDataReceived += handler);
+            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine, handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
 
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
@@ -168,11 +167,17 @@ namespace katarabbitmq.bdd.tests.Steps
             _process.WaitForExit(2000);
 
             TestOutputHelper?.WriteLine("Process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+            TestOutputHelper?.WriteLine("Process Output:");
+            TestOutputHelper?.WriteLine(_processStreamBuffer.StreamContent);
+            _processStreamBuffer?.Dispose();
+            _processStreamBuffer = null;
         }
 
         public void Kill()
         {
             _process.Kill();
+            _processStreamBuffer?.Dispose();
+            _processStreamBuffer = null;
         }
 
         private void Dispose(bool disposing)
@@ -185,7 +190,7 @@ namespace katarabbitmq.bdd.tests.Steps
             if (disposing)
             {
                 _process?.Dispose();
-                _processStreamBuffer.Dispose();
+                _processStreamBuffer?.Dispose();
             }
 
             _isDisposed = true;
