@@ -8,7 +8,7 @@ namespace katarabbitmq.infrastructure
 {
     public abstract class RabbitMqConnectedService : BackgroundService
     {
-        private readonly IRabbitMqConnection _rabbit;
+        protected readonly IRabbitMqConnection _rabbit;
 
         protected RabbitMqConnectedService(IRabbitMqConnection rabbit, ILogger<RabbitMqConnectedService> logger)
         {

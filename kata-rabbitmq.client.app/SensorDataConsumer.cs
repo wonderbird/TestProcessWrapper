@@ -1,5 +1,6 @@
 ﻿using katarabbitmq.infrastructure;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
