@@ -8,11 +8,11 @@ namespace katarabbitmq.infrastructure
 {
     public abstract class RabbitMqConnectedService : BackgroundService
     {
-        protected readonly IRabbitMqConnection _rabbit;
+        protected IRabbitMqConnection Rabbit { get; }
 
         protected RabbitMqConnectedService(IRabbitMqConnection rabbit, ILogger<RabbitMqConnectedService> logger)
         {
-            _rabbit = rabbit;
+            Rabbit = rabbit;
             Logger = logger;
         }
 
@@ -54,9 +54,9 @@ namespace katarabbitmq.infrastructure
 
         protected virtual async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
         {
-            if (!_rabbit.IsConnected)
+            if (!Rabbit.IsConnected)
             {
-                _rabbit.TryConnect();
+                Rabbit.TryConnect();
             }
 
             await Task.Delay(DelayAfterEachLoop, stoppingToken);
@@ -66,7 +66,7 @@ namespace katarabbitmq.infrastructure
         {
             Logger.LogInformation("Shutting down ...");
 
-            _rabbit.Disconnect();
+            Rabbit.Disconnect();
 
             Logger.LogDebug("Shutdown complete.");
         }

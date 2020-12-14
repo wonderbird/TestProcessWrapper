@@ -117,6 +117,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * VMWare, Inc. or its affiliates: [RabbitMQ](https://www.rabbitmq.com/)
 * VMWare, Inc. or its affiliates: [RabbitMQ .NET/C# Client API Guide](https://www.rabbitmq.com/dotnet-api-guide.html)
 * [RabbitMQ .NET Client API Documentation](http://rabbitmq.github.io/rabbitmq-dotnet-client/api/RabbitMQ.Client.html)
+* GitHub: [rabbitmq / rabbitmq-dotnet-client](https://github.com/rabbitmq/rabbitmq-dotnet-client)
 * DockerHub: [RabbitMQ](https://hub.docker.com/_/rabbitmq)
 
 ## Behavior Driven Development (BDD)
