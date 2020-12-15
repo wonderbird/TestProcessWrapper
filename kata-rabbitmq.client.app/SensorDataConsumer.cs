@@ -27,7 +27,17 @@ namespace katarabbitmq.client.app
         {
             await base.ExecuteSensorLoopBody(stoppingToken);
 
-            //Logger.LogInformation("Sensor data: 1");
+            if (Rabbit.IsConnected && _consumer == null)
+            {
+                _consumer = new EventingBasicConsumer(Rabbit.Channel);
+                _consumer.Received += receiveSensorData;
+                Rabbit.Channel.BasicConsume(_consumer, "sensors");
+            }
+
+            if (!Rabbit.IsConnected && _consumer != null)
+            {
+                _consumer = null;
+            }
         }
 
         private void receiveSensorData(object sender, BasicDeliverEventArgs eventArgs)
