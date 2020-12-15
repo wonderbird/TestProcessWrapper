@@ -9,3 +9,6 @@ services:
 
   robot:
     build: ./kata-rabbitmq.robot.app
+
+  client:
+    build: ./kata-rabbitmq.client.app

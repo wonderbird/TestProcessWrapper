@@ -22,8 +22,13 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who pr
 1. Launch an instance of RabbitMQ (e.g. https://hub.docker.com/_/rabbitmq)
 2. Create a "robot" application which ...
    1. programmatically creates a message queue to transmit light sensor information (just some arbitrary values of ambient light)
-   2. periodically sends light sensor information to the queue
-3. Create a robot monitor application which consumes the message from the queue and displays them on the screen
+   2. periodically sends arbitrary light sensor information to the queue (e.g. the JSON string '{ "sensor1": "7.0" }')
+3. Create a robot monitor application which ...
+   1. consumes the message from the queue and displays them on the screen
+   2. acknowledges the messages it consumed
+ 
+
+999. Further Ideas: Consider the information in section "Important Production Related Documentation" below
 
 # Development
 
@@ -52,15 +57,27 @@ docker-compose up
 ### Run the Application and RabbitMQ on Your Development PC
 
 ```sh
+# Launch the RabbitMQ container
 docker-compose rabbit up -d
-cd kata-rabbitmq.robot.app/bin/Debug/net5.0
-DOTNET_ENVIRONMENT=Development dotnet "kata-rabbitmq.robot.app"
-docker-compose down
+# Optional: attach to the container logs
+docker-compose logs -f
+
+# Run the client
+./run-client.sh
+
+# Run the robot (server)
+./run-robot.sh
+
+# Hit CTL-C in both applications to shut them down
+
+# Cleanup the docker containers
+docker-compose down --remove-orphans
 ```
 
 If you would like to run and debug the application in your IDE, make sure that
 the environment variable `DOTNET_ENVIRONMENT` is set to `Development` so that
-the application uses the RabbitMQ settings from `appsettings.Development.json`.
+the application uses the logging and RabbitMQ settings from
+`appsettings.Development.json`.
 
 ### Debug Acceptance Tests
 
@@ -114,11 +131,25 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 ## RabbitMQ
 
+### General RabbitMQ Documentation
+
 * VMWare, Inc. or its affiliates: [RabbitMQ](https://www.rabbitmq.com/)
+* VMWare, Inc. or its affiliates: [RabbitMQ Documentation](https://www.rabbitmq.com/documentation.html)
+
+### Programming Related Documentation
+
 * VMWare, Inc. or its affiliates: [RabbitMQ .NET/C# Client API Guide](https://www.rabbitmq.com/dotnet-api-guide.html)
+* [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
+* GitHub: [rabbitmq / rabbitmq-tutorials](https://github.com/rabbitmq/rabbitmq-tutorials)
 * [RabbitMQ .NET Client API Documentation](http://rabbitmq.github.io/rabbitmq-dotnet-client/api/RabbitMQ.Client.html)
 * GitHub: [rabbitmq / rabbitmq-dotnet-client](https://github.com/rabbitmq/rabbitmq-dotnet-client)
 * DockerHub: [RabbitMQ](https://hub.docker.com/_/rabbitmq)
+
+### Important Production Related Documentation
+
+* VMWare, Inc. or its affiliates: [RabbitMQ Consumer Acknowledgements and Publisher Confirms](https://www.rabbitmq.com/confirms.html)
+* VMWare, Inc. or its affiliates: [RabbitMQ Production Checklist](https://www.rabbitmq.com/production-checklist.html)
+* VMWare, Inc. or its affiliates: [RabbitMQ Monitoring](https://www.rabbitmq.com/monitoring.html)
 
 ## Behavior Driven Development (BDD)
 
@@ -135,6 +166,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * Scott Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
 * [EditorConfig.org](https://editorconfig.org)
 * GitHub: [dotnet / roslyn - .editorconfig](https://github.com/dotnet/roslyn/blob/master/.editorconfig)
+* Check all the badges on top of this README
 
 ## Template For New Links
 
