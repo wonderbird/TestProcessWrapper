@@ -13,7 +13,6 @@ namespace katarabbitmq.bdd.tests.Steps
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private int _countReceivedSensorReadings;
-        private bool _isSensorQueuePresent;
 
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper)
         {
