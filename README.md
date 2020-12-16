@@ -38,20 +38,38 @@ To compile, test and run this project the latest [.NET Core SDK](https://dotnet.
 
 ## Build, Test, Run
 
-On any computer with the [.NET Core SDK](https://dotnet.microsoft.com/download) run the following commands from the folder containing the `kata-rabbitmq.sln` file in order to build, test and run the application:
+On any computer with the [.NET Core SDK](https://dotnet.microsoft.com/download) run the following commands from the
+folder containing the `kata-rabbitmq.sln` file in order to build, test and run the application:
 
-### Build the Project and Run the Acceptance Tests
+### Build the Solution and Run the Acceptance Tests
 
 ```sh
 dotnet build
 dotnet test
 ```
 
-### Run the Application in a Production Environment
+### Run the Applications in a Production Environment
 
 ```sh
 docker-compose build
 docker-compose up
+```
+
+The `build` command will create the `robot` and the `client` container.
+
+The `up` command will launch RabbitMQ, the `robot` and the `client`. Once RabbitMQ has
+started completely, the robot and client will connect automatically. Finally both
+applications print messages about sending and receiving sensor values:
+
+```
+robot_1   | info: katarabbitmq.robot.app.SensorDataSender[0]
+robot_1   |       Sent '{"ambient":7}'
+client_1  | info: katarabbitmq.client.app.SensorDataConsumer[0]
+client_1  |       Sensor data: katarabbitmq.model.LightSensorValue {"ambient":7}
+robot_1   | info: katarabbitmq.robot.app.SensorDataSender[0]
+robot_1   |       Sent '{"ambient":7}'
+client_1  | info: katarabbitmq.client.app.SensorDataConsumer[0]
+client_1  |       Sensor data: katarabbitmq.model.LightSensorValue {"ambient":7}
 ```
 
 ### Run the Application and RabbitMQ on Your Development PC
@@ -74,9 +92,12 @@ docker-compose logs -f
 docker-compose down --remove-orphans
 ```
 
-If you would like to run and debug the application in your IDE, make sure that
+The `run-client.sh` and `run-robot.sh` shell scripts will run the applications in
+`Development` mode. Thus, you will also see `DEBUG` log messages.
+
+If you would like to run and debug the applications in your IDE, make sure that
 the environment variable `DOTNET_ENVIRONMENT` is set to `Development` so that
-the application uses the logging and RabbitMQ settings from
+the applications use the logging and RabbitMQ settings from
 `appsettings.Development.json`.
 
 ### Debug Acceptance Tests
@@ -99,6 +120,9 @@ and uncomment the `[Binding]` attribute in class `SetupAndTearDownRabbitMqWithou
 
 Please never checkin these comment changes in `SetupAndTearDownRabbitMq*`. Otherwise
 the automatic build will fail.
+
+If you are using [JetBrains Rider](https://www.jetbrains.com/en-us/rider/), you can move
+(or shelve) these changes into a changeset which you never check-in.
 
 ## Identify Code Duplication
 
