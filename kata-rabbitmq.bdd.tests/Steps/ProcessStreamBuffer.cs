@@ -5,39 +5,49 @@ using System.Threading;
 
 namespace katarabbitmq.bdd.tests.Steps
 {
-    // Regarding reading the StandardOutput, see https://stackoverflow.com/questions/7160187/standardoutput-readtoend-hangs
+    /// <summary>
+    /// Asynchronously read from StandardOutput or StandardError of a process. 
+    /// </summary>
+    ///
+    /// <remarks>
+    /// This class implements an asynchronous method to read a process stream reliably.
+    /// For this purpose the class declares a stream buffer and appends the stream data to it
+    /// when the corresponding DataReceivedEvent has been published. The class is thread safe.
+    ///
+    /// <see href="https://stackoverflow.com/questions/7160187/standardoutput-readtoend-hangs">Stackoverflow: StandardOutput.ReadToEnd() hangs [duplicate]</see>
+    /// </remarks>
     public sealed class ProcessStreamBuffer : IDisposable
     {
-        private readonly object _outputLock = new();
-        private StringBuilder _output;
-        private AutoResetEvent _outputWaitHandle;
+        private readonly object _lock = new();
+        private StringBuilder _buffer;
+        private AutoResetEvent _waitHandle;
         private bool _isDisposed;
-        private Action<DataReceivedEventHandler> _unsubscribeFromEventAction;
+        private Action<DataReceivedEventHandler> _unsubscribeFromDataReceivedEvent;
 
         public string StreamContent
         {
             get
             {
-                lock (_outputLock)
+                lock (_lock)
                 {
-                    return _output.ToString();
+                    return _buffer.ToString();
                 }
             }
         }
 
         ~ProcessStreamBuffer() => Dispose(false);
 
-        public void BeginCapturing(Action beginReadLine, Action<DataReceivedEventHandler> subscribeToEventAction, Action<DataReceivedEventHandler> unsubscribeFromEventAction)
+        public void BeginCapturing(Action beginReadLine, Action<DataReceivedEventHandler> subscribeToDataReceivedEvent, Action<DataReceivedEventHandler> unsubscribeFromDataReceivedEvent)
         {
-            _unsubscribeFromEventAction = unsubscribeFromEventAction;
-            _outputWaitHandle = new AutoResetEvent(false);
+            _unsubscribeFromDataReceivedEvent = unsubscribeFromDataReceivedEvent;
+            _waitHandle = new AutoResetEvent(false);
 
-            lock (_outputLock)
+            lock (_lock)
             {
-                _output = new StringBuilder();
+                _buffer = new StringBuilder();
             }
 
-            subscribeToEventAction(appendEventDataToOutputBuffer);
+            subscribeToDataReceivedEvent(appendEventDataToOutputBuffer);
             beginReadLine();
         }
 
@@ -45,13 +55,13 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             if (eventArg.Data == null)
             {
-                _outputWaitHandle.Set();
+                _waitHandle.Set();
             }
             else
             {
-                lock (_outputLock)
+                lock (_lock)
                 {
-                    _output.AppendLine(eventArg.Data);
+                    _buffer.AppendLine(eventArg.Data);
                 }
             }
         }
@@ -71,8 +81,8 @@ namespace katarabbitmq.bdd.tests.Steps
 
             if (disposing)
             {
-                _unsubscribeFromEventAction(appendEventDataToOutputBuffer);
-                _outputWaitHandle?.Dispose();
+                _unsubscribeFromDataReceivedEvent(appendEventDataToOutputBuffer);
+                _waitHandle?.Dispose();
             }
 
             _isDisposed = true;
