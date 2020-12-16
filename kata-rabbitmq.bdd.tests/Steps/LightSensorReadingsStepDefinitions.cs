@@ -25,32 +25,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             Assert.True(Processes.Robot.IsRunning);
         }
-
-        [When("the sensor queue is checked")]
-        public void WhenTheSensorQueueIsChecked()
-        {
-            try
-            {
-                _testOutputHelper.WriteLine("Testing whether robot:sensors exists ...");
-                RabbitMq.Channel.ExchangeDeclarePassive("robot");
-                RabbitMq.Channel.QueueDeclarePassive("sensors");
-
-                _testOutputHelper.WriteLine("robot:sensors exists");
-                _isSensorQueuePresent = true;
-            }
-            catch (Exception e)
-            {
-                _testOutputHelper.WriteLine($"robot:sensors does not exist. Exception: {e.Message}");
-                _isSensorQueuePresent = false;
-            }
-        }
-
-        [Then("the sensor queue exists")]
-        public void ThenTheSensorsQueueExists()
-        {
-            Assert.True(_isSensorQueuePresent);
-        }
-
+        
         [Given("the client app is started")]
         public static void GivenTheClientAppIsStarted()
         {
@@ -63,10 +38,7 @@ namespace katarabbitmq.bdd.tests.Steps
             await WaitUntilProcessConnectedToRabbitMq(Processes.Robot);
             await WaitUntilProcessConnectedToRabbitMq(Processes.Client);
 
-            var stopwatch = Stopwatch.StartNew();
-            await Task.Delay(TimeSpan.FromSeconds(seconds));
-            stopwatch.Stop();
-            _testOutputHelper?.WriteLine($"Waited for {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
+            await WaitForSeconds(seconds);
 
             ParseSensorDataFromClientProcess();
         }
@@ -77,6 +49,14 @@ namespace katarabbitmq.bdd.tests.Steps
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(1.0));
             }
+        }
+
+        private async Task WaitForSeconds(double seconds)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            await Task.Delay(TimeSpan.FromSeconds(seconds));
+            stopwatch.Stop();
+            _testOutputHelper?.WriteLine($"Waited for {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
         }
 
         private void ParseSensorDataFromClientProcess()

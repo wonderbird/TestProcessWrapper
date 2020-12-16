@@ -2,11 +2,6 @@
     In order to steer my robot
     As a robot owner
     I want to see light sensor readings on the client.
-
-Scenario: Robot creates sensor queue
-    Given the robot app is started
-    When the sensor queue is checked
-    Then the sensor queue exists
     
 Scenario: Client receives light sensor readings
     Given the robot app is started
