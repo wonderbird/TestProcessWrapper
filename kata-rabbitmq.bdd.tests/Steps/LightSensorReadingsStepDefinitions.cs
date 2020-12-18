@@ -19,18 +19,6 @@ namespace katarabbitmq.bdd.tests.Steps
             _testOutputHelper = testOutputHelper;
         }
 
-        [Given("the robot app is started")]
-        public static void GivenTheRobotAppIsStarted()
-        {
-            Assert.True(Processes.Robot.IsRunning);
-        }
-        
-        [Given("the client app is started")]
-        public static void GivenTheClientAppIsStarted()
-        {
-            Assert.True(Processes.Client.IsRunning);
-        }
-
         [When("the robot and client app have been connected for (.*) seconds")]
         public async Task WhenTheRobotAndClientAppHasBeenConnectedForSeconds(double seconds)
         {

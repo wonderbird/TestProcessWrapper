@@ -6,13 +6,6 @@ namespace katarabbitmq.bdd.tests.Steps
     [Binding]
     public class DockerShutdownStepDefinitions
     {
-        [Given("the server and client are running")]
-        public static void GivenTheServerAndClientAreRunning()
-        {
-            Assert.True(Processes.Robot.IsRunning);
-            Assert.True(Processes.Client.IsRunning);
-        }
-
         [When("a TERM signal is sent to both server and client")]
         public static void WhenATermSignalIsSent()
         {
