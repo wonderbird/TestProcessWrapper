@@ -22,17 +22,18 @@ namespace katarabbitmq.bdd.tests.Steps
         [When("the robot and client app have been connected for (.*) seconds")]
         public async Task WhenTheRobotAndClientAppHasBeenConnectedForSeconds(double seconds)
         {
-            await WaitUntilProcessConnectedToRabbitMq(Processes.Robot);
-            await WaitUntilProcessConnectedToRabbitMq(Processes.Client);
+            await WaitUntilProcessesConnectedToRabbitMq(Processes.Robot, Processes.Client);
 
             await WaitForSeconds(seconds);
 
             ParseSensorDataFromClientProcess();
         }
 
-        private static async Task WaitUntilProcessConnectedToRabbitMq(RemoteControlledProcess remoteControlledProcess)
+        private static async Task WaitUntilProcessesConnectedToRabbitMq(params RemoteControlledProcess[] processes)
         {
-            while (!remoteControlledProcess.IsConnectionEstablished)
+            bool IsConnectionEstablished() => processes.ToList().All(p => p.IsConnectionEstablished);
+
+            while (!IsConnectionEstablished())
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(1.0));
             }
@@ -43,6 +44,7 @@ namespace katarabbitmq.bdd.tests.Steps
             var stopwatch = Stopwatch.StartNew();
             await Task.Delay(TimeSpan.FromSeconds(seconds));
             stopwatch.Stop();
+            
             _testOutputHelper?.WriteLine($"Waited for {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
         }
 
