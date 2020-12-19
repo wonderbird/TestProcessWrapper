@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace katarabbitmq.model
 {
@@ -6,9 +6,6 @@ namespace katarabbitmq.model
     {
         public int ambient { get; set; }
 
-        public override string ToString()
-        {
-            return $"{base.ToString()} {JsonConvert.SerializeObject(this, Formatting.None)}";
-        }
+        public override string ToString() => $"{base.ToString()} {JsonConvert.SerializeObject(this, Formatting.None)}";
     }
 }

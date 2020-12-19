@@ -1,20 +1,20 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace katarabbitmq.infrastructure
 {
     public abstract class RabbitMqConnectedService : BackgroundService
     {
-        protected IRabbitMqConnection Rabbit { get; }
-
         protected RabbitMqConnectedService(IRabbitMqConnection rabbit, ILogger<RabbitMqConnectedService> logger)
         {
             Rabbit = rabbit;
             Logger = logger;
         }
+
+        protected IRabbitMqConnection Rabbit { get; }
 
         protected ILogger<RabbitMqConnectedService> Logger { get; }
 

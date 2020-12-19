@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using Xunit.Abstractions;
 
-namespace katarabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Helpers
 {
     public sealed class RemoteControlledProcess : IDisposable
     {
@@ -36,8 +36,6 @@ namespace katarabbitmq.bdd.tests.Steps
 
             _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
         }
-        
-        ~RemoteControlledProcess() => Dispose(false);
 
         public bool IsConnectionEstablished { get; private set; }
 
@@ -66,16 +64,22 @@ namespace katarabbitmq.bdd.tests.Steps
             GC.SuppressFinalize(this);
         }
 
+        ~RemoteControlledProcess()
+        {
+            Dispose(false);
+        }
+
         public void Start()
         {
-            _process = new Process {StartInfo = CreateProcessStartInfo()};
+            _process = new Process { StartInfo = CreateProcessStartInfo() };
 
             TestOutputHelper?.WriteLine(
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
             _process.Start();
 
             _processStreamBuffer = new ProcessStreamBuffer();
-            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine, handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
+            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine,
+                handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
 
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
@@ -120,7 +124,8 @@ namespace katarabbitmq.bdd.tests.Steps
                 ParseStartupMessage(startupMessage);
 
                 Thread.Sleep(100);
-            } while (!IsConnectionEstablished || !_dotnetHostProcessId.HasValue);
+            }
+            while (!IsConnectionEstablished || !_dotnetHostProcessId.HasValue);
         }
 
         public string ReadOutput() => _processStreamBuffer.StreamContent;

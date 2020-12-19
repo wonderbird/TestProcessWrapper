@@ -1,9 +1,10 @@
-﻿using DotNet.Testcontainers.Containers.Builders;
-using DotNet.Testcontainers.Containers.Configurations.MessageBrokers;
-using DotNet.Testcontainers.Containers.Modules.MessageBrokers;
-using RabbitMQ.Client;
 using System;
 using System.Threading.Tasks;
+using DotNet.Testcontainers.Containers.Builders;
+using DotNet.Testcontainers.Containers.Configurations.MessageBrokers;
+using DotNet.Testcontainers.Containers.Modules.MessageBrokers;
+using katarabbitmq.bdd.tests.Helpers;
+using RabbitMQ.Client;
 using TechTalk.SpecFlow;
 
 namespace katarabbitmq.bdd.tests.Steps
@@ -26,7 +27,7 @@ namespace katarabbitmq.bdd.tests.Steps
             var testcontainersBuilder =
                 new TestcontainersBuilder<RabbitMqTestcontainer>()
                     .WithMessageBroker(
-                        new RabbitMqTestcontainerConfiguration {Username = "rabbitmq", Password = "rabbitmq"});
+                        new RabbitMqTestcontainerConfiguration { Username = "rabbitmq", Password = "rabbitmq" });
 
             RabbitMqContainer = testcontainersBuilder.Build();
             await RabbitMqContainer.StartAsync();
@@ -36,7 +37,7 @@ namespace katarabbitmq.bdd.tests.Steps
         public static void ConnectToRabbitMq()
         {
             var connectionFactory =
-                new ConnectionFactory {Uri = new Uri(RabbitMqContainer.ConnectionString)};
+                new ConnectionFactory { Uri = new Uri(RabbitMqContainer.ConnectionString) };
             RabbitMq.Connection = connectionFactory.CreateConnection();
             RabbitMq.Channel = RabbitMq.Connection.CreateModel();
 

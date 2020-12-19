@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using katarabbitmq.bdd.tests.Helpers;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
@@ -14,10 +15,8 @@ namespace katarabbitmq.bdd.tests.Steps
         private readonly ITestOutputHelper _testOutputHelper;
         private int _countReceivedSensorReadings;
 
-        public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper)
-        {
+        public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
-        }
 
         [When("the robot and client app have been connected for (.*) seconds")]
         public async Task WhenTheRobotAndClientAppHasBeenConnectedForSeconds(double seconds)
@@ -31,7 +30,10 @@ namespace katarabbitmq.bdd.tests.Steps
 
         private static async Task WaitUntilProcessesConnectedToRabbitMq(params RemoteControlledProcess[] processes)
         {
-            bool IsConnectionEstablished() => processes.ToList().All(p => p.IsConnectionEstablished);
+            bool IsConnectionEstablished()
+            {
+                return processes.ToList().All(p => p.IsConnectionEstablished);
+            }
 
             while (!IsConnectionEstablished())
             {
@@ -44,7 +46,7 @@ namespace katarabbitmq.bdd.tests.Steps
             var stopwatch = Stopwatch.StartNew();
             await Task.Delay(TimeSpan.FromSeconds(seconds));
             stopwatch.Stop();
-            
+
             _testOutputHelper?.WriteLine($"Waited for {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
         }
 

@@ -1,8 +1,9 @@
-﻿using katarabbitmq.infrastructure;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
 using System.Globalization;
+using katarabbitmq.bdd.tests.Helpers;
+using katarabbitmq.infrastructure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using TechTalk.SpecFlow;
 using Xunit;
 
@@ -23,9 +24,9 @@ namespace katarabbitmq.bdd.tests.Steps
             var logger = new NullLogger<RabbitMqConnection>();
             var configuration = ConfigureRabbitMqConnection();
             var rabbitMqConnection = new RabbitMqConnection(logger, configuration);
-            
+
             rabbitMqConnection.TryConnect();
-            
+
             Assert.True(rabbitMqConnection.IsConnected, "failed to connect to RabbitMQ");
 
             RabbitMq.Channel = rabbitMqConnection.Channel;

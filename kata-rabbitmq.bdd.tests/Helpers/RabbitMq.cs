@@ -1,6 +1,6 @@
-﻿using RabbitMQ.Client;
+using RabbitMQ.Client;
 
-namespace katarabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Helpers
 {
     public static class RabbitMq
     {

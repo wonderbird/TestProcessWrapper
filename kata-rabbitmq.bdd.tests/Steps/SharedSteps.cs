@@ -1,3 +1,4 @@
+using katarabbitmq.bdd.tests.Helpers;
 using TechTalk.SpecFlow;
 using Xunit;
 

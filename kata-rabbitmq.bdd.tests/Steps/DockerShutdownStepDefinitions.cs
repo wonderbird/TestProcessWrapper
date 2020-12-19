@@ -1,4 +1,5 @@
-﻿using TechTalk.SpecFlow;
+using katarabbitmq.bdd.tests.Helpers;
+using TechTalk.SpecFlow;
 using Xunit;
 
 namespace katarabbitmq.bdd.tests.Steps

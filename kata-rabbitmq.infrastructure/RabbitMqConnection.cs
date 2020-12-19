@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using System;
 
 namespace katarabbitmq.infrastructure
 {
@@ -16,8 +16,9 @@ namespace katarabbitmq.infrastructure
             _configuration = configuration;
         }
 
-        public IModel Channel { get; private set; }
         public IConnection Connection { get; private set; }
+
+        public IModel Channel { get; private set; }
 
         public bool IsConnected => Connection != null;
 
