@@ -6,6 +6,8 @@
 [![Code Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq)
 [![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq/issues)
 [![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq)
+[![CodeScene Code Health](https://codescene.io/projects/11051/status-badges/code-health)](https://codescene.io/projects/11051/jobs/latest-successful/results)
+[![CodeScene System Mastery](https://codescene.io/projects/11051/status-badges/system-mastery)](https://codescene.io/projects/11051/jobs/latest-successful/results)
 
 In this kata you learn how to use [RabbitMQ](https://www.rabbitmq.com).
 
