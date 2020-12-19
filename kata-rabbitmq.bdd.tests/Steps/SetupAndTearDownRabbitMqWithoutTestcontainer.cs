@@ -20,6 +20,20 @@ namespace katarabbitmq.bdd.tests.Steps
         [BeforeFeature]
         public static void ConnectToRabbitMq()
         {
+            var logger = new NullLogger<RabbitMqConnection>();
+            var configuration = ConfigureRabbitMqConnection();
+            var rabbitMqConnection = new RabbitMqConnection(logger, configuration);
+            
+            rabbitMqConnection.TryConnect();
+            
+            Assert.True(rabbitMqConnection.IsConnected, "failed to connect to RabbitMQ");
+
+            RabbitMq.Channel = rabbitMqConnection.Channel;
+            RabbitMq.Connection = rabbitMqConnection.Connection;
+        }
+
+        private static IConfigurationRoot ConfigureRabbitMqConnection()
+        {
             RabbitMq.Hostname = "localhost";
             RabbitMq.Port = 5672;
             RabbitMq.Username = "guest";
@@ -33,15 +47,7 @@ namespace katarabbitmq.bdd.tests.Steps
                 ["RabbitMq:Password"] = RabbitMq.Password
             };
             var configurationRoot = new ConfigurationBuilder().AddInMemoryCollection(configuration).Build();
-
-            var logger = new NullLogger<RabbitMqConnection>();
-
-            var rabbitMqConnection = new RabbitMqConnection(logger, configurationRoot);
-            rabbitMqConnection.TryConnect();
-            Assert.True(rabbitMqConnection.IsConnected, "failed to connect to RabbitMQ");
-
-            RabbitMq.Channel = rabbitMqConnection.Channel;
-            RabbitMq.Connection = rabbitMqConnection.Connection;
+            return configurationRoot;
         }
 
         [AfterFeature]
