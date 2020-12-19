@@ -17,11 +17,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0
 		tools\dupfinder.sh = tools\dupfinder.sh
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		.editorconfig = .editorconfig
+		dockerfile.robot = dockerfile.robot
+		dockerfile.client = dockerfile.client
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.client.app", "kata-rabbitmq.client.app\kata-rabbitmq.client.app.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.infrastructure", "kata-rabbitmq.infrastructure\kata-rabbitmq.infrastructure.csproj", "{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.model", "kata-rabbitmq.model\kata-rabbitmq.model.csproj", "{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +85,18 @@ Global
 		{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}.Release|x64.Build.0 = Release|Any CPU
 		{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}.Release|x86.Build.0 = Release|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x64.Build.0 = Debug|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x86.Build.0 = Debug|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x64.ActiveCfg = Release|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x64.Build.0 = Release|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x86.ActiveCfg = Release|Any CPU
+		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

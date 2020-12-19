@@ -1,7 +1,8 @@
 # RabbitMQ Learning Kata
 
 [![Build Status Badge](https://github.com/wonderbird/kata-rabbitmq/workflows/.NET%20Core/badge.svg)](https://github.com/wonderbird/kata-rabbitmq/actions?query=workflow%3A%22.NET+Core%22)
-[![Test Coverage](https://img.shields.io/coveralls/github/wonderbird/kata-rabbitmq)](https://coveralls.io/github/wonderbird/kata-rabbitmq)
+[![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbird/kata-rabbitmq)](https://coveralls.io/github/wonderbird/kata-rabbitmq)
+[![Test Coverage (codeclimate)](https://img.shields.io/codeclimate/coverage-letter/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq/trends/test_coverage_total)
 [![Code Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq)
 [![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq/issues)
 [![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/kata-rabbitmq)](https://codeclimate.com/github/wonderbird/kata-rabbitmq)
@@ -21,8 +22,13 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who pr
 1. Launch an instance of RabbitMQ (e.g. https://hub.docker.com/_/rabbitmq)
 2. Create a "robot" application which ...
    1. programmatically creates a message queue to transmit light sensor information (just some arbitrary values of ambient light)
-   2. periodically sends light sensor information to the queue
-3. Create a robot monitor application which consumes the message from the queue and displays them on the screen
+   2. periodically sends arbitrary light sensor information to the queue (e.g. the JSON string '{ "sensor1": "7.0" }')
+3. Create a robot monitor application which ...
+   1. consumes the message from the queue and displays them on the screen
+   2. acknowledges the messages it consumed
+ 
+
+999. Further Ideas: Consider the information in section "Important Production Related Documentation" below
 
 # Development
 
@@ -32,34 +38,91 @@ To compile, test and run this project the latest [.NET Core SDK](https://dotnet.
 
 ## Build, Test, Run
 
-On any computer with the [.NET Core SDK](https://dotnet.microsoft.com/download) run the following commands from the folder containing the `kata-rabbitmq.sln` file in order to build, test and run the application:
+On any computer with the [.NET Core SDK](https://dotnet.microsoft.com/download) run the following commands from the
+folder containing the `kata-rabbitmq.sln` file in order to build, test and run the application:
 
-To build the project and run the acceptance tests
+### Build the Solution and Run the Acceptance Tests
 
 ```sh
 dotnet build
 dotnet test
 ```
 
-To run the application in a production environment
+### Run the Applications in a Production Environment
 
 ```sh
 docker-compose build
 docker-compose up
 ```
 
-To run the application and RabbitMQ on your development PC
+The `build` command will create the `robot` and the `client` container.
 
-```sh
-docker-compose rabbit up -d
-cd kata-rabbitmq.robot.app/bin/Debug/net5.0
-DOTNET_ENVIRONMENT=Development dotnet "kata-rabbitmq.robot.app"
-docker-compose down
+The `up` command will launch RabbitMQ, the `robot` and the `client`. Once RabbitMQ has
+started completely, the robot and client will connect automatically. Finally both
+applications print messages about sending and receiving sensor values:
+
+```
+robot_1   | info: katarabbitmq.robot.app.SensorDataSender[0]
+robot_1   |       Sent '{"ambient":7}'
+client_1  | info: katarabbitmq.client.app.SensorDataConsumer[0]
+client_1  |       Sensor data: katarabbitmq.model.LightSensorValue {"ambient":7}
+robot_1   | info: katarabbitmq.robot.app.SensorDataSender[0]
+robot_1   |       Sent '{"ambient":7}'
+client_1  | info: katarabbitmq.client.app.SensorDataConsumer[0]
+client_1  |       Sensor data: katarabbitmq.model.LightSensorValue {"ambient":7}
 ```
 
-If you would like to run and debug the application in your IDE, make sure that
+### Run the Application and RabbitMQ on Your Development PC
+
+```sh
+# Launch the RabbitMQ container
+docker-compose rabbit up -d
+# Optional: attach to the container logs
+docker-compose logs -f
+
+# Run the client
+./run-client.sh
+
+# Run the robot (server)
+./run-robot.sh
+
+# Hit CTL-C in both applications to shut them down
+
+# Cleanup the docker containers
+docker-compose down --remove-orphans
+```
+
+The `run-client.sh` and `run-robot.sh` shell scripts will run the applications in
+`Development` mode. Thus, you will also see `DEBUG` log messages.
+
+If you would like to run and debug the applications in your IDE, make sure that
 the environment variable `DOTNET_ENVIRONMENT` is set to `Development` so that
-the application uses the RabbitMQ settings from `appsettings.Development.json`.
+the applications use the logging and RabbitMQ settings from
+`appsettings.Development.json`.
+
+### Debug Acceptance Tests
+
+The acceptance tests use [Testcontainers](https://www.testcontainers.org/) to
+start and tear down RabbitMq. For debugging this means that on every test run
+a container would be started. This leads to waiting times of about 20 seconds
+per test run.
+
+To avoid this delay, you can run a RabbitMq container via
+
+```sh
+docker-compose up -d rabbit
+```
+
+Then comment out the `[Binding]` attribute in class `SetupAndTearDownRabbitMq`
+and uncomment the `[Binding]` attribute in class `SetupAndTearDownRabbitMqWithoutTestcontainer`.
+
+**Attention**
+
+Please never checkin these comment changes in `SetupAndTearDownRabbitMq*`. Otherwise
+the automatic build will fail.
+
+If you are using [JetBrains Rider](https://www.jetbrains.com/en-us/rider/), you can move
+(or shelve) these changes into a changeset which you never check-in.
 
 ## Identify Code Duplication
 
@@ -92,16 +155,32 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 ## RabbitMQ
 
+### General RabbitMQ Documentation
+
 * VMWare, Inc. or its affiliates: [RabbitMQ](https://www.rabbitmq.com/)
+* VMWare, Inc. or its affiliates: [RabbitMQ Documentation](https://www.rabbitmq.com/documentation.html)
+
+### Programming Related Documentation
+
 * VMWare, Inc. or its affiliates: [RabbitMQ .NET/C# Client API Guide](https://www.rabbitmq.com/dotnet-api-guide.html)
+* [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
+* GitHub: [rabbitmq / rabbitmq-tutorials](https://github.com/rabbitmq/rabbitmq-tutorials)
 * [RabbitMQ .NET Client API Documentation](http://rabbitmq.github.io/rabbitmq-dotnet-client/api/RabbitMQ.Client.html)
+* GitHub: [rabbitmq / rabbitmq-dotnet-client](https://github.com/rabbitmq/rabbitmq-dotnet-client)
 * DockerHub: [RabbitMQ](https://hub.docker.com/_/rabbitmq)
+
+### Important Production Related Documentation
+
+* VMWare, Inc. or its affiliates: [RabbitMQ Consumer Acknowledgements and Publisher Confirms](https://www.rabbitmq.com/confirms.html)
+* VMWare, Inc. or its affiliates: [RabbitMQ Production Checklist](https://www.rabbitmq.com/production-checklist.html)
+* VMWare, Inc. or its affiliates: [RabbitMQ Monitoring](https://www.rabbitmq.com/monitoring.html)
 
 ## Behavior Driven Development (BDD)
 
 * Tricentis: [SpecFlow - Getting Started](https://specflow.org/getting-started/)
 * The SpecFlow Team: [SpecFlow.xUnit — documentation](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html)
 * The SpecFlow Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
+* [Testcontainers](https://www.testcontainers.org/)
 
 ## Code Analysis
 
@@ -111,6 +190,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * Scott Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
 * [EditorConfig.org](https://editorconfig.org)
 * GitHub: [dotnet / roslyn - .editorconfig](https://github.com/dotnet/roslyn/blob/master/.editorconfig)
+* Check all the badges on top of this README
 
 ## Template For New Links
 

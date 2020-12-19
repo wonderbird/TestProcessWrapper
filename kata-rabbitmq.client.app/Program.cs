@@ -1,4 +1,4 @@
-﻿using katarabbitmq.infrastructure;
+using katarabbitmq.infrastructure;
 using Microsoft.Extensions.Hosting;
 
 namespace katarabbitmq.client.app

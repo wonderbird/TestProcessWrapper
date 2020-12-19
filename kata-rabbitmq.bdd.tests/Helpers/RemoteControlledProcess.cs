@@ -1,14 +1,14 @@
-﻿using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using Xunit;
+using System.Threading;
+using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using Xunit.Abstractions;
 
-namespace katarabbitmq.bdd.tests.Steps
+namespace katarabbitmq.bdd.tests.Helpers
 {
-    public class RemoteControlledProcess
+    public sealed class RemoteControlledProcess : IDisposable
     {
         private readonly string _appDir;
 
@@ -20,9 +20,10 @@ namespace katarabbitmq.bdd.tests.Steps
 
         private int? _dotnetHostProcessId;
 
-        private bool _isConnectionEstablished;
+        private bool _isDisposed;
 
         private Process _process;
+        private ProcessStreamBuffer _processStreamBuffer;
 
         public RemoteControlledProcess(string appProjectName)
         {
@@ -35,6 +36,8 @@ namespace katarabbitmq.bdd.tests.Steps
 
             _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
         }
+
+        public bool IsConnectionEstablished { get; private set; }
 
         public bool HasExited => _process == null || _process.HasExited;
 
@@ -55,15 +58,28 @@ namespace katarabbitmq.bdd.tests.Steps
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~RemoteControlledProcess()
+        {
+            Dispose(false);
+        }
+
         public void Start()
         {
-            var processStartInfo = CreateProcessStartInfo();
+            _process = new Process { StartInfo = CreateProcessStartInfo() };
 
             TestOutputHelper?.WriteLine(
-                $"Starting process: {processStartInfo.FileName} {processStartInfo.Arguments} ...");
+                $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
+            _process.Start();
 
-            _process = Process.Start(processStartInfo);
-            Assert.NotNull(_process);
+            _processStreamBuffer = new ProcessStreamBuffer();
+            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine,
+                handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
 
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
@@ -87,10 +103,11 @@ namespace katarabbitmq.bdd.tests.Steps
                 WorkingDirectory = _appDir
             };
 
-            processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Container.Hostname);
-            processStartInfo.AddEnvironmentVariable("RabbitMq__Port", RabbitMq.Container.Port.ToString(CultureInfo.CurrentCulture));
-            processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Container.Username);
-            processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Container.Password);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Hostname);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__Port",
+                RabbitMq.Port.ToString(CultureInfo.InvariantCulture));
+            processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Username);
+            processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Password);
 
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
             TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");
@@ -102,28 +119,33 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             do
             {
-                var startupMessage = _process.StandardOutput.ReadLine();
-                if (startupMessage != null)
-                {
-                    TestOutputHelper?.WriteLine(startupMessage);
-                    ParseStartupMessage(startupMessage);
-                }
-            } while (!_isConnectionEstablished || !_dotnetHostProcessId.HasValue);
+                var startupMessage = ReadOutput();
+                TestOutputHelper?.WriteLine(startupMessage);
+                ParseStartupMessage(startupMessage);
+
+                Thread.Sleep(100);
+            }
+            while (!IsConnectionEstablished || !_dotnetHostProcessId.HasValue);
         }
+
+        public string ReadOutput() => _processStreamBuffer.StreamContent;
 
         private void ParseStartupMessage(string startupMessage)
         {
             const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
 
-            if (!_isConnectionEstablished)
+            if (!IsConnectionEstablished)
             {
-                _isConnectionEstablished = startupMessage.Contains(expectedMessageAfterRabbitMqConnected);
+                IsConnectionEstablished = startupMessage.Contains(expectedMessageAfterRabbitMqConnected);
             }
 
             if (!_dotnetHostProcessId.HasValue && startupMessage.Contains("Process ID"))
             {
                 var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
-                var processIdString = startupMessage.Substring(processIdStartIndex + 10);
+                var newLineAfterProcessIdIndex =
+                    startupMessage.IndexOf("\n", processIdStartIndex, StringComparison.Ordinal);
+                var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
+                var processIdString = startupMessage.Substring(processIdStartIndex + 10, processIdNumberOfDigits);
                 _dotnetHostProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
                 TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
             }
@@ -150,11 +172,33 @@ namespace katarabbitmq.bdd.tests.Steps
             _process.WaitForExit(2000);
 
             TestOutputHelper?.WriteLine("Process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+            TestOutputHelper?.WriteLine("Process Output:");
+            TestOutputHelper?.WriteLine(_processStreamBuffer.StreamContent);
+            _processStreamBuffer?.Dispose();
+            _processStreamBuffer = null;
         }
 
         public void Kill()
         {
             _process.Kill();
+            _processStreamBuffer?.Dispose();
+            _processStreamBuffer = null;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _process?.Dispose();
+                _processStreamBuffer?.Dispose();
+            }
+
+            _isDisposed = true;
         }
     }
 }

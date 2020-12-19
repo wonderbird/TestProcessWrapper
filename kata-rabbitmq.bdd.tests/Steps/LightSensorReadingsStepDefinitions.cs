@@ -1,4 +1,8 @@
-﻿using System;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using katarabbitmq.bdd.tests.Helpers;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
@@ -9,61 +13,56 @@ namespace katarabbitmq.bdd.tests.Steps
     public class LightSensorReadingsStepDefinitions
     {
         private readonly ITestOutputHelper _testOutputHelper;
-        private bool _isSensorQueuePresent;
+        private int _countReceivedSensorReadings;
 
-        public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper)
-        {
+        public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
+
+        [When("the robot and client app have been connected for (.*) seconds")]
+        public async Task WhenTheRobotAndClientAppHasBeenConnectedForSeconds(double seconds)
+        {
+            await WaitUntilProcessesConnectedToRabbitMq(Processes.Robot, Processes.Client);
+
+            await WaitForSeconds(seconds);
+
+            ParseSensorDataFromClientProcess();
         }
 
-        [Given("the robot app is started")]
-        public static void GivenTheRobotAppIsStarted()
+        private static async Task WaitUntilProcessesConnectedToRabbitMq(params RemoteControlledProcess[] processes)
         {
-            Assert.True(Processes.Robot.IsRunning);
-        }
-
-        [When("the sensor queue is checked")]
-        public void WhenTheSensorQueueIsChecked()
-        {
-            try
+            bool IsConnectionEstablished()
             {
-                _testOutputHelper.WriteLine("Testing whether robot:sensors exists ...");
-                RabbitMq.Channel.ExchangeDeclarePassive("robot");
-                RabbitMq.Channel.QueueDeclarePassive("sensors");
-
-                _testOutputHelper.WriteLine("robot:sensors exists");
-                _isSensorQueuePresent = true;
+                return processes.ToList().All(p => p.IsConnectionEstablished);
             }
-            catch (Exception e)
+
+            while (!IsConnectionEstablished())
             {
-                _testOutputHelper.WriteLine($"robot:sensors does not exist. Exception: {e.Message}");
-                _isSensorQueuePresent = false;
+                await Task.Delay(TimeSpan.FromMilliseconds(1.0));
             }
         }
 
-        [Then("the sensor queue exists")]
-        public void ThenTheSensorsQueueExists()
+        private async Task WaitForSeconds(double seconds)
         {
-            Assert.True(_isSensorQueuePresent);
+            var stopwatch = Stopwatch.StartNew();
+            await Task.Delay(TimeSpan.FromSeconds(seconds));
+            stopwatch.Stop();
+
+            _testOutputHelper?.WriteLine($"Waited for {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
         }
 
-        [Given("the client app is started")]
-        public void GivenTheClientAppIsStarted()
+        private void ParseSensorDataFromClientProcess()
         {
-            _testOutputHelper.WriteLine("The client app is started");
+            var output = Processes.Client.ReadOutput();
+            var lines = output.Split('\n').ToList();
+            _countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
         }
 
-        [When("the client app has run for 1 second")]
-        public void WhenTheClientAppHasRunFor1Second()
+        [Then("the client app received at least (.*) sensor values")]
+        public void ThenTheClientAppReceivedAtLeastSensorValues(int expectedSensorValuesCount)
         {
-            _testOutputHelper.WriteLine("The client app has run for 1 second");
-        }
-
-        [Then("the client app received at least 10 sensor values")]
-        public void WhenTheClientAppReceivedAtLeast10SensorValues()
-        {
-            _testOutputHelper.WriteLine("The client app received at least 10 sensor values");
-            //Assert.False(true, "TODO: implement client test");
+            _testOutputHelper.WriteLine($"Received {_countReceivedSensorReadings} values");
+            Assert.True(_countReceivedSensorReadings >= expectedSensorValuesCount,
+                $"Client app must receive at least {expectedSensorValuesCount} sensor value(s). It actually received {_countReceivedSensorReadings} values");
         }
     }
 }
