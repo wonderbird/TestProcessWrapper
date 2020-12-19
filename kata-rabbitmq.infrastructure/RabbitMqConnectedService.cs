@@ -18,7 +18,7 @@ namespace katarabbitmq.infrastructure
 
         protected ILogger<RabbitMqConnectedService> Logger { get; }
 
-        protected TimeSpan DelayAfterEachLoop { get; init; } = TimeSpan.FromSeconds(2.0);
+        protected TimeSpan DelayAfterEachLoop { get; init; } = TimeSpan.FromMilliseconds(50.0);
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

@@ -14,13 +14,12 @@ namespace katarabbitmq.client.app
     public class SensorDataConsumer : RabbitMqConnectedService
     {
         private EventingBasicConsumer _consumer;
-        private ILogger<SensorDataConsumer> _logger;
+        private readonly ILogger<SensorDataConsumer> _logger;
 
         public SensorDataConsumer(IRabbitMqConnection rabbit, ILogger<SensorDataConsumer> logger)
             : base(rabbit, logger)
         {
             _logger = logger;
-            DelayAfterEachLoop = TimeSpan.FromMilliseconds(50);
         }
 
         protected override async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
@@ -29,9 +28,7 @@ namespace katarabbitmq.client.app
 
             if (Rabbit.IsConnected && _consumer == null)
             {
-                _consumer = new EventingBasicConsumer(Rabbit.Channel);
-                _consumer.Received += receiveSensorData;
-                Rabbit.Channel.BasicConsume(_consumer, "sensors");
+                ConnectEventingConsumer();
             }
 
             if (!Rabbit.IsConnected && _consumer != null)
@@ -40,7 +37,14 @@ namespace katarabbitmq.client.app
             }
         }
 
-        private void receiveSensorData(object sender, BasicDeliverEventArgs eventArgs)
+        private void ConnectEventingConsumer()
+        {
+            _consumer = new EventingBasicConsumer(Rabbit.Channel);
+            _consumer.Received += ReceiveSensorData;
+            Rabbit.Channel.BasicConsume(_consumer, "sensors");
+        }
+
+        private void ReceiveSensorData(object sender, BasicDeliverEventArgs eventArgs)
         {
             var body = eventArgs.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
