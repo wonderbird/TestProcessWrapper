@@ -15,7 +15,7 @@ namespace katarabbitmq.bdd.tests.Steps
     // When uncommenting this [Binding] attribute, please comment out the
     // [Binding] attribute on class SetupAndTearDownRabbitMq.
 
-    //[Binding]
+    [Binding]
     public class SetupAndTearDownRabbitMqWithoutTestcontainer
     {
         [BeforeFeature]

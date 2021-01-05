@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using Xunit.Abstractions;
@@ -153,10 +154,24 @@ namespace katarabbitmq.bdd.tests.Helpers
 
         public void SendTermSignal()
         {
-            TestOutputHelper?.WriteLine("Sending TERM signal to process ...");
+            string killCommand;
+            string killArguments;
+            string signalName;
 
-            const string killCommand = "kill";
-            var killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                killCommand = "taskkill";
+                killArguments = $"/f /pid {_dotnetHostProcessId.Value}";
+                signalName = "KILL"; // under Windows, SIGINT doesn't work (check on the command line). This can be tolerated, because the application runs in a linux docker container and the build pipeline uses linux containers for testing.
+            }
+            else
+            {
+                killCommand = "kill";
+                killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
+                signalName = "TERM";
+            }
+
+            TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
             TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
             var killProcess = Process.Start(killCommand, killArguments);
 
