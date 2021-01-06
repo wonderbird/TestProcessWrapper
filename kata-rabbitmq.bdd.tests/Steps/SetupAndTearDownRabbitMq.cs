@@ -16,7 +16,7 @@ namespace katarabbitmq.bdd.tests.Steps
     // [Binding] attribute on class
     // SetupAndTearDownRabbitMqWithoutTestContainer.
 
-    //[Binding]
+    [Binding]
     public class SetupAndTearDownRabbitMq
     {
         private static RabbitMqTestcontainer RabbitMqContainer;
