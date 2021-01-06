@@ -23,11 +23,11 @@ namespace katarabbitmq.bdd.tests.Steps
         [AfterScenario]
         public static void StopProcesses()
         {
-            Processes.Robot.SendTermSignal();
-            Processes.Robot.Kill();
+            Processes.Robot.ShutdownGracefully();
+            Processes.Robot.ForceTermination();
 
-            Processes.Client.SendTermSignal();
-            Processes.Client.Kill();
+            Processes.Client.ShutdownGracefully();
+            Processes.Client.ForceTermination();
         }
     }
 }
