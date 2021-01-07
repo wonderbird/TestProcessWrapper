@@ -10,8 +10,8 @@ namespace katarabbitmq.bdd.tests.Steps
         [When("a TERM signal is sent to both server and client")]
         public static void WhenATermSignalIsSent()
         {
-            Processes.Robot.SendTermSignal();
-            Processes.Client.SendTermSignal();
+            Processes.Robot.ShutdownGracefully();
+            Processes.Client.ShutdownGracefully();
         }
 
         [Then("both applications shut down.")]

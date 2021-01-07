@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using Xunit.Abstractions;
@@ -151,34 +152,88 @@ namespace katarabbitmq.bdd.tests.Helpers
             }
         }
 
-        public void SendTermSignal()
+        public void ShutdownGracefully()
         {
-            TestOutputHelper?.WriteLine("Sending TERM signal to process ...");
+            SendTermSignalToProcess();
+            WaitForProcessExit();
+            DisposeProcessOutputStreamBuffer();
+        }
 
-            const string killCommand = "kill";
-            var killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
+        private void SendTermSignalToProcess()
+        {
+            var killProcess = InvokeKillSystemCall();
+            WaitForKillSystemCallToFinish(killProcess);
+            TerminateKillSystemCall(killProcess);
+        }
+
+        private Process InvokeKillSystemCall()
+        {
+            string killCommand;
+            string killArguments;
+            string signalName;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                killCommand = "taskkill";
+                killArguments = $"/f /pid {_dotnetHostProcessId.Value}";
+
+                // Under Windows, SIGINT doesn't work. Thus we use the KILL signal.
+                //
+                // To try this out you can place a breakpoint here and check on the
+                // command line yourself.
+                //
+                // This can be tolerated for our case here, because the application
+                // is intended to run in a linux docker container and because the
+                // build pipeline uses linux containers for testing.
+                signalName = "KILL";
+            }
+            else
+            {
+                killCommand = "kill";
+                killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
+                signalName = "TERM";
+            }
+
+            TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
             TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
             var killProcess = Process.Start(killCommand, killArguments);
+            return killProcess;
+        }
 
+        private void WaitForKillSystemCallToFinish(Process killProcess)
+        {
             if (killProcess != null)
             {
                 TestOutputHelper?.WriteLine("Waiting for system call to complete.");
                 killProcess.WaitForExit(2000);
+            }
+        }
+
+        private void TerminateKillSystemCall(Process killProcess)
+        {
+            if (!killProcess.HasExited)
+            {
                 TestOutputHelper?.WriteLine("System call has " + (killProcess.HasExited ? "" : "NOT ") + "completed.");
                 killProcess.Kill();
             }
+        }
 
+        private void WaitForProcessExit()
+        {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-
             TestOutputHelper?.WriteLine("Process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+        }
+
+        private void DisposeProcessOutputStreamBuffer()
+        {
             TestOutputHelper?.WriteLine("Process Output:");
             TestOutputHelper?.WriteLine(_processStreamBuffer.StreamContent);
             _processStreamBuffer?.Dispose();
             _processStreamBuffer = null;
         }
 
-        public void Kill()
+        public void ForceTermination()
         {
             _process.Kill();
             _processStreamBuffer?.Dispose();
