@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,8 +18,8 @@ namespace katarabbitmq.bdd.tests.Steps
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
-        [When("the robot and client app have been connected for (.*) seconds")]
-        public async Task WhenTheRobotAndClientAppHasBeenConnectedForSeconds(double seconds)
+        [When(@"the robot and client apps have been connected for (.*) seconds")]
+        public async Task WhenTheRobotAndClientAppsHaveBeenConnectedForSeconds(double seconds)
         {
             await WaitUntilProcessesConnectedToRabbitMq(Processes.Robot, Processes.Client);
 
@@ -57,8 +57,8 @@ namespace katarabbitmq.bdd.tests.Steps
             _countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
         }
 
-        [Then("the client app received at least (.*) sensor values")]
-        public void ThenTheClientAppReceivedAtLeastSensorValues(int expectedSensorValuesCount)
+        [Then(@"each client app received at least (.*) sensor values")]
+        public void ThenEachClientAppReceivedAtLeastSensorValues(int expectedSensorValuesCount)
         {
             _testOutputHelper.WriteLine($"Received {_countReceivedSensorReadings} values");
             Assert.True(_countReceivedSensorReadings >= expectedSensorValuesCount,

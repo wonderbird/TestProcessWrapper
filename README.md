@@ -22,13 +22,16 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who pr
 # Required Steps
 
 1. Launch an instance of RabbitMQ (e.g. https://hub.docker.com/_/rabbitmq)
+   
 2. Create a "robot" application which ...
    1. programmatically creates a message queue to transmit light sensor information (just some arbitrary values of ambient light)
    2. periodically sends arbitrary light sensor information to the queue (e.g. the JSON string '{ "sensor1": "7.0" }')
+
 3. Create a robot monitor application which ...
    1. consumes the message from the queue and displays them on the screen
    2. acknowledges the messages it consumed
- 
+
+4. Extend the application such that multiple robot monitor applications can consume and display messages. 
 
 999. Further Ideas: Consider the information in section "Important Production Related Documentation" below
 
