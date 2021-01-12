@@ -7,6 +7,7 @@ namespace katarabbitmq.client.app
     {
         public static void Main()
         {
+            // TODO: Check for unhandled Exceptions
             RabbitMqConnectedHostBuilder.Create<SensorDataConsumer>().Build().Run();
         }
     }
