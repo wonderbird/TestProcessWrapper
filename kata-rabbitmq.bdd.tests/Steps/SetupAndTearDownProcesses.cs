@@ -28,6 +28,12 @@ namespace katarabbitmq.bdd.tests.Steps
 
             Processes.Client.ShutdownGracefully();
             Processes.Client.ForceTermination();
+
+            foreach (var client in Processes.Clients)
+            {
+                client.ShutdownGracefully();
+                client.ForceTermination();
+            }
         }
     }
 }
