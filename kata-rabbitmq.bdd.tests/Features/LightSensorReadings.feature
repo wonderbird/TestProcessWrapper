@@ -1,4 +1,5 @@
-﻿Feature: Light Sensor Readings
+﻿@LightSensorReadings
+Feature: Light Sensor Readings
     In order to steer my robot
     As a robot owner
     I want to see light sensor readings on the client.
