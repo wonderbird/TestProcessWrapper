@@ -15,7 +15,7 @@ namespace katarabbitmq.bdd.tests.Steps
     {
         private readonly List<RemoteControlledProcess> _clients = new();
         private readonly ITestOutputHelper _testOutputHelper;
-        private int _countReceivedSensorReadings;
+        private readonly List<int> _countReceivedSensorReadingsByClient = new();
         private bool _isDisposed;
         private RemoteControlledProcess _robot;
 
@@ -81,18 +81,21 @@ namespace katarabbitmq.bdd.tests.Steps
 
         private void ParseSensorDataFromClientProcesses()
         {
-            // TODO: Parse the output of all clients
-            var output = _clients[0].ReadOutput();
-            var lines = output.Split('\n').ToList();
-            _countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
+            foreach (var client in _clients)
+            {
+                var output = client.ReadOutput();
+                var lines = output.Split('\n').ToList();
+                var countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
+                _countReceivedSensorReadingsByClient.Add(countReceivedSensorReadings);
+            }
         }
 
         [Then(@"each client app received at least (.*) sensor values")]
         public void ThenEachClientAppReceivedAtLeastSensorValues(int expectedSensorValuesCount)
         {
-            _testOutputHelper.WriteLine($"Received {_countReceivedSensorReadings} values");
-            Assert.True(_countReceivedSensorReadings >= expectedSensorValuesCount,
-                $"Client app must receive at least {expectedSensorValuesCount} sensor value(s). It actually received {_countReceivedSensorReadings} values");
+            _testOutputHelper.WriteLine($"Received {string.Join(",", _countReceivedSensorReadingsByClient)} values");
+            Assert.True(_countReceivedSensorReadingsByClient.All(c => c >= expectedSensorValuesCount),
+                $"Each client app must receive at least {expectedSensorValuesCount} sensor value(s).");
         }
 
         [AfterScenario("LightSensorReadings")]
