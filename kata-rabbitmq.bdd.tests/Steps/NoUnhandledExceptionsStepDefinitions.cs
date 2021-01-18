@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using katarabbitmq.bdd.tests.Helpers;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -6,12 +8,12 @@ using Xunit.Abstractions;
 namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
-    public class DockerShutdownStepDefinitions
+    public class NoUnhandledExceptionsStepDefinitions
     {
-        private readonly RemoteControlledProcess _robot = new("kata-rabbitmq.robot.app");
         private readonly RemoteControlledProcess _client = new("kata-rabbitmq.client.app");
+        private readonly RemoteControlledProcess _robot = new("kata-rabbitmq.robot.app");
 
-        public DockerShutdownStepDefinitions(ITestOutputHelper testOutputHelper)
+        public NoUnhandledExceptionsStepDefinitions(ITestOutputHelper testOutputHelper)
         {
             _robot.TestOutputHelper = testOutputHelper;
             _client.TestOutputHelper = testOutputHelper;
@@ -38,7 +40,16 @@ namespace katarabbitmq.bdd.tests.Steps
             Assert.True(_client.HasExited);
         }
 
-        [AfterScenario("DockerShutdown")]
+        [Then]
+        public void ThenTheLogIsFreeOfExceptionMessages()
+        {
+            Task.Delay(TimeSpan.FromMilliseconds(500));
+
+            Assert.DoesNotContain("exception", _robot.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
+            Assert.DoesNotContain("exception", _client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        [AfterScenario("NoUnhandledExceptions")]
         public void StopProcesses()
         {
             _robot?.ForceTermination();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,9 +14,9 @@ namespace katarabbitmq.bdd.tests.Steps
     public class LightSensorReadingsStepDefinitions
     {
         private readonly ITestOutputHelper _testOutputHelper;
-        private int _countReceivedSensorReadings;
 
-        private List<RemoteControlledProcess> _clients = new();
+        private readonly List<RemoteControlledProcess> _clients = new();
+        private int _countReceivedSensorReadings;
         private RemoteControlledProcess _robot;
 
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper) =>
@@ -26,7 +26,7 @@ namespace katarabbitmq.bdd.tests.Steps
         [Given(@"the server and (.*) clients are running")]
         public void GivenTheServerAndClientAreRunning(int numberOfClients)
         {
-            _robot = new("kata-rabbitmq.robot.app");
+            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
             _robot.TestOutputHelper = _testOutputHelper;
             _robot.Start();
 
@@ -55,7 +55,8 @@ namespace katarabbitmq.bdd.tests.Steps
 
         private async Task WaitUntilProcessesConnectedToRabbitMq()
         {
-            bool IsConnectionEstablished() => _clients.All(p => p.IsConnectionEstablished) && _robot.IsConnectionEstablished;
+            bool IsConnectionEstablished() =>
+                _clients.All(p => p.IsConnectionEstablished) && _robot.IsConnectionEstablished;
 
             while (!IsConnectionEstablished())
             {

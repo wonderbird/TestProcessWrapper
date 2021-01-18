@@ -156,7 +156,6 @@ namespace katarabbitmq.bdd.tests.Helpers
         {
             SendTermSignalToProcess();
             WaitForProcessExit();
-            DisposeProcessOutputStreamBuffer();
         }
 
         private void SendTermSignalToProcess()
@@ -225,19 +224,9 @@ namespace katarabbitmq.bdd.tests.Helpers
             TestOutputHelper?.WriteLine("Process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
         }
 
-        private void DisposeProcessOutputStreamBuffer()
-        {
-            TestOutputHelper?.WriteLine("Process Output:");
-            TestOutputHelper?.WriteLine(_processStreamBuffer.StreamContent);
-            _processStreamBuffer?.Dispose();
-            _processStreamBuffer = null;
-        }
-
         public void ForceTermination()
         {
             _process.Kill();
-            _processStreamBuffer?.Dispose();
-            _processStreamBuffer = null;
         }
 
         private void Dispose(bool disposing)
