@@ -8,21 +8,30 @@ using Xunit.Abstractions;
 namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
-    public class NoUnhandledExceptionsStepDefinitions
+    public class NoUnhandledExceptionsStepDefinitions : IDisposable
     {
-        private readonly RemoteControlledProcess _client = new("kata-rabbitmq.client.app");
-        private readonly RemoteControlledProcess _robot = new("kata-rabbitmq.robot.app");
+        private RemoteControlledProcess _client;
+        private RemoteControlledProcess _robot;
+        private readonly ITestOutputHelper _testOutputHelper;
+        private bool _isDisposed;
 
-        public NoUnhandledExceptionsStepDefinitions(ITestOutputHelper testOutputHelper)
+        public NoUnhandledExceptionsStepDefinitions(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
+
+        public void Dispose()
         {
-            _robot.TestOutputHelper = testOutputHelper;
-            _client.TestOutputHelper = testOutputHelper;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         [Given]
         public void GivenTheServerAndClientAreRunning()
         {
+            _robot = new("kata-rabbitmq.robot.app");
+            _robot.TestOutputHelper = _testOutputHelper;
             _robot.Start();
+
+            _client = new("kata-rabbitmq.client.app");
+            _client.TestOutputHelper = _testOutputHelper;
             _client.Start();
         }
 
@@ -54,6 +63,27 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             _robot?.ForceTermination();
             _client?.ForceTermination();
+        }
+
+        ~NoUnhandledExceptionsStepDefinitions()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _robot?.Dispose();
+                _client?.Dispose();
+            }
+
+            _isDisposed = true;
         }
     }
 }

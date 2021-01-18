@@ -11,22 +11,28 @@ using Xunit.Abstractions;
 namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
-    public class LightSensorReadingsStepDefinitions
+    public class LightSensorReadingsStepDefinitions : IDisposable
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
         private readonly List<RemoteControlledProcess> _clients = new();
+        private readonly ITestOutputHelper _testOutputHelper;
         private int _countReceivedSensorReadings;
+        private bool _isDisposed;
         private RemoteControlledProcess _robot;
 
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         [Given(@"the server and (.*) client are running")]
         [Given(@"the server and (.*) clients are running")]
         public void GivenTheServerAndClientAreRunning(int numberOfClients)
         {
-            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
+            _robot = new("kata-rabbitmq.robot.app");
             _robot.TestOutputHelper = _testOutputHelper;
             _robot.Start();
 
@@ -100,6 +106,26 @@ namespace katarabbitmq.bdd.tests.Steps
                 client.ShutdownGracefully();
                 client.ForceTermination();
             }
+        }
+
+        ~LightSensorReadingsStepDefinitions()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _robot?.Dispose();
+            }
+
+            _isDisposed = true;
         }
     }
 }
