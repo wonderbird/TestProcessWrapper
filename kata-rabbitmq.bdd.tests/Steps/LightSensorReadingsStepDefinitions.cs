@@ -14,8 +14,9 @@ namespace katarabbitmq.bdd.tests.Steps
     public class LightSensorReadingsStepDefinitions : IDisposable
     {
         private readonly List<RemoteControlledProcess> _clients = new();
-        private readonly ITestOutputHelper _testOutputHelper;
         private readonly List<int> _countReceivedSensorReadingsByClient = new();
+        private readonly ITestOutputHelper _testOutputHelper;
+        private int _countSentSensorValues;
         private bool _isDisposed;
         private RemoteControlledProcess _robot;
 
@@ -32,7 +33,7 @@ namespace katarabbitmq.bdd.tests.Steps
         [Given(@"the server and (.*) clients are running")]
         public void GivenTheServerAndClientAreRunning(int numberOfClients)
         {
-            _robot = new("kata-rabbitmq.robot.app");
+            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
             _robot.TestOutputHelper = _testOutputHelper;
             _robot.Start();
 
@@ -56,6 +57,7 @@ namespace katarabbitmq.bdd.tests.Steps
 
             await WaitForSeconds(seconds);
 
+            ParseSensorDataFromRobotProcess();
             ParseSensorDataFromClientProcesses();
         }
 
@@ -79,6 +81,13 @@ namespace katarabbitmq.bdd.tests.Steps
             _testOutputHelper?.WriteLine($"Waited for {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
         }
 
+        private void ParseSensorDataFromRobotProcess()
+        {
+            var output = _robot.ReadOutput();
+            var lines = output.Split('\n').ToList();
+            _countSentSensorValues = lines.Count(l => l.Contains("Sent"));
+        }
+
         private void ParseSensorDataFromClientProcesses()
         {
             foreach (var client in _clients)
@@ -96,6 +105,16 @@ namespace katarabbitmq.bdd.tests.Steps
             _testOutputHelper.WriteLine($"Received {string.Join(",", _countReceivedSensorReadingsByClient)} values");
             Assert.True(_countReceivedSensorReadingsByClient.All(c => c >= expectedSensorValuesCount),
                 $"Each client app must receive at least {expectedSensorValuesCount} sensor value(s).");
+        }
+
+        [Then]
+        public void ThenEachClientAppReceivedAllMessagesSentByTheRobot()
+        {
+            _testOutputHelper.WriteLine($"Robot has sent {_countSentSensorValues} values.");
+            _testOutputHelper.WriteLine($"Received {string.Join(",", _countReceivedSensorReadingsByClient)} values");
+
+            Assert.True(_countReceivedSensorReadingsByClient.All(c => c == _countSentSensorValues),
+                $"Each client app must receive {_countSentSensorValues} sensor value(s).");
         }
 
         [AfterScenario("LightSensorReadings")]

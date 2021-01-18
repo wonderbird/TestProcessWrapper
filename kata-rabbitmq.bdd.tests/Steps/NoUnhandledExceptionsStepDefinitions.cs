@@ -10,12 +10,13 @@ namespace katarabbitmq.bdd.tests.Steps
     [Binding]
     public class NoUnhandledExceptionsStepDefinitions : IDisposable
     {
-        private RemoteControlledProcess _client;
-        private RemoteControlledProcess _robot;
         private readonly ITestOutputHelper _testOutputHelper;
+        private RemoteControlledProcess _client;
         private bool _isDisposed;
+        private RemoteControlledProcess _robot;
 
-        public NoUnhandledExceptionsStepDefinitions(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
+        public NoUnhandledExceptionsStepDefinitions(ITestOutputHelper testOutputHelper) =>
+            _testOutputHelper = testOutputHelper;
 
         public void Dispose()
         {
@@ -26,11 +27,11 @@ namespace katarabbitmq.bdd.tests.Steps
         [Given]
         public void GivenTheServerAndClientAreRunning()
         {
-            _robot = new("kata-rabbitmq.robot.app");
+            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
             _robot.TestOutputHelper = _testOutputHelper;
             _robot.Start();
 
-            _client = new("kata-rabbitmq.client.app");
+            _client = new RemoteControlledProcess("kata-rabbitmq.client.app");
             _client.TestOutputHelper = _testOutputHelper;
             _client.Start();
         }

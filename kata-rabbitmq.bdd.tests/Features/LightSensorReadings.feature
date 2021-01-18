@@ -9,9 +9,9 @@ Feature: Light Sensor Readings
     When the robot and client apps have been connected for 2.5 seconds
     Then each client app received at least 1 sensor values
     
-  #@Ignore
+  @Ignore
   Scenario: 3 clients receive light sensor readings
     Given the server and 3 clients are running
     When the robot and client apps have been connected for 2.5 seconds
-    Then each client app received at least 1 sensor values
+    Then each client app received all messages sent by the robot
     
