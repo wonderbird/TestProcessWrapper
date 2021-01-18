@@ -129,6 +129,40 @@ the automatic build will fail.
 If you are using [JetBrains Rider](https://www.jetbrains.com/en-us/rider/), you can move
 (or shelve) these changes into a changeset which you never check-in.
 
+### Before Creating a Pull Request ...
+
+... apply code formatting rules
+
+```shell
+dotnet format
+```
+
+... and check code metrics using [metrix++](https://github.com/metrixplusplus/metrixplusplus)
+
+```shell
+# Collect metrics
+metrix++ collect --std.code.complexity.cyclomatic --std.code.lines.code --std.code.todo.comments --std.code.maintindex.simple -- .
+
+# Get an overview
+metrix++ view --db-file=./metrixpp.db
+
+# Apply thresholds
+metrix++ limit --db-file=./metrixpp.db --max-limit=std.code.complexity:cyclomatic:5 --max-limit=std.code.lines:code:25:function --max-limit=std.code.todo:comments:0 --max-limit=std.code.mi:simple:1
+```
+
+At the time of writing, I want to stay below the following thresholds:
+
+```shell
+--max-limit=std.code.complexity:cyclomatic:5
+--max-limit=std.code.lines:code:25:function
+--max-limit=std.code.todo:comments:0
+--max-limit=std.code.mi:simple:1
+```
+
+I allow generated files named `*.feature.cs` to exceed these thresholds.
+
+Finally, remove all code duplication. The next section describes how to detect code duplication.
+
 ## Identify Code Duplication
 
 The `tools\dupfinder.bat` or `tools/dupfinder.sh` file calls the [JetBrains dupfinder](https://www.jetbrains.com/help/resharper/dupFinder.html) tool and creates an HTML report of duplicated code blocks in the solution directory.

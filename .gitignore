@@ -1,3 +1,6 @@
+# Code Metrics - metrix++
+/metrixpp.db
+
 # Code Duplication - dupfinder
 dupfinder-report.*
 
@@ -460,3 +463,4 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # End of https://www.toptal.com/developers/gitignore/api/rider
+
