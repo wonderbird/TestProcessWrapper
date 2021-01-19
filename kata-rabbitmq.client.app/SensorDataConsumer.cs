@@ -38,7 +38,7 @@ namespace katarabbitmq.client.app
         {
             _consumer = new EventingBasicConsumer(Rabbit.Channel);
             _consumer.Received += ReceiveSensorData;
-            Rabbit.Channel.BasicConsume(_consumer, "sensors");
+            Rabbit.Channel.BasicConsume(_consumer, Rabbit.QueueName);
         }
 
         private void ReceiveSensorData(object sender, BasicDeliverEventArgs eventArgs)

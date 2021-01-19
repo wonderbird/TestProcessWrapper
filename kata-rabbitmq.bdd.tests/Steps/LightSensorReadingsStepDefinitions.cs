@@ -33,10 +33,6 @@ namespace katarabbitmq.bdd.tests.Steps
         [Given(@"the server and (.*) clients are running")]
         public void GivenTheServerAndClientAreRunning(int numberOfClients)
         {
-            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
-            _robot.TestOutputHelper = _testOutputHelper;
-            _robot.Start();
-
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
                 var client = new RemoteControlledProcess("kata-rabbitmq.client.app");
@@ -47,6 +43,11 @@ namespace katarabbitmq.bdd.tests.Steps
             }
 
             Assert.True(_clients.All(c => c.IsRunning));
+
+            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
+            _robot.TestOutputHelper = _testOutputHelper;
+            _robot.Start();
+
             Assert.True(_robot.IsRunning);
         }
 
@@ -102,7 +103,9 @@ namespace katarabbitmq.bdd.tests.Steps
         [Then(@"each client app received at least (.*) sensor values")]
         public void ThenEachClientAppReceivedAtLeastSensorValues(int expectedSensorValuesCount)
         {
+            _testOutputHelper.WriteLine($"Robot has sent {_countSentSensorValues} values.");
             _testOutputHelper.WriteLine($"Received {string.Join(",", _countReceivedSensorReadingsByClient)} values");
+
             Assert.True(_countReceivedSensorReadingsByClient.All(c => c >= expectedSensorValuesCount),
                 $"Each client app must receive at least {expectedSensorValuesCount} sensor value(s).");
         }

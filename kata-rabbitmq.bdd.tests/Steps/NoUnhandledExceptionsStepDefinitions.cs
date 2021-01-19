@@ -27,13 +27,13 @@ namespace katarabbitmq.bdd.tests.Steps
         [Given]
         public void GivenTheServerAndClientAreRunning()
         {
-            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
-            _robot.TestOutputHelper = _testOutputHelper;
-            _robot.Start();
-
             _client = new RemoteControlledProcess("kata-rabbitmq.client.app");
             _client.TestOutputHelper = _testOutputHelper;
             _client.Start();
+
+            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
+            _robot.TestOutputHelper = _testOutputHelper;
+            _robot.Start();
         }
 
         [When]

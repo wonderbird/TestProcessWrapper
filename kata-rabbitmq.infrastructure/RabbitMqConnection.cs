@@ -18,6 +18,8 @@ namespace katarabbitmq.infrastructure
 
         public IConnection Connection { get; private set; }
 
+        public string QueueName { get; private set; }
+
         public IModel Channel { get; private set; }
 
         public bool IsConnected => Connection != null;
@@ -37,12 +39,14 @@ namespace katarabbitmq.infrastructure
                 Connection = connectionFactory.CreateConnection();
                 Channel = Connection.CreateModel();
 
-                Channel.ExchangeDeclare("robot", ExchangeType.Direct, false, true,
+                Channel.ExchangeDeclare("robot", ExchangeType.Fanout, false, true,
                     null);
-                Channel.QueueDeclare("sensors", false, false, true,
+                var queueDeclareOk = Channel.QueueDeclare("", false, true, true,
                     null);
+                QueueName = queueDeclareOk.QueueName;
+                Channel.QueueBind(QueueName, "robot", "", null);
 
-                _logger.LogInformation("Established connection to RabbitMQ");
+                _logger.LogInformation($"Established connection to RabbitMQ, queue name {QueueName}.");
             }
             catch (Exception e)
             {

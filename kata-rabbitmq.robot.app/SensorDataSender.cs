@@ -35,7 +35,7 @@ namespace katarabbitmq.robot.app
             var message = JsonConvert.SerializeObject(measurement, Formatting.None);
             var body = Encoding.UTF8.GetBytes(message);
 
-            Rabbit.Channel.BasicPublish("", "sensors", null, body);
+            Rabbit.Channel.BasicPublish("robot", "", null, body);
 
             _logger.LogInformation($"Sent '{message}'");
         }

@@ -77,6 +77,12 @@ client_1  | info: katarabbitmq.client.app.SensorDataConsumer[0]
 client_1  |       Sensor data: katarabbitmq.model.LightSensorValue {"ambient":7}
 ```
 
+You can scale the number of clients by
+
+```shell
+docker-compose up --scale client=3
+```
+
 ### Run the Application and RabbitMQ on Your Development PC
 
 ```sh
