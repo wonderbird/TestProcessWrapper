@@ -23,7 +23,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             var logger = new NullLogger<RabbitMqConnection>();
             var configuration = ConfigureRabbitMqConnection();
-            var rabbitMqConnection = new RabbitMqConnection("integrationtest", logger, configuration);
+            var rabbitMqConnection = new RabbitMqConnection(logger, configuration);
 
             rabbitMqConnection.TryConnect();
 
