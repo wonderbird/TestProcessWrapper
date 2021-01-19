@@ -66,10 +66,12 @@ namespace katarabbitmq.infrastructure
 
         private ConnectionFactory CreateConnectionFactory()
         {
+            var uniqueClientProvidedNameSuffix = "-" + Guid.NewGuid();
+
             var connectionFactory = new ConnectionFactory
             {
                 VirtualHost = "/",
-                ClientProvidedName = "app:robot",
+                ClientProvidedName = _configuration["RabbitMq:ClientProvidedName"] + uniqueClientProvidedNameSuffix,
                 HostName = _configuration["RabbitMq:HostName"],
                 Port = _configuration.GetValue<int>("RabbitMq:Port"),
                 UserName = _configuration["RabbitMq:UserName"],
@@ -79,6 +81,7 @@ namespace katarabbitmq.infrastructure
             _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
             _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
             _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
+            _logger.LogDebug($"RabbitMQ ClientProvidedName: {connectionFactory.ClientProvidedName}");
 
             return connectionFactory;
         }
