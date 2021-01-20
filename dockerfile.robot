@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
 # Adopted from https://docs.docker.com/engine/examples/dotnetcore/
+# and from https://docs.microsoft.com/de-de/aspnet/core/host-and-deploy/docker/building-net-docker-images?view=aspnetcore-5.0
 
 WORKDIR /app
 
