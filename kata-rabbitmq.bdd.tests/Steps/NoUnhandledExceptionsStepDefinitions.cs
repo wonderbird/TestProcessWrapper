@@ -25,7 +25,7 @@ namespace katarabbitmq.bdd.tests.Steps
         }
 
         [Given]
-        public void GivenTheServerAndClientAreRunning()
+        public void GivenTheRobotAndClientAreRunning()
         {
             _client = new RemoteControlledProcess("kata-rabbitmq.client.app");
             _client.TestOutputHelper = _testOutputHelper;
@@ -53,6 +53,7 @@ namespace katarabbitmq.bdd.tests.Steps
         [Then]
         public void ThenTheLogIsFreeOfExceptionMessages()
         {
+            // TODO Instead of waiting for ... milliseconds, wait until a specific string shows on the console
             Task.Delay(TimeSpan.FromMilliseconds(500));
 
             Assert.DoesNotContain("exception", _robot.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);

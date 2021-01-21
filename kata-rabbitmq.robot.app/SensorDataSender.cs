@@ -40,7 +40,7 @@ namespace katarabbitmq.robot.app
 
             Rabbit.Channel.BasicPublish("robot", "", null, body);
 
-            _logger.LogInformation($"Sent '{message}'");
+            _logger.LogInformation($"Sensor data: '{message}'");
         }
 
         protected override void OnShutdownService()

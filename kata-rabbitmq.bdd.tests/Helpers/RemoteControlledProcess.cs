@@ -121,7 +121,6 @@ namespace katarabbitmq.bdd.tests.Helpers
             do
             {
                 var startupMessage = ReadOutput();
-                TestOutputHelper?.WriteLine(startupMessage);
                 ParseStartupMessage(startupMessage);
 
                 Thread.Sleep(100);
@@ -221,7 +220,7 @@ namespace katarabbitmq.bdd.tests.Helpers
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine("Process has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") + "completed.");
         }
 
         public void ForceTermination()
