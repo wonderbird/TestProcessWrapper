@@ -37,9 +37,17 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who pr
 
 # Development
 
-## Prerequisites
+### Prerequisites
 
 To compile, test and run this project the latest [.NET Core SDK](https://dotnet.microsoft.com/download) is required on your machine.
+For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus). This requires python.
+
+To run the unit tests you need the following tools installed:
+
+```shell
+dotnet tool install --global coverlet.console --configfile Nuget-OfficialOnly.config
+dotnet tool install --global dotnet-reportgenerator-globaltool --configfile Nuget-OfficialOnly.config
+```
 
 ## Build, Test, Run
 
