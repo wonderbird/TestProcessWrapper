@@ -29,9 +29,9 @@ namespace katarabbitmq.bdd.tests.Steps
             GC.SuppressFinalize(this);
         }
 
-        [Given(@"the server and (.*) client are running")]
-        [Given(@"the server and (.*) clients are running")]
-        public void GivenTheServerAndClientAreRunning(int numberOfClients)
+        [Given(@"the robot and (.*) client are running")]
+        [Given(@"the robot and (.*) clients are running")]
+        public void GivenTheRobotAndClientsAreRunning(int numberOfClients)
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
