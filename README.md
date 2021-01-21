@@ -91,6 +91,12 @@ You can scale the number of clients by
 docker-compose up --scale client=3
 ```
 
+Add individual docker containers with clients to the docker-compose group
+
+```shell
+docker run -it --rm --name client4 --network="kata-rabbitmq_default" kata-rabbitmq_client:latest
+```
+
 ### Run the Application and RabbitMQ on Your Development PC
 
 ```sh

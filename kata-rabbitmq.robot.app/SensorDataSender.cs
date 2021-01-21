@@ -12,6 +12,7 @@ namespace katarabbitmq.robot.app
     public class SensorDataSender : RabbitMqConnectedService
     {
         private readonly ILogger<SensorDataSender> _logger;
+        private int _numberOfMeasurements;
 
         public SensorDataSender(IRabbitMqConnection rabbit, ILogger<SensorDataSender> logger)
             : base(rabbit, logger) =>
@@ -38,6 +39,13 @@ namespace katarabbitmq.robot.app
             Rabbit.Channel.BasicPublish("robot", "", null, body);
 
             _logger.LogInformation($"Sent '{message}'");
+            ++_numberOfMeasurements;
+        }
+
+        protected override void OnShutdownService()
+        {
+            base.OnShutdownService();
+            _logger.LogInformation($"Sent {_numberOfMeasurements} sensor values.");
         }
     }
 }
