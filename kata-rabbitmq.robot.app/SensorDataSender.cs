@@ -32,14 +32,15 @@ namespace katarabbitmq.robot.app
 
         private void SendMeasurement()
         {
-            var measurement = new LightSensorValue { ambient = 7 };
+            ++_numberOfMeasurements;
+
+            var measurement = new LightSensorValue { ambient = 7, sequenceNumber = _numberOfMeasurements };
             var message = JsonConvert.SerializeObject(measurement, Formatting.None);
             var body = Encoding.UTF8.GetBytes(message);
 
             Rabbit.Channel.BasicPublish("robot", "", null, body);
 
             _logger.LogInformation($"Sent '{message}'");
-            ++_numberOfMeasurements;
         }
 
         protected override void OnShutdownService()
