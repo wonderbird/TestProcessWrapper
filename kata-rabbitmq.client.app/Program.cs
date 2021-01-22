@@ -14,7 +14,7 @@ namespace katarabbitmq.client.app
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Unhandled Exception");
+                Console.Error.WriteLine("Unhandled exception:");
                 Console.Error.WriteLine(e);
             }
         }

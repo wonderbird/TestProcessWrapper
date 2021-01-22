@@ -1,6 +1,6 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-using katarabbitmq.bdd.tests.Helpers;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
@@ -8,84 +8,29 @@ using Xunit.Abstractions;
 namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
-    public class NoUnhandledExceptionsStepDefinitions : IDisposable
+    public class NoUnhandledExceptionsStepDefinitions
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-        private RemoteControlledProcess _client;
-        private bool _isDisposed;
-        private RemoteControlledProcess _robot;
-
-        public NoUnhandledExceptionsStepDefinitions(ITestOutputHelper testOutputHelper) =>
-            _testOutputHelper = testOutputHelper;
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        [Given]
-        public void GivenTheRobotAndClientAreRunning()
-        {
-            _client = new RemoteControlledProcess("kata-rabbitmq.client.app");
-            _client.TestOutputHelper = _testOutputHelper;
-            _client.Start();
-
-            _robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
-            _robot.TestOutputHelper = _testOutputHelper;
-            _robot.Start();
-        }
-
         [When]
-        public void WhenATermSignalIsSentToBothServerAndClient()
+        public static void WhenATERMSignalIsSentToAllApplications()
         {
-            _robot.ShutdownGracefully();
-            _client.ShutdownGracefully();
+            SharedStepDefinitions.ShutdownProcessesGracefully();
         }
 
         [Then]
-        public void ThenBothApplicationsShutDown()
+        public static void ThenAllApplicationsShutDown()
         {
-            Assert.True(_robot.HasExited);
-            Assert.True(_client.HasExited);
+            Assert.True(SharedStepDefinitions.Robot.HasExited);
+            Assert.True(SharedStepDefinitions.Clients.All(c => c.HasExited));
         }
 
         [Then]
-        public void ThenTheLogIsFreeOfExceptionMessages()
+        public static void ThenTheLogIsFreeOfExceptionMessages()
         {
-            // TODO Instead of waiting for ... milliseconds, wait until a specific string shows on the console
-            Task.Delay(TimeSpan.FromMilliseconds(500));
-
-            Assert.DoesNotContain("exception", _robot.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
-            Assert.DoesNotContain("exception", _client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
-        }
-
-        [AfterScenario("NoUnhandledExceptions")]
-        public void StopProcesses()
-        {
-            _robot?.ForceTermination();
-            _client?.ForceTermination();
-        }
-
-        ~NoUnhandledExceptionsStepDefinitions()
-        {
-            Dispose(false);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (_isDisposed)
+            Assert.DoesNotContain("exception", SharedStepDefinitions.Robot.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
+            foreach (var client in SharedStepDefinitions.Clients)
             {
-                return;
+                Assert.DoesNotContain("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
             }
-
-            if (disposing)
-            {
-                _robot?.Dispose();
-                _client?.Dispose();
-            }
-
-            _isDisposed = true;
         }
     }
 }
