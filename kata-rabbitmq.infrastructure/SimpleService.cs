@@ -6,14 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace katarabbitmq.infrastructure
 {
-    public class RabbitMqConnectedService : BackgroundService
+    public class SimpleService : BackgroundService
     {
-        public RabbitMqConnectedService(ILogger<RabbitMqConnectedService> logger)
+        public SimpleService(ILogger<SimpleService> logger)
         {
             Logger = logger;
         }
 
-        protected ILogger<RabbitMqConnectedService> Logger { get; }
+        protected ILogger<SimpleService> Logger { get; }
 
         protected TimeSpan DelayAfterEachLoop { get; init; } = TimeSpan.FromMilliseconds(50.0);
 

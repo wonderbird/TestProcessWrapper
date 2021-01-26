@@ -10,7 +10,7 @@ namespace katarabbitmq.robot.app
         {
             try
             {
-                RabbitMqConnectedHostBuilder.Create<RabbitMqConnectedService>().Build().Run();
+                SimpleHostBuilder.Create<SimpleService>().Build().Run();
             }
             catch (Exception e)
             {

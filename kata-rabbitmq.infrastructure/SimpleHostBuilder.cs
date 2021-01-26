@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace katarabbitmq.infrastructure
 {
-    public static class RabbitMqConnectedHostBuilder
+    public static class SimpleHostBuilder
     {
         public static IHostBuilder Create<
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
