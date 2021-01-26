@@ -14,8 +14,7 @@ namespace katarabbitmq.infrastructure
             return Host.CreateDefaultBuilder()
                 .ConfigureServices((_, services) =>
                     services.AddHostedService<THostedService>()
-                        .AddHostedService<LogApplicationInfoService>()
-                        .AddRabbitMqInfrastructure());
+                        .AddHostedService<LogApplicationInfoService>());
         }
     }
 }

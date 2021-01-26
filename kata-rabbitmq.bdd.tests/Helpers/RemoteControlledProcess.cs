@@ -38,8 +38,6 @@ namespace katarabbitmq.bdd.tests.Helpers
             _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
         }
 
-        public bool IsConnectionEstablished { get; private set; }
-
         public bool HasExited => _process == null || _process.HasExited;
 
         public bool IsRunning => _process != null && !_process.HasExited;
@@ -104,12 +102,6 @@ namespace katarabbitmq.bdd.tests.Helpers
                 WorkingDirectory = _appDir
             };
 
-            processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Hostname);
-            processStartInfo.AddEnvironmentVariable("RabbitMq__Port",
-                RabbitMq.Port.ToString(CultureInfo.InvariantCulture));
-            processStartInfo.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Username);
-            processStartInfo.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Password);
-
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
             TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");
 
@@ -125,30 +117,25 @@ namespace katarabbitmq.bdd.tests.Helpers
 
                 Thread.Sleep(100);
             }
-            while (!IsConnectionEstablished || !_dotnetHostProcessId.HasValue);
+            while (!_dotnetHostProcessId.HasValue);
         }
 
         public string ReadOutput() => _processStreamBuffer.StreamContent;
 
         private void ParseStartupMessage(string startupMessage)
         {
-            const string expectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
-
-            if (!IsConnectionEstablished)
+            if (_dotnetHostProcessId.HasValue || !startupMessage.Contains("Process ID"))
             {
-                IsConnectionEstablished = startupMessage.Contains(expectedMessageAfterRabbitMqConnected);
+                return;
             }
 
-            if (!_dotnetHostProcessId.HasValue && startupMessage.Contains("Process ID"))
-            {
-                var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
-                var newLineAfterProcessIdIndex =
-                    startupMessage.IndexOf("\n", processIdStartIndex, StringComparison.Ordinal);
-                var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
-                var processIdString = startupMessage.Substring(processIdStartIndex + 10, processIdNumberOfDigits);
-                _dotnetHostProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
-            }
+            var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
+            var newLineAfterProcessIdIndex =
+                startupMessage.IndexOf("\n", processIdStartIndex, StringComparison.Ordinal);
+            var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
+            var processIdString = startupMessage.Substring(processIdStartIndex + 10, processIdNumberOfDigits);
+            _dotnetHostProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
+            TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
         }
 
         public void ShutdownGracefully()

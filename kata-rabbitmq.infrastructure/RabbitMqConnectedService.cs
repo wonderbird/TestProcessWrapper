@@ -6,15 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace katarabbitmq.infrastructure
 {
-    public abstract class RabbitMqConnectedService : BackgroundService
+    public class RabbitMqConnectedService : BackgroundService
     {
-        protected RabbitMqConnectedService(IRabbitMqConnection rabbit, ILogger<RabbitMqConnectedService> logger)
+        public RabbitMqConnectedService(ILogger<RabbitMqConnectedService> logger)
         {
-            Rabbit = rabbit;
             Logger = logger;
         }
-
-        protected IRabbitMqConnection Rabbit { get; }
 
         protected ILogger<RabbitMqConnectedService> Logger { get; }
 
@@ -54,11 +51,6 @@ namespace katarabbitmq.infrastructure
 
         protected virtual async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
         {
-            if (!Rabbit.IsConnected)
-            {
-                Rabbit.TryConnect();
-            }
-
             await Task.Delay(DelayAfterEachLoop, stoppingToken);
         }
 
@@ -66,7 +58,6 @@ namespace katarabbitmq.infrastructure
         {
             Logger.LogInformation("Shutting down ...");
 
-            Rabbit.Disconnect();
             OnShutdownService();
 
             Logger.LogDebug("Shutdown complete.");
