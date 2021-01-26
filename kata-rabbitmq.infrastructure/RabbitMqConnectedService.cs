@@ -67,8 +67,13 @@ namespace katarabbitmq.infrastructure
             Logger.LogInformation("Shutting down ...");
 
             Rabbit.Disconnect();
+            OnShutdownService();
 
             Logger.LogDebug("Shutdown complete.");
+        }
+
+        protected virtual void OnShutdownService()
+        {
         }
     }
 }

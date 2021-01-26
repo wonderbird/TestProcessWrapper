@@ -1,5 +1,5 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using katarabbitmq.bdd.tests.Helpers;
@@ -12,57 +12,60 @@ namespace katarabbitmq.bdd.tests.Steps
     [Binding]
     public class LightSensorReadingsStepDefinitions
     {
+        private readonly List<int> _countReceivedSensorReadingsByClient = new();
         private readonly ITestOutputHelper _testOutputHelper;
-        private int _countReceivedSensorReadings;
+        private int _countSentSensorValues;
 
         public LightSensorReadingsStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
-        [When("the robot and client app have been connected for (.*) seconds")]
-        public async Task WhenTheRobotAndClientAppHasBeenConnectedForSeconds(double seconds)
+        [When(@"the robot has sent at least (.*) sensor value")]
+        public void WhenTheRobotHasSentAtLeastSensorValue(int expectedNumberOfSentSensorValues)
         {
-            await WaitUntilProcessesConnectedToRabbitMq(Processes.Robot, Processes.Client);
+            WaitUntilExpectedNumberOfSensorValuesWasSent(expectedNumberOfSentSensorValues);
 
-            await WaitForSeconds(seconds);
+            SharedStepDefinitions.ShutdownProcessesGracefully();
 
-            ParseSensorDataFromClientProcess();
+            ParseSensorDataFromRobotProcess();
+            ParseSensorDataFromClientProcesses();
         }
 
-        private static async Task WaitUntilProcessesConnectedToRabbitMq(params RemoteControlledProcess[] processes)
+        private async void WaitUntilExpectedNumberOfSensorValuesWasSent(int expectedNumberOfSentSensorValues)
         {
-            bool IsConnectionEstablished()
+            do
             {
-                return processes.ToList().All(p => p.IsConnectionEstablished);
+                ParseSensorDataFromRobotProcess();
+                await Task.Delay(TimeSpan.FromMilliseconds(1));
             }
-
-            while (!IsConnectionEstablished())
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(1.0));
-            }
+            while (_countSentSensorValues < expectedNumberOfSentSensorValues);
         }
 
-        private async Task WaitForSeconds(double seconds)
+        private void ParseSensorDataFromRobotProcess()
         {
-            var stopwatch = Stopwatch.StartNew();
-            await Task.Delay(TimeSpan.FromSeconds(seconds));
-            stopwatch.Stop();
-
-            _testOutputHelper?.WriteLine($"Waited for {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
-        }
-
-        private void ParseSensorDataFromClientProcess()
-        {
-            var output = Processes.Client.ReadOutput();
+            var output = SharedStepDefinitions.Robot.ReadOutput();
             var lines = output.Split('\n').ToList();
-            _countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
+            _countSentSensorValues = lines.Count(l => l.Contains("Sensor data"));
         }
 
-        [Then("the client app received at least (.*) sensor values")]
-        public void ThenTheClientAppReceivedAtLeastSensorValues(int expectedSensorValuesCount)
+        private void ParseSensorDataFromClientProcesses()
         {
-            _testOutputHelper.WriteLine($"Received {_countReceivedSensorReadings} values");
-            Assert.True(_countReceivedSensorReadings >= expectedSensorValuesCount,
-                $"Client app must receive at least {expectedSensorValuesCount} sensor value(s). It actually received {_countReceivedSensorReadings} values");
+            foreach (var client in SharedStepDefinitions.Clients)
+            {
+                var output = client.ReadOutput();
+                var lines = output.Split('\n').ToList();
+                var countReceivedSensorReadings = lines.Count(l => l.Contains("Sensor data"));
+                _countReceivedSensorReadingsByClient.Add(countReceivedSensorReadings);
+            }
+        }
+
+        [Then]
+        public void ThenEachClientReceivedAllSentSensorValues()
+        {
+            _testOutputHelper.WriteLine($"Robot has sent {_countSentSensorValues} values.");
+            _testOutputHelper.WriteLine($"The client(s) received {string.Join(",", _countReceivedSensorReadingsByClient)} values");
+
+            Assert.True(_countReceivedSensorReadingsByClient.All(c => c == _countSentSensorValues),
+                $"Each client app must receive exactly {_countSentSensorValues} sensor value(s).");
         }
     }
 }

@@ -6,6 +6,8 @@ namespace katarabbitmq.model
     {
         public int ambient { get; set; }
 
+        public int sequenceNumber { get; set; }
+
         public override string ToString() => $"{base.ToString()} {JsonConvert.SerializeObject(this, Formatting.None)}";
     }
 }

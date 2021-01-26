@@ -8,6 +8,8 @@ namespace katarabbitmq.infrastructure
 
         public IModel Channel { get; }
 
+        public string QueueName { get; }
+
         void TryConnect();
 
         void Disconnect();

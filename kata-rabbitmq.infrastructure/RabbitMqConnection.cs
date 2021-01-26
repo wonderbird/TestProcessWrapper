@@ -18,6 +18,8 @@ namespace katarabbitmq.infrastructure
 
         public IConnection Connection { get; private set; }
 
+        public string QueueName { get; private set; }
+
         public IModel Channel { get; private set; }
 
         public bool IsConnected => Connection != null;
@@ -37,12 +39,14 @@ namespace katarabbitmq.infrastructure
                 Connection = connectionFactory.CreateConnection();
                 Channel = Connection.CreateModel();
 
-                Channel.ExchangeDeclare("robot", ExchangeType.Direct, false, true,
+                Channel.ExchangeDeclare("robot", ExchangeType.Fanout, false, true,
                     null);
-                Channel.QueueDeclare("sensors", false, false, true,
+                var queueDeclareOk = Channel.QueueDeclare("", false, true, true,
                     null);
+                QueueName = queueDeclareOk.QueueName;
+                Channel.QueueBind(QueueName, "robot", "", null);
 
-                _logger.LogInformation("Established connection to RabbitMQ");
+                _logger.LogInformation($"Established connection to RabbitMQ, queue name {QueueName}.");
             }
             catch (Exception e)
             {
@@ -62,10 +66,12 @@ namespace katarabbitmq.infrastructure
 
         private ConnectionFactory CreateConnectionFactory()
         {
+            var uniqueClientProvidedNameSuffix = "-" + Guid.NewGuid();
+
             var connectionFactory = new ConnectionFactory
             {
                 VirtualHost = "/",
-                ClientProvidedName = "app:robot",
+                ClientProvidedName = _configuration["RabbitMq:ClientProvidedName"] + uniqueClientProvidedNameSuffix,
                 HostName = _configuration["RabbitMq:HostName"],
                 Port = _configuration.GetValue<int>("RabbitMq:Port"),
                 UserName = _configuration["RabbitMq:UserName"],
@@ -75,6 +81,7 @@ namespace katarabbitmq.infrastructure
             _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
             _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
             _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
+            _logger.LogDebug($"RabbitMQ ClientProvidedName: {connectionFactory.ClientProvidedName}");
 
             return connectionFactory;
         }

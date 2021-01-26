@@ -1,3 +1,4 @@
+using System;
 using katarabbitmq.infrastructure;
 using Microsoft.Extensions.Hosting;
 
@@ -7,7 +8,15 @@ namespace katarabbitmq.robot.app
     {
         public static void Main()
         {
-            RabbitMqConnectedHostBuilder.Create<SensorDataSender>().Build().Run();
+            try
+            {
+                RabbitMqConnectedHostBuilder.Create<SensorDataSender>().Build().Run();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Unhandled exception:");
+                Console.Error.WriteLine(e);
+            }
         }
     }
 }

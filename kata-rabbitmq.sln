@@ -9,23 +9,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.bdd.tests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0F0E-484D-9F2C-1CFB8B228733}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		docker-compose.yml = docker-compose.yml
-		README.md = README.md
+		dockerfile.client = dockerfile.client
+		dockerfile.robot = dockerfile.robot
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		tools\dupfinder.bat = tools\dupfinder.bat
+		tools\dupfinder.sh = tools\dupfinder.sh
 		tools\dupfinder.xslt = tools\dupfinder.xslt
 		tools\msxsl.exe = tools\msxsl.exe
-		tools\dupfinder.sh = tools\dupfinder.sh
-		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
-		.editorconfig = .editorconfig
-		dockerfile.robot = dockerfile.robot
-		dockerfile.client = dockerfile.client
+		README.md = README.md
+		run-client.bat = run-client.bat
+		run-client.sh = run-client.sh
+		run-robot.bat = run-robot.bat
+		run-robot.sh = run-robot.sh
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.client.app", "kata-rabbitmq.client.app\kata-rabbitmq.client.app.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.client.app", "kata-rabbitmq.client.app\kata-rabbitmq.client.app.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.infrastructure", "kata-rabbitmq.infrastructure\kata-rabbitmq.infrastructure.csproj", "{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.infrastructure", "kata-rabbitmq.infrastructure\kata-rabbitmq.infrastructure.csproj", "{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kata-rabbitmq.model", "kata-rabbitmq.model\kata-rabbitmq.model.csproj", "{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.model", "kata-rabbitmq.model\kata-rabbitmq.model.csproj", "{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

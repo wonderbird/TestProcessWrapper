@@ -22,13 +22,16 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who pr
 # Required Steps
 
 1. Launch an instance of RabbitMQ (e.g. https://hub.docker.com/_/rabbitmq)
+   
 2. Create a "robot" application which ...
    1. programmatically creates a message queue to transmit light sensor information (just some arbitrary values of ambient light)
    2. periodically sends arbitrary light sensor information to the queue (e.g. the JSON string '{ "sensor1": "7.0" }')
+
 3. Create a robot monitor application which ...
    1. consumes the message from the queue and displays them on the screen
    2. acknowledges the messages it consumed
- 
+
+4. Extend the application such that multiple robot monitor applications can consume and display messages. 
 
 999. Further Ideas: Consider the information in section "Important Production Related Documentation" below
 
@@ -82,6 +85,18 @@ client_1  | info: katarabbitmq.client.app.SensorDataConsumer[0]
 client_1  |       Sensor data: katarabbitmq.model.LightSensorValue {"ambient":7}
 ```
 
+You can scale the number of clients by
+
+```shell
+docker-compose up --scale client=3
+```
+
+Add individual docker containers with clients to the docker-compose group
+
+```shell
+docker run -it --rm --name client4 --network="kata-rabbitmq_default" kata-rabbitmq_client:latest
+```
+
 ### Run the Application and RabbitMQ on Your Development PC
 
 ```sh
@@ -133,6 +148,40 @@ the automatic build will fail.
 
 If you are using [JetBrains Rider](https://www.jetbrains.com/en-us/rider/), you can move
 (or shelve) these changes into a changeset which you never check-in.
+
+### Before Creating a Pull Request ...
+
+... apply code formatting rules
+
+```shell
+dotnet format
+```
+
+... and check code metrics using [metrix++](https://github.com/metrixplusplus/metrixplusplus)
+
+```shell
+# Collect metrics
+metrix++ collect --std.code.complexity.cyclomatic --std.code.lines.code --std.code.todo.comments --std.code.maintindex.simple -- .
+
+# Get an overview
+metrix++ view --db-file=./metrixpp.db
+
+# Apply thresholds
+metrix++ limit --db-file=./metrixpp.db --max-limit=std.code.complexity:cyclomatic:5 --max-limit=std.code.lines:code:25:function --max-limit=std.code.todo:comments:0 --max-limit=std.code.mi:simple:1
+```
+
+At the time of writing, I want to stay below the following thresholds:
+
+```shell
+--max-limit=std.code.complexity:cyclomatic:5
+--max-limit=std.code.lines:code:25:function
+--max-limit=std.code.todo:comments:0
+--max-limit=std.code.mi:simple:1
+```
+
+I allow generated files named `*.feature.cs` to exceed these thresholds.
+
+Finally, remove all code duplication. The next section describes how to detect code duplication.
 
 ## Identify Code Duplication
 

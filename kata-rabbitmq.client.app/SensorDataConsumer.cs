@@ -14,6 +14,7 @@ namespace katarabbitmq.client.app
     {
         private readonly ILogger<SensorDataConsumer> _logger;
         private EventingBasicConsumer _consumer;
+        private int _numberOfMeasurements;
 
         public SensorDataConsumer(IRabbitMqConnection rabbit, ILogger<SensorDataConsumer> logger)
             : base(rabbit, logger) =>
@@ -38,7 +39,7 @@ namespace katarabbitmq.client.app
         {
             _consumer = new EventingBasicConsumer(Rabbit.Channel);
             _consumer.Received += ReceiveSensorData;
-            Rabbit.Channel.BasicConsume(_consumer, "sensors");
+            Rabbit.Channel.BasicConsume(_consumer, Rabbit.QueueName);
         }
 
         private void ReceiveSensorData(object sender, BasicDeliverEventArgs eventArgs)
@@ -48,6 +49,13 @@ namespace katarabbitmq.client.app
             var measurement = JsonConvert.DeserializeObject<LightSensorValue>(message);
 
             _logger.LogInformation($"Sensor data: {measurement}");
+            ++_numberOfMeasurements;
+        }
+
+        protected override void OnShutdownService()
+        {
+            base.OnShutdownService();
+            _logger.LogInformation($"Received {_numberOfMeasurements} sensor values.");
         }
     }
 }
