@@ -19,7 +19,6 @@ namespace katarabbitmq.bdd.tests.Steps
             _testOutputHelper = testOutputHelper;
 
         public static List<RemoteControlledProcess> Clients { get; } = new();
-        public static RemoteControlledProcess Robot { get; private set; }
 
         public void Dispose()
         {
@@ -36,24 +35,21 @@ namespace katarabbitmq.bdd.tests.Steps
         [Then]
         public static void ThenAllApplicationsShutDown()
         {
-            Assert.True(Robot.HasExited);
             Assert.True(Clients.All(c => c.HasExited));
         }
 
         [Then]
         public static void ThenTheLogIsFreeOfExceptionMessages()
         {
-            Assert.DoesNotContain("exception", Robot.ReadOutput(),
-                StringComparison.CurrentCultureIgnoreCase);
             foreach (var client in Clients)
             {
                 Assert.DoesNotContain("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
             }
         }
 
-        [Given(@"the robot and (.*) client are running")]
-        [Given(@"the robot and (.*) clients are running")]
-        public void GivenTheRobotAndClientsAreRunning(int numberOfClients)
+        [Given(@"(.*) client are running")]
+        [Given(@"(.*) clients are running")]
+        public void GivenClientsAreRunning(int numberOfClients)
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
@@ -65,18 +61,10 @@ namespace katarabbitmq.bdd.tests.Steps
             }
 
             Assert.True(Clients.All(c => c.IsRunning));
-
-            Robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
-            Robot.TestOutputHelper = _testOutputHelper;
-            Robot.Start();
-
-            Assert.True(Robot.IsRunning);
         }
 
         public static void ShutdownProcessesGracefully()
         {
-            Robot.ShutdownGracefully();
-
             foreach (var client in Clients)
             {
                 client.ShutdownGracefully();
@@ -86,10 +74,6 @@ namespace katarabbitmq.bdd.tests.Steps
         [AfterScenario]
         public static void ForceProcessTermination()
         {
-            Robot.ForceTermination();
-            Robot.Dispose();
-            Robot = null;
-
             foreach (var client in Clients)
             {
                 client.ForceTermination();
@@ -113,7 +97,6 @@ namespace katarabbitmq.bdd.tests.Steps
 
             if (disposing)
             {
-                Robot?.Dispose();
                 foreach (var client in Clients)
                 {
                     client?.Dispose();

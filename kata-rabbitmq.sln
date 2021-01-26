@@ -3,14 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.robot.app", "kata-rabbitmq.robot.app\kata-rabbitmq.robot.app.csproj", "{D3B8E17A-6258-4979-A1F8-DDF36763F54D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.bdd.tests", "kata-rabbitmq.bdd.tests\kata-rabbitmq.bdd.tests.csproj", "{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0F0E-484D-9F2C-1CFB8B228733}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		docker-compose.yml = docker-compose.yml
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		tools\dupfinder.bat = tools\dupfinder.bat
 		tools\dupfinder.sh = tools\dupfinder.sh
@@ -19,15 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0
 		README.md = README.md
 		run-client.bat = run-client.bat
 		run-client.sh = run-client.sh
-		run-robot.bat = run-robot.bat
-		run-robot.sh = run-robot.sh
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.client.app", "kata-rabbitmq.client.app\kata-rabbitmq.client.app.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.infrastructure", "kata-rabbitmq.infrastructure\kata-rabbitmq.infrastructure.csproj", "{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.model", "kata-rabbitmq.model\kata-rabbitmq.model.csproj", "{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,18 +32,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Debug|x64.Build.0 = Debug|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Debug|x86.Build.0 = Debug|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Release|x64.ActiveCfg = Release|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Release|x64.Build.0 = Release|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Release|x86.ActiveCfg = Release|Any CPU
-		{D3B8E17A-6258-4979-A1F8-DDF36763F54D}.Release|x86.Build.0 = Release|Any CPU
 		{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -87,18 +68,6 @@ Global
 		{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}.Release|x64.Build.0 = Release|Any CPU
 		{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C82E2D1-0EB9-4118-BF9C-50246D1427C6}.Release|x86.Build.0 = Release|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x64.Build.0 = Debug|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Debug|x86.Build.0 = Debug|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x64.ActiveCfg = Release|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x64.Build.0 = Release|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x86.ActiveCfg = Release|Any CPU
-		{4F17A396-AFB5-4A3C-BBC0-0D7221D1D3A3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
