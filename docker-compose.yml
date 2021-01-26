@@ -6,14 +6,4 @@ services:
     ports:
     - "15672:15672"
     - "5672:5672"
-
-  robot:
-    build:
-      context: .
-      dockerfile: ./dockerfile.robot
-      
-  client:
-    build:
-      context: .
-      dockerfile: ./dockerfile.client
       
