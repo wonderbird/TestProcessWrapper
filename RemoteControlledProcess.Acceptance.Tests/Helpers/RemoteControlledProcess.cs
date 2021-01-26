@@ -87,7 +87,7 @@ namespace katarabbitmq.bdd.tests.Helpers
         private ProcessStartInfo CreateProcessStartInfo()
         {
             var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportPath = Path.Combine(_projectDir, "kata-rabbitmq.bdd.tests", "TestResults",
+            var coverageReportPath = Path.Combine(_projectDir, "RemoteControlledProcess.Acceptance.Tests", "TestResults",
                 coverageReportFileName);
 
             var processStartInfo = new ProcessStartInfo("coverlet")

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.bdd.tests", "kata-rabbitmq.bdd.tests\kata-rabbitmq.bdd.tests.csproj", "{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteControlledProcess.Acceptance.Tests", "RemoteControlledProcess.Acceptance.Tests\RemoteControlledProcess.Acceptance.Tests.csproj", "{09A836FB-0E1A-45F7-ABCD-3CA4F4EAC2FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0F0E-484D-9F2C-1CFB8B228733}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0
 		run-client.sh = run-client.sh
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kata-rabbitmq.client.app", "kata-rabbitmq.client.app\kata-rabbitmq.client.app.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteControlledProcess.Application", "RemoteControlledProcess.Application\RemoteControlledProcess.Application.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

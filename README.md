@@ -1,4 +1,4 @@
-# RabbitMQ Learning Kata
+# Test Helper: RemoteControlledProcess
 
 [![Build Status Badge](https://github.com/wonderbird/kata-rabbitmq/workflows/.NET%20Core/badge.svg)](https://github.com/wonderbird/kata-rabbitmq/actions?query=workflow%3A%22.NET+Core%22)
 [![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbird/RemoteControlledProcess)](https://coveralls.io/github/wonderbird/RemoteControlledProcess)

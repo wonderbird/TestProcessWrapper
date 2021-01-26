@@ -53,7 +53,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new RemoteControlledProcess("kata-rabbitmq.client.app");
+                var client = new RemoteControlledProcess("RemoteControlledProcess.Application");
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 
