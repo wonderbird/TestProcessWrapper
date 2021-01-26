@@ -4,14 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace katarabbitmq.infrastructure
+namespace katarabbitmq.client.app
 {
     public class SimpleService : BackgroundService
     {
-        public SimpleService(ILogger<SimpleService> logger)
-        {
-            Logger = logger;
-        }
+        public SimpleService(ILogger<SimpleService> logger) => Logger = logger;
 
         protected ILogger<SimpleService> Logger { get; }
 

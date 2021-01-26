@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace katarabbitmq.infrastructure
+namespace katarabbitmq.client.app
 {
     public class LogApplicationInfoService : BackgroundService
     {

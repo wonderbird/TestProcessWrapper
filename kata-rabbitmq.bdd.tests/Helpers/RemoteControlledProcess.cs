@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using Xunit.Abstractions;
 
 namespace katarabbitmq.bdd.tests.Helpers
@@ -207,7 +206,8 @@ namespace katarabbitmq.bdd.tests.Helpers
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") + "completed.");
+            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") +
+                                        "completed.");
         }
 
         public void ForceTermination()

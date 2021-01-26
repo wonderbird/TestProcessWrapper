@@ -2,13 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace katarabbitmq.infrastructure
+namespace katarabbitmq.client.app
 {
     public static class SimpleHostBuilder
     {
         public static IHostBuilder Create<
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-        THostedService>()
+            THostedService>()
             where THostedService : class, IHostedService
         {
             return Host.CreateDefaultBuilder()
