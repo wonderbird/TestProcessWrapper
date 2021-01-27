@@ -4,8 +4,14 @@ Feature: No Unhandeled Exceptions
   As a developer
   I do not want exceptions to be reported
 
-  Scenario: Unhandeled Exception Regression Test
-    Given 2 clients are running
+  Scenario: 1 application - unhandeled exception regression test
+    Given 1 application is running
+    When a TERM signal is sent to all applications
+    Then all applications shut down
+    And the log is free of exception messages
+
+  Scenario: 2 applications - unhandeled exception regression test
+    Given 2 applications are running
     When a TERM signal is sent to all applications
     Then all applications shut down
     And the log is free of exception messages

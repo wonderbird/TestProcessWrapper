@@ -47,9 +47,9 @@ namespace katarabbitmq.bdd.tests.Steps
             }
         }
 
-        [Given(@"(.*) client are running")]
-        [Given(@"(.*) clients are running")]
-        public void GivenClientsAreRunning(int numberOfClients)
+        [Given(@"(.*) application is running")]
+        [Given(@"(.*) applications are running")]
+        public void GivenApplicationsAreRunning(int numberOfClients)
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
