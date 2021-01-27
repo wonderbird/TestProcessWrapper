@@ -13,8 +13,12 @@ namespace katarabbitmq.client.app
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Unhandled exception:");
-                Console.Error.WriteLine(e);
+                var stackFrame = new System.Diagnostics.StackTrace(true).GetFrame(0);
+                var fileName = stackFrame?.GetFileName();
+                var lineNumber = stackFrame?.GetFileLineNumber();
+
+                Console.Error.WriteLine($"Unhandled exception in {fileName}:{lineNumber}.");
+                Console.Error.WriteLine(e.ToString());
             }
         }
     }
