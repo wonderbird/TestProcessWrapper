@@ -11,7 +11,13 @@
 
 Launch and control `dotnet` processes wrapped into the `coverlet` code coverage analyzer.
 
-**Development and Support Standard**
+## Attention
+
+You can use the `coverlet` wrapper only once per `dotnet` application, because `coverlet` instruments the `dotnet` DLL.
+If you run two or more instances of a wrapped application, `coverlet` will report an exception and there will be zero
+coverage calculated.
+
+## Development and Support Standard
 
 This project is incomplete and not production ready.
 
@@ -115,13 +121,16 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 ## .NET Core
 
-* GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
+*
+GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
 
 ## Behavior Driven Development (BDD)
 
 * Tricentis: [SpecFlow - Getting Started](https://specflow.org/getting-started/)
-* The SpecFlow Team: [SpecFlow.xUnit — documentation](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html)
-* The SpecFlow Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
+* The SpecFlow
+  Team: [SpecFlow.xUnit — documentation](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html)
+* The SpecFlow
+  Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
 * [Testcontainers](https://www.testcontainers.org/)
 
 ## Code Analysis
@@ -129,7 +138,8 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * JetBrains s.r.o.: [dupFinder Command-Line Tool](https://www.jetbrains.com/help/resharper/dupFinder.html)
 * GitHub: [coverlet-coverage / coverlet](https://github.com/coverlet-coverage/coverlet)
 * GitHub: [danielpalme / ReportGenerator](https://github.com/danielpalme/ReportGenerator)
-* Scott Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
+* Scott
+  Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
 * [EditorConfig.org](https://editorconfig.org)
 * GitHub: [dotnet / roslyn - .editorconfig](https://github.com/dotnet/roslyn/blob/master/.editorconfig)
 * Check all the badges on top of this README

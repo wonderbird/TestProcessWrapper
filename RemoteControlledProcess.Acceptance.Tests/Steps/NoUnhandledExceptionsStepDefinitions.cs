@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using katarabbitmq.bdd.tests.Helpers;
 using TechTalk.SpecFlow;
@@ -47,9 +48,18 @@ namespace katarabbitmq.bdd.tests.Steps
             }
         }
 
-        [Given(@"(.*) application is running")]
-        [Given(@"(.*) applications are running")]
-        public void GivenApplicationsAreRunning(int numberOfClients)
+        [Then]
+        public static void ThenEachLogShowsAnExceptionMessage()
+        {
+            foreach (var client in Clients)
+            {
+                Assert.Contains("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
+            }
+        }
+
+        [Given(@"(.*) application is running with coverlet '(.*)'")]
+        [Given(@"(.*) applications are running with coverlet '(.*)'")]
+        public void GivenApplicationsAreRunning(int numberOfClients, bool isCoverletEnabled)
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
