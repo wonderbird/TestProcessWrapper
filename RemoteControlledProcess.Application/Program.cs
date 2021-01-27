@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.Hosting;
+using RemoteControlledProcess;
 
 namespace katarabbitmq.client.app
 {
@@ -13,12 +14,7 @@ namespace katarabbitmq.client.app
             }
             catch (Exception e)
             {
-                var stackFrame = new System.Diagnostics.StackTrace(true).GetFrame(0);
-                var fileName = stackFrame?.GetFileName();
-                var lineNumber = stackFrame?.GetFileLineNumber();
-
-                Console.Error.WriteLine($"Unhandled exception in {fileName}:{lineNumber}.");
-                Console.Error.WriteLine(e.ToString());
+                e.Write(Console.Error);
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RemoteControlledProcess;
 
 namespace katarabbitmq.client.app
 {
@@ -10,9 +11,9 @@ namespace katarabbitmq.client.app
     {
         public SimpleService(ILogger<SimpleService> logger) => Logger = logger;
 
-        protected ILogger<SimpleService> Logger { get; }
+        private ILogger<SimpleService> Logger { get; }
 
-        protected TimeSpan DelayAfterEachLoop { get; init; } = TimeSpan.FromMilliseconds(50.0);
+        private TimeSpan DelayAfterEachLoop { get; } = TimeSpan.FromMilliseconds(50.0);
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -31,7 +32,7 @@ namespace katarabbitmq.client.app
             }
             catch (Exception e)
             {
-                Logger.LogCritical(e.ToString());
+                e.Log(Logger);
             }
             finally
             {
@@ -54,14 +55,7 @@ namespace katarabbitmq.client.app
         private void ShutdownService()
         {
             Logger.LogInformation("Shutting down ...");
-
-            OnShutdownService();
-
-            Logger.LogDebug("Shutdown complete.");
-        }
-
-        protected virtual void OnShutdownService()
-        {
+            Logger.LogDebug("Shutdown complete");
         }
     }
 }
