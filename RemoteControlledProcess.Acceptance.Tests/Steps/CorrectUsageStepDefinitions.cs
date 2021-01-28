@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteControlledProcess;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
-using RemoteControlledProcess;
 
 namespace katarabbitmq.bdd.tests.Steps
 {
@@ -15,8 +15,7 @@ namespace katarabbitmq.bdd.tests.Steps
 
         private bool _isDisposed;
 
-        public CorrectUsageStepDefinitions(ITestOutputHelper testOutputHelper) =>
-            _testOutputHelper = testOutputHelper;
+        public CorrectUsageStepDefinitions(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
         public static List<ProcessWrapper> Clients { get; } = new();
 

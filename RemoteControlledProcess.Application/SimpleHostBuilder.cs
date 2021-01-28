@@ -8,7 +8,7 @@ namespace katarabbitmq.client.app
     {
         public static IHostBuilder Create<
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-            THostedService>()
+        THostedService>()
             where THostedService : class, IHostedService
         {
             return Host.CreateDefaultBuilder()

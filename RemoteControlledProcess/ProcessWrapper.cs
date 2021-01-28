@@ -21,7 +21,7 @@ namespace RemoteControlledProcess
 
         private int? _dotnetHostProcessId;
 
-        private bool _isCoverletEnabled;
+        private readonly bool _isCoverletEnabled;
 
         private bool _isDisposed;
 
@@ -108,10 +108,12 @@ namespace RemoteControlledProcess
         private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
         {
             var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportPath = Path.Combine(_projectDir, "RemoteControlledProcess.Acceptance.Tests", "TestResults",
+            var coverageReportPath = Path.Combine(_projectDir, "RemoteControlledProcess.Acceptance.Tests",
+                "TestResults",
                 coverageReportFileName);
 
-            var arguments = $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura";
+            var arguments =
+                $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura";
 
             return CreateProcessStartInfo("coverlet", arguments);
         }

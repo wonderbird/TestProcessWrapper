@@ -7,6 +7,7 @@ namespace katarabbitmq.bdd.tests.Steps
     public class BooleanTransformations
     {
         [StepArgumentTransformation]
-        public static bool TransformHumanReadableBooleanSwitchExpression(string expression) => "ENABLED" == expression.ToUpper(CultureInfo.CurrentCulture);
+        public static bool TransformHumanReadableBooleanSwitchExpression(string expression) =>
+            "ENABLED" == expression.ToUpper(CultureInfo.CurrentCulture);
     }
 }
