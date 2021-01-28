@@ -20,13 +20,17 @@ namespace katarabbitmq.bdd.tests.Helpers
 
         private int? _dotnetHostProcessId;
 
+        private bool _isCoverletEnabled;
+
         private bool _isDisposed;
 
         private Process _process;
         private ProcessStreamBuffer _processStreamBuffer;
 
-        public RemoteControlledProcess(string appProjectName)
+        public RemoteControlledProcess(string appProjectName, bool isCoverletEnabled)
         {
+            _isCoverletEnabled = isCoverletEnabled;
+
             var projectRelativeDir = Path.Combine("..", "..", "..", "..");
             _projectDir = Path.GetFullPath(projectRelativeDir);
 
@@ -86,24 +90,45 @@ namespace katarabbitmq.bdd.tests.Helpers
 
         private ProcessStartInfo CreateProcessStartInfo()
         {
+            ProcessStartInfo processStartInfo;
+
+            if (!_isCoverletEnabled)
+            {
+                processStartInfo = CreateProcessStartInfo("dotnet", _appDllName);
+            }
+            else
+            {
+                processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
+            }
+
+            return processStartInfo;
+        }
+
+        private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
+        {
             var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
             var coverageReportPath = Path.Combine(_projectDir, "RemoteControlledProcess.Acceptance.Tests", "TestResults",
                 coverageReportFileName);
 
-            var processStartInfo = new ProcessStartInfo("coverlet")
+            var arguments = $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura";
+
+            return CreateProcessStartInfo("coverlet", arguments);
+        }
+
+        private ProcessStartInfo CreateProcessStartInfo(string processName, string processArguments)
+        {
+            var processStartInfo = new ProcessStartInfo(processName)
             {
                 UseShellExecute = false,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                Arguments =
-                    $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura",
+                Arguments = processArguments,
                 WorkingDirectory = _appDir
             };
 
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
             TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");
-
             return processStartInfo;
         }
 

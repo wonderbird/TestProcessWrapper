@@ -63,7 +63,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new RemoteControlledProcess("RemoteControlledProcess.Application");
+                var client = new RemoteControlledProcess("RemoteControlledProcess.Application", isCoverletEnabled);
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 
