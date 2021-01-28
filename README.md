@@ -56,6 +56,13 @@ dotnet build
 dotnet test
 ```
 
+### Known Issue
+
+When you run the tests on a mac, then the tests using *two* `RemoteControlledProcess`es issue a crash report regarding
+"dotnet".
+
+At the moment I cannot explain that behavior.
+
 ### Before Creating a Pull Request ...
 
 ... apply code formatting rules
@@ -122,6 +129,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 ## .NET Core
 
 *
+
 GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
 
 ## Behavior Driven Development (BDD)

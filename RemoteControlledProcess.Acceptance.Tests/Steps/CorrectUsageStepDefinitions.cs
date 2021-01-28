@@ -10,13 +10,13 @@ using Xunit.Abstractions;
 namespace katarabbitmq.bdd.tests.Steps
 {
     [Binding]
-    public class NoUnhandledExceptionsStepDefinitions : IDisposable
+    public class CorrectUsageStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
         private bool _isDisposed;
 
-        public NoUnhandledExceptionsStepDefinitions(ITestOutputHelper testOutputHelper) =>
+        public CorrectUsageStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
         public static List<RemoteControlledProcess> Clients { get; } = new();
@@ -51,9 +51,12 @@ namespace katarabbitmq.bdd.tests.Steps
         [Then]
         public static void ThenEachLogShowsAnExceptionMessage()
         {
+            const string expectedExceptionMessage = "Unhandled exception.";
+
             foreach (var client in Clients)
             {
-                Assert.Contains("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
+                var output = client.ReadOutput();
+                Assert.Contains(expectedExceptionMessage, output, StringComparison.CurrentCultureIgnoreCase);
             }
         }
 
@@ -93,7 +96,7 @@ namespace katarabbitmq.bdd.tests.Steps
             Clients.Clear();
         }
 
-        ~NoUnhandledExceptionsStepDefinitions()
+        ~CorrectUsageStepDefinitions()
         {
             Dispose(false);
         }
