@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using katarabbitmq.bdd.tests.Helpers;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
+using RemoteControlledProcess;
 
 namespace katarabbitmq.bdd.tests.Steps
 {
@@ -19,7 +18,7 @@ namespace katarabbitmq.bdd.tests.Steps
         public CorrectUsageStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
-        public static List<RemoteControlledProcess> Clients { get; } = new();
+        public static List<ProcessWrapper> Clients { get; } = new();
 
         public void Dispose()
         {
@@ -66,7 +65,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new RemoteControlledProcess("RemoteControlledProcess.Application", isCoverletEnabled);
+                var client = new ProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 

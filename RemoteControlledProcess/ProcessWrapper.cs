@@ -4,11 +4,12 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using katarabbitmq.bdd.tests.Helpers;
 using Xunit.Abstractions;
 
-namespace katarabbitmq.bdd.tests.Helpers
+namespace RemoteControlledProcess
 {
-    public sealed class RemoteControlledProcess : IDisposable
+    public sealed class ProcessWrapper : IDisposable
     {
         private readonly string _appDir;
 
@@ -27,7 +28,7 @@ namespace katarabbitmq.bdd.tests.Helpers
         private Process _process;
         private ProcessStreamBuffer _processStreamBuffer;
 
-        public RemoteControlledProcess(string appProjectName, bool isCoverletEnabled)
+        public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
             _isCoverletEnabled = isCoverletEnabled;
 
@@ -66,7 +67,7 @@ namespace katarabbitmq.bdd.tests.Helpers
             GC.SuppressFinalize(this);
         }
 
-        ~RemoteControlledProcess()
+        ~ProcessWrapper()
         {
             Dispose(false);
         }
