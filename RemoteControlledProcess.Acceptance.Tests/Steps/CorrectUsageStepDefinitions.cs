@@ -42,7 +42,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             foreach (var client in Clients)
             {
-                Assert.DoesNotContain("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
+                Assert.DoesNotContain("Unhandled exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
             }
         }
 

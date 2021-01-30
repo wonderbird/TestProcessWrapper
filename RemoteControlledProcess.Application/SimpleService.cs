@@ -29,6 +29,7 @@ namespace katarabbitmq.client.app
             catch (OperationCanceledException)
             {
                 // This exception is desired, when shutdown is requested. No action is necessary.
+                Logger.LogInformation("OperationCanceledException received");
             }
             catch (Exception e)
             {
