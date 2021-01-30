@@ -46,8 +46,8 @@ This requires python.
 To use the `RemoteControlledProcess` library and to run the unit tests you need the following tools installed:
 
 ```shell
-dotnet tool install --global coverlet.console --configfile Nuget-OfficialOnly.config
-dotnet tool install --global dotnet-reportgenerator-globaltool --configfile Nuget-OfficialOnly.config
+dotnet tool install --global coverlet.console --configfile NuGet-OfficialOnly.config
+dotnet tool install --global dotnet-reportgenerator-globaltool --configfile NuGet-OfficialOnly.config
 ```
 
 ## Build, Test, Run

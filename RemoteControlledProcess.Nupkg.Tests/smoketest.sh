@@ -13,6 +13,11 @@ rm -vrf ./RemoteControlledProcess.Application
 rm -vf ./SmokeTest.sln
 echo
 
+echo "***** Clear local nuget cache"
+rm -v NuGet.config
+dotnet nuget locals clear --all
+echo
+
 echo "***** Copying test application used by smoke test"
 mkdir -p RemoteControlledProcess.Application/bin/Debug/net5.0
 cp -vR ../RemoteControlledProcess.Application/bin/Debug/net5.0/* RemoteControlledProcess.Application/bin/Debug/net5.0
@@ -26,6 +31,10 @@ echo
 
 echo "***** Coping smoke test which uses ProcessWrapper"
 cp -v ../RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs SmokeTest.Test/UnitTest1.cs
+echo
+
+echo "***** Configure NuGet local package directory"
+cp -v NuGet-Local.config NuGet.config
 echo
 
 #####
