@@ -9,37 +9,54 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.100
-    - name: Install dotnet global tools (coverlet, reportgenerator)
-      run: |
-        dotnet tool install --global coverlet.console
-        dotnet tool install --global dotnet-reportgenerator-globaltool
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Debug --no-restore
-    - name: Test with coverage
-      run: dotnet test --no-restore --verbosity normal
-    - name: Generate coverage reports
-      run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
-    - name: Attach coverage report to build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage-report
-        path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
-    - name: Publish coverage report to coveralls.io
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: RemoteControlledProcess.Acceptance.Tests/TestResults/report/lcov.info
-    - name: Publish coverage report to CodeClimate
-      uses: paambaati/codeclimate-action@v2.7.4
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      with:
-        coverageLocations: RemoteControlledProcess.Acceptance.Tests/TestResults/report/lcov.info:lcov
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+
+      - name: Install dotnet global tools (coverlet, reportgenerator)
+        run: |
+          dotnet tool install --global coverlet.console
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Debug --no-restore
+
+      - name: Test with coverage
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Build NuGet package
+        run: dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj
+
+      - name: Test NuGet package
+        run: ./smoketest.sh
+        working-directory: RemoteControlledProcess.Nupkg.Tests
+
+      - name: Generate coverage reports
+        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
+
+      - name: Attach coverage report to build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
+
+      - name: Publish coverage report to coveralls.io
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: RemoteControlledProcess.Acceptance.Tests/TestResults/report/lcov.info
+        
+      - name: Publish coverage report to CodeClimate
+        uses: paambaati/codeclimate-action@v2.7.4
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageLocations: RemoteControlledProcess.Acceptance.Tests/TestResults/report/lcov.info:lcov
