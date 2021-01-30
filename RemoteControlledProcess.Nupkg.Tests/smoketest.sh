@@ -15,7 +15,7 @@ echo
 
 echo "***** Clear local nuget cache"
 rm -v NuGet.config
-dotnet nuget locals clear --all
+dotnet nuget locals all --clear
 echo
 
 echo "***** Copying test application used by smoke test"
@@ -27,6 +27,9 @@ echo "***** Preparing new dotnet solution with an xunit test project"
 dotnet new sln --name SmokeTest
 dotnet new xunit --name SmokeTest.Test
 dotnet sln add SmokeTest.Test/SmokeTest.Test.csproj
+
+# We need to add the dependencies of our own NuGet package before switching to the local package directory
+dotnet add SmokeTest.Test/SmokeTest.Test.csproj package Microsoft.Extensions.Logging.Abstractions
 echo
 
 echo "***** Coping smoke test which uses ProcessWrapper"
