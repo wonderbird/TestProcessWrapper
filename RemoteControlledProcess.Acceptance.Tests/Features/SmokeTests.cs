@@ -6,11 +6,11 @@ namespace katarabbitmq.bdd.tests.Features
     public class SmokeTests
     {
         /// <summary>
-        /// SmokeTest used to verify that the NuGet package has been created correctly.
+        ///     SmokeTest used to verify that the NuGet package has been created correctly.
         /// </summary>
         /// <remarks>
-        /// This test is also used by smoketest.sh in the solution folder
-        /// RemoteControlledProcess.Nupkg.Tests
+        ///     This test is also used by smoketest.sh in the solution folder
+        ///     RemoteControlledProcess.Nupkg.Tests
         /// </remarks>
         [Fact]
         public void SmokeTest()

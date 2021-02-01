@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 
-namespace katarabbitmq.bdd.tests.Helpers
+namespace RemoteControlledProcess
 {
     /// <summary>
     ///     Asynchronously read from StandardOutput or StandardError of a process.

@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using katarabbitmq.bdd.tests.Helpers;
 using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
@@ -17,11 +16,11 @@ namespace RemoteControlledProcess
 
         private readonly string _appProjectName;
 
+        private readonly bool _isCoverletEnabled;
+
         private readonly string _projectDir;
 
         private int? _dotnetHostProcessId;
-
-        private readonly bool _isCoverletEnabled;
 
         private bool _isDisposed;
 

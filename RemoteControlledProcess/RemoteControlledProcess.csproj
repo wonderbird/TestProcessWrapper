@@ -7,16 +7,12 @@
         <title>RemoteControlledProcess</title>
         <Authors>Stefan Boos</Authors>
         <Company>Stefan Boos</Company>
-        <PackageDescription>Launch and control dotnet processes wrapped into the coverlet code coverage analyzer.</PackageDescription>
         <PackageTags>BDD;Test;Process;SpecFlow</PackageTags>
-        <Description>
-            Launch and control dotnet processes wrapped into the coverlet code coverage analyzer.
-
-            The class ProcessWrapper is intended to launch one ore more dotnet processes for performing
-            acceptance tests. The class captures the messages written to the Console and to Console.Error. It allows
-            to terminate the process gracefully and forcefully. One of the processes can be wrapped by
-            the coverlet command line tool in order to calculate code coverage.
-        </Description>
+        <PackageDescription>Launch and control dotnet processes wrapped into the coverlet code coverage analyzer.</PackageDescription>
+        <Summary>Launch and control dotnet processes wrapped into the coverlet code coverage analyzer.</Summary>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/wonderbird/RemoteControlledProcess</PackageProjectUrl>
+        <Copyright>Copyright (c) Stefan Boos 2021</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
