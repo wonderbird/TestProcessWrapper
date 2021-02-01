@@ -33,7 +33,7 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
 
       - name: Build NuGet package
-        run: dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj
+        run: dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=0.0.${{ github.run_number }}
 
       - name: Test NuGet package
         run: ./smoketest.sh

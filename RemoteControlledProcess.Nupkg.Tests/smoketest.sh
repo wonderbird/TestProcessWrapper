@@ -45,7 +45,7 @@ echo
 #####
 
 echo "***** Installing NuGet package provided by this solution"
-dotnet add SmokeTest.Test/SmokeTest.Test.csproj package systems.boos.remotecontrolledprocess
+dotnet add SmokeTest.Test/SmokeTest.Test.csproj package systems.boos.remotecontrolledprocess --prerelease
 echo
 
 echo "***** Executing smoke test"

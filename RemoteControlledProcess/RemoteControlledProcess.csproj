@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <PackageId>systems.boos.remotecontrolledprocess</PackageId>
-        <Version>0.0.1</Version>
+        <Version>0.0.1-SNAPSHOT</Version>
         <title>RemoteControlledProcess</title>
         <Authors>Stefan Boos</Authors>
         <Company>Stefan Boos</Company>
