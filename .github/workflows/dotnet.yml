@@ -20,11 +20,11 @@ jobs:
           
       - name: Setup environment variables (main branch)
         if: github.ref == 'refs/heads/main'
-        run: echo ::set-env name=PACKAGE_VERSION::${{ env.packageVersionPrefix }}.${{ github.run_number }}${{ env.packageVersionSuffixForMainBranch }}
+        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForMainBranch }}" >> $GITHUB_ENV
 
       - name: Setup environment variables (feature branch)
         if: github.ref != 'refs/heads/main'
-        run: echo ::set-env name=PACKAGE_VERSION::${{ env.packageVersionPrefix }}.${{ github.run_number }}${{ env.packageVersionSuffixForFeatureBranch }}
+        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForFeatureBranch }}" >> $GITHUB_ENV
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -46,7 +46,7 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
 
       - name: Build NuGet package
-        run: dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=$PACKAGE_VERSION
+        run: dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=${{ env.packageVersion }}
 
       - name: Test NuGet package
         run: ./smoketest.sh
