@@ -2,12 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <PackageId>systems.boos.remotecontrolledprocess</PackageId>
-        <Version>0.0.1-SNAPSHOT</Version>
+        <PackageId>Boos.RemoteControlledProcess</PackageId>
+        <Version>0.0.0-alpha</Version>
         <title>RemoteControlledProcess</title>
         <Authors>Stefan Boos</Authors>
         <Company>Stefan Boos</Company>
-        <PackageTags>BDD;Test;Process;SpecFlow</PackageTags>
+        <PackageTags>bdd test testing process specflow</PackageTags>
         <PackageDescription>Launch and control dotnet processes wrapped into the coverlet code coverage analyzer.</PackageDescription>
         <Summary>Launch and control dotnet processes wrapped into the coverlet code coverage analyzer.</Summary>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
