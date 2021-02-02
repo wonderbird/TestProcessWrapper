@@ -51,6 +51,9 @@ jobs:
       - name: Test NuGet package
         run: ./smoketest.sh
         working-directory: RemoteControlledProcess.Nupkg.Tests
+        
+      - name: Publish NuGet package
+        run: dotnet nuget push --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
 
       - name: Generate coverage reports
         run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
