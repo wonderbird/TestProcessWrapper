@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish coverage reports
     
-    needs: build-and-test
+    needs: build-test-functionality
     
     steps:
       # the repository is required by codeclimate-action
