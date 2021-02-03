@@ -74,8 +74,11 @@ jobs:
         with:
           name: all-build-results
 
+      - name: Install dependencies
+        run: dotnet restore
+
       - name: Test with coverage
-        run: dotnet test --verbosity normal
+        run: dotnet test --no-restore --verbosity normal
 
       - name: Generate coverage reports
         run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
