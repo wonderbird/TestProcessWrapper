@@ -12,21 +12,13 @@ env:
   packageVersionSuffixForMainBranch: ${{ '' }}
 
 jobs:
-  build-and-test:
+  build-test-functionality:
     runs-on: ubuntu-latest
-    name: Build and test
+    name: Build and test functionality
 
     steps:
       - uses: actions/checkout@v2
           
-      - name: Setup environment variables (main branch)
-        if: github.ref == 'refs/heads/main'
-        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForMainBranch }}" >> $GITHUB_ENV
-
-      - name: Setup environment variables (feature branch)
-        if: github.ref != 'refs/heads/main'
-        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForFeatureBranch }}" >> $GITHUB_ENV
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
@@ -46,6 +38,38 @@ jobs:
       - name: Test with coverage
         run: dotnet test --no-restore --verbosity normal
 
+      - name: Generate coverage reports
+        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
+
+      - name: Attach coverage reports to build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-reports
+          path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
+
+  build-test-package:
+    runs-on: ubuntu-latest
+    name: Build and test NuGet package
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup environment variables (main branch)
+        if: github.ref == 'refs/heads/main'
+        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForMainBranch }}" >> $GITHUB_ENV
+
+      - name: Setup environment variables (feature branch)
+        if: github.ref != 'refs/heads/main'
+        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForFeatureBranch }}" >> $GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+
+      - name: Install dependencies
+        run: dotnet restore
+
       - name: Build NuGet package
         run: |
           dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=${{ env.packageVersion }}
@@ -54,9 +78,6 @@ jobs:
       - name: Test NuGet package
         run: ./smoketest.sh
         working-directory: RemoteControlledProcess.Nupkg.Tests
-        
-      - name: Generate coverage reports
-        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
 
       - name: Attach NuGet package to build artifacts
         uses: actions/upload-artifact@v2
@@ -65,12 +86,6 @@ jobs:
           path: |
             RemoteControlledProcess/bin/Debug/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg
             RemoteControlledProcess/bin/Debug/VERSION.txt
-
-      - name: Attach coverage reports to build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-reports
-          path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
 
   publish-reports:
     runs-on: ubuntu-latest
@@ -105,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish NuGet package
     
-    needs: publish-reports
+    needs: [build-test-package, publish-reports]
 
     steps:
       - name: Download NuGet package
@@ -118,5 +133,5 @@ jobs:
         run: cat nuget-package/VERSION.txt >> $GITHUB_ENV
 
       - name: Publish NuGet package
-        run: dotnet nuget push Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push nuget-package/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
   
