@@ -17,11 +17,11 @@ namespace RemoteControlledProcess
 
         private readonly string _appProjectName;
 
+        private readonly bool _isCoverletEnabled;
+
         private readonly string _projectDir;
 
         private int? _dotnetHostProcessId;
-
-        private readonly bool _isCoverletEnabled;
 
         private bool _isDisposed;
 
@@ -173,21 +173,25 @@ namespace RemoteControlledProcess
 
         private void SendTermSignalToProcess()
         {
-            var killProcess = InvokeKillSystemCall();
-            WaitForKillSystemCallToFinish(killProcess);
-            TerminateKillSystemCall(killProcess);
+            var killProcess = StartKillCommandAsBackgroundProcess();
+            WaitForProcessToExitForUpTo2Seconds(killProcess);
+            KillProcessIfItIsStillRunning(killProcess);
         }
 
-        private Process InvokeKillSystemCall()
+        private Process StartKillCommandAsBackgroundProcess()
         {
-            string killCommand;
-            string killArguments;
-            string signalName;
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                killCommand = "taskkill";
-                killArguments = $"/f /pid {_dotnetHostProcessId.Value}";
+                return StartKillCommandAsBackgroundProcessWindows();
+            }
+
+            return StartKillCommandAsBackgroundProcessUnix();
+
+            Process StartKillCommandAsBackgroundProcessWindows()
+            {
+                var killCommand = "taskkill";
+                // ReSharper disable once PossibleInvalidOperationException
+                var killArguments = $"/f /pid {_dotnetHostProcessId.Value}";
 
                 // Under Windows, SIGINT doesn't work. Thus we use the KILL signal.
                 //
@@ -197,22 +201,28 @@ namespace RemoteControlledProcess
                 // This can be tolerated for our case here, because the application
                 // is intended to run in a linux docker container and because the
                 // build pipeline uses linux containers for testing.
-                signalName = "KILL";
-            }
-            else
-            {
-                killCommand = "kill";
-                killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
-                signalName = "TERM";
+                var signalName = "KILL";
+                TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
+                TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
+                var killProcess = Process.Start(killCommand, killArguments);
+                return killProcess;
             }
 
-            TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
-            TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
-            var killProcess = Process.Start(killCommand, killArguments);
-            return killProcess;
+            Process StartKillCommandAsBackgroundProcessUnix()
+            {
+                var killCommand = "kill";
+                // ReSharper disable once PossibleInvalidOperationException
+                var killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
+                var signalName = "TERM";
+                TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
+                TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
+                var killProcess = Process.Start(killCommand, killArguments);
+                return killProcess;
+            }
         }
 
-        private void WaitForKillSystemCallToFinish(Process killProcess)
+
+        private void WaitForProcessToExitForUpTo2Seconds(Process killProcess)
         {
             if (killProcess != null)
             {
@@ -221,7 +231,7 @@ namespace RemoteControlledProcess
             }
         }
 
-        private void TerminateKillSystemCall(Process killProcess)
+        private void KillProcessIfItIsStillRunning(Process killProcess)
         {
             if (!killProcess.HasExited)
             {
