@@ -14,6 +14,7 @@ env:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    name: Build and test
 
     steps:
       - uses: actions/checkout@v2
@@ -58,21 +59,34 @@ jobs:
       - name: Generate coverage reports
         run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
 
-      - name: Attach coverage report to build artifacts
+      - name: Attach coverage reports to build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-report
+          name: coverage-reports
           path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
 
+  publish-results:
+    runs-on: ubuntu-latest
+    name: Publish results
+    
+    needs: build-and-test
+    
+    steps:
+      - name: Download coverage reports
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-reports
+          path: coverage-reports
+          
       - name: Publish coverage report to coveralls.io
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: RemoteControlledProcess.Acceptance.Tests/TestResults/report/lcov.info
-        
+          path-to-lcov: coverage-reports/lcov.info
+
       - name: Publish coverage report to CodeClimate
         uses: paambaati/codeclimate-action@v2.7.4
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          coverageLocations: RemoteControlledProcess.Acceptance.Tests/TestResults/report/lcov.info:lcov
+          coverageLocations: coverage-reports/lcov.info:lcov
