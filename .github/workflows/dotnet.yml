@@ -50,7 +50,7 @@ jobs:
           retention-days: 1
           path: ./*/bin/**
 
-  unit-test:
+  test-unit:
     runs-on: ubuntu-latest
     name: Run unit tests
     
@@ -75,7 +75,7 @@ jobs:
           name: all-build-results
 
       - name: Test with coverage
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test --verbosity normal
 
       - name: Generate coverage reports
         run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish coverage reports
 
-    needs: unit-test
+    needs: test-unit
 
     steps:
       # the repository is required by codeclimate-action
@@ -115,7 +115,7 @@ jobs:
         with:
           coverageLocations: coverage-reports/lcov.info:lcov
 
-  package-test:
+  test-package:
     runs-on: ubuntu-latest
     name: Test NuGet package
 
@@ -153,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish NuGet package
     
-    needs: [package-test, publish-reports]
+    needs: [test-package, publish-reports]
 
     steps:
       - name: Download NuGet package
