@@ -12,45 +12,10 @@ env:
   packageVersionSuffixForMainBranch: ${{ '' }}
 
 jobs:
-  build-test-functionality:
+  build:
     runs-on: ubuntu-latest
-    name: Build and test functionality
+    name: Build
 
-    steps:
-      - uses: actions/checkout@v2
-          
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.100
-
-      - name: Install dotnet global tools (coverlet, reportgenerator)
-        run: |
-          dotnet tool install --global coverlet.console
-          dotnet tool install --global dotnet-reportgenerator-globaltool
-
-      - name: Install dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --configuration Debug --no-restore
-
-      - name: Test with coverage
-        run: dotnet test --no-restore --verbosity normal
-
-      - name: Generate coverage reports
-        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
-
-      - name: Attach coverage reports to build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-reports
-          path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
-
-  build-test-package:
-    runs-on: ubuntu-latest
-    name: Build and test NuGet package
-    
     steps:
       - uses: actions/checkout@v2
 
@@ -70,29 +35,63 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
+      - name: Build all binaries
+        run: dotnet build --configuration Debug --no-restore
+
       - name: Build NuGet package
         run: |
           dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=${{ env.packageVersion }}
           echo "packageVersion=${{ env.packageVersion }}" > RemoteControlledProcess/bin/Debug/VERSION.txt
-
-      - name: Test NuGet package
-        run: ./smoketest.sh
-        working-directory: RemoteControlledProcess.Nupkg.Tests
-
-      - name: Attach NuGet package to build artifacts
+      
+      - name: Attach all build results
         uses: actions/upload-artifact@v2
         with:
-          name: nuget-package
-          path: |
-            RemoteControlledProcess/bin/Debug/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg
-            RemoteControlledProcess/bin/Debug/VERSION.txt
+          name: all-build-results
+          retention-days: 1
+          path: ./*/bin/**
+
+  unit-test:
+    runs-on: ubuntu-latest
+    name: Run unit tests
+    
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v2
+          
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+
+      - name: Install dotnet global tools (coverlet, reportgenerator)
+        run: |
+          dotnet tool install --global coverlet.console
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Download build results
+        uses: actions/download-artifact@v2
+        with:
+          name: all-build-results
+
+      - name: Test with coverage
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Generate coverage reports
+        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
+
+      - name: Attach coverage reports to build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-reports
+          path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
 
   publish-reports:
     runs-on: ubuntu-latest
     name: Publish coverage reports
-    
-    needs: build-test-functionality
-    
+
+    needs: unit-test
+
     steps:
       # the repository is required by codeclimate-action
       - uses: actions/checkout@v2
@@ -102,7 +101,7 @@ jobs:
         with:
           name: coverage-reports
           path: coverage-reports
-          
+
       - name: Publish coverage report to coveralls.io
         uses: coverallsapp/github-action@master
         with:
@@ -116,11 +115,45 @@ jobs:
         with:
           coverageLocations: coverage-reports/lcov.info:lcov
 
+  package-test:
+    runs-on: ubuntu-latest
+    name: Test NuGet package
+
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+
+      - name: Download build results
+        uses: actions/download-artifact@v2
+        with:
+          name: all-build-results
+
+      - name: Identify package version
+        run: cat RemoteControlledProcess/bin/Debug/VERSION.txt >> $GITHUB_ENV
+
+      - name: Test NuGet package
+        run: ./smoketest.sh
+        working-directory: RemoteControlledProcess.Nupkg.Tests
+
+      - name: Attach NuGet package to build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: nuget-package
+          path: |
+            RemoteControlledProcess/bin/Debug/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg
+            RemoteControlledProcess/bin/Debug/VERSION.txt
+
   publish-nuget:
     runs-on: ubuntu-latest
     name: Publish NuGet package
     
-    needs: [build-test-package, publish-reports]
+    needs: [package-test, publish-reports]
 
     steps:
       - name: Download NuGet package
