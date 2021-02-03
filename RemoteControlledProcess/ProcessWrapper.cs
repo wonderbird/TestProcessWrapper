@@ -173,21 +173,7 @@ namespace RemoteControlledProcess
 
         private void SendTermSignalToProcess()
         {
-            var killProcess = StartKillCommandAsBackgroundProcess();
-            WaitForProcessToExitForUpTo2Seconds(killProcess);
-            KillProcessIfItIsStillRunning(killProcess);
-        }
-
-        private Process StartKillCommandAsBackgroundProcess()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return StartKillCommandAsBackgroundProcessWindows();
-            }
-
-            return StartKillCommandAsBackgroundProcessUnix();
-
-            Process StartKillCommandAsBackgroundProcessWindows()
+            Func<Process> windowsStrategy = () =>
             {
                 var killCommand = "taskkill";
                 // ReSharper disable once PossibleInvalidOperationException
@@ -206,9 +192,9 @@ namespace RemoteControlledProcess
                 TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
                 var killProcess = Process.Start(killCommand, killArguments);
                 return killProcess;
-            }
+            };
 
-            Process StartKillCommandAsBackgroundProcessUnix()
+            Func<Process> unixStragey = () =>
             {
                 var killCommand = "kill";
                 // ReSharper disable once PossibleInvalidOperationException
@@ -218,9 +204,12 @@ namespace RemoteControlledProcess
                 TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
                 var killProcess = Process.Start(killCommand, killArguments);
                 return killProcess;
-            }
-        }
+            };
 
+            var killProcess = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? windowsStrategy() : unixStragey();
+            WaitForProcessToExitForUpTo2Seconds(killProcess);
+            KillProcessIfItIsStillRunning(killProcess);
+        }
 
         private void WaitForProcessToExitForUpTo2Seconds(Process killProcess)
         {
