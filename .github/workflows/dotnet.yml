@@ -47,17 +47,24 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
 
       - name: Build NuGet package
-        run: dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=${{ env.packageVersion }}
+        run: |
+          dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=${{ env.packageVersion }}
+          echo "packageVersion=${{ env.packageVersion }}" > RemoteControlledProcess/bin/Debug/VERSION.txt
 
       - name: Test NuGet package
         run: ./smoketest.sh
         working-directory: RemoteControlledProcess.Nupkg.Tests
         
-      - name: Publish NuGet package
-        run: dotnet nuget push RemoteControlledProcess/bin/Debug/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
-
       - name: Generate coverage reports
         run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
+
+      - name: Attach NuGet package to build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: nuget-package
+          path: |
+            RemoteControlledProcess/bin/Debug/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg
+            RemoteControlledProcess/bin/Debug/VERSION.txt
 
       - name: Attach coverage reports to build artifacts
         uses: actions/upload-artifact@v2
@@ -65,9 +72,9 @@ jobs:
           name: coverage-reports
           path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
 
-  publish-results:
+  publish-reports:
     runs-on: ubuntu-latest
-    name: Publish results
+    name: Publish coverage reports
     
     needs: build-and-test
     
@@ -93,3 +100,23 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageLocations: coverage-reports/lcov.info:lcov
+
+  publish-nuget:
+    runs-on: ubuntu-latest
+    name: Publish NuGet package
+    
+    needs: publish-reports
+
+    steps:
+      - name: Download NuGet package
+        uses: actions/download-artifact@v2
+        with:
+          name: nuget-package
+          path: nuget-package
+          
+      - name: Identify package version
+        run: cat nuget-package/VERSION.txt >> $GITHUB_ENV
+
+      - name: Publish NuGet package
+        run: dotnet nuget push Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
+  
