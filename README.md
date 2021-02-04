@@ -9,13 +9,19 @@
 [![CodeScene Code Health](https://codescene.io/projects/12257/status-badges/code-health)](https://codescene.io/projects/12257/jobs/latest-successful/results)
 [![CodeScene System Mastery](https://codescene.io/projects/12257/status-badges/system-mastery)](https://codescene.io/projects/12257/jobs/latest-successful/results)
 
-Launch and control `dotnet` processes wrapped into the `coverlet` code coverage analyzer.
+Launch and control `dotnet` processes wrapped into the [coverlet](https://github.com/coverlet-coverage/coverlet) code
+coverage analyzer.
+
+The class `ProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
+class captures the messages written to the Console and to Console.Error. It allows to terminate the process gracefully
+and forcefully. One of the processes can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet)
+command line tool in order to calculate code coverage.
 
 ## Attention
 
 You can use the `coverlet` wrapper only once per `dotnet` application, because `coverlet` instruments the `dotnet` DLL.
-If you run two or more instances of a wrapped application, `coverlet` will report an exception and there will be zero
-coverage calculated.
+If you use `coverlet` with two or more instances of the same application, `coverlet` will report an exception after
+(or during) the application termination and the reported coverage will be 0.
 
 ## Development and Support Standard
 
@@ -40,8 +46,8 @@ This requires python.
 To use the `RemoteControlledProcess` library and to run the unit tests you need the following tools installed:
 
 ```shell
-dotnet tool install --global coverlet.console --configfile Nuget-OfficialOnly.config
-dotnet tool install --global dotnet-reportgenerator-globaltool --configfile Nuget-OfficialOnly.config
+dotnet tool install --global coverlet.console --configfile NuGet-OfficialOnly.config
+dotnet tool install --global dotnet-reportgenerator-globaltool --configfile NuGet-OfficialOnly.config
 ```
 
 ## Build, Test, Run
@@ -129,7 +135,6 @@ The report will be created as `dupfinder-report.html` in the current directory.
 ## .NET Core
 
 *
-
 GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
 
 ## Behavior Driven Development (BDD)
