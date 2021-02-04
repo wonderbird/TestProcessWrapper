@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using RemoteControlledProcess;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -11,6 +13,9 @@ namespace katarabbitmq.bdd.tests.Steps
     [Binding]
     public class CorrectUsageStepDefinitions : IDisposable
     {
+        private static readonly Regex LineCoverageRegex =
+            new(@"\|\sTotal\s*\|\s*([0-9\.]*)\%\s*\|\s*[0-9\.]*%\s*\|\s*[0-9\.]*%\s*\|", RegexOptions.Multiline);
+
         private readonly ITestOutputHelper _testOutputHelper;
 
         private bool _isDisposed;
@@ -37,24 +42,46 @@ namespace katarabbitmq.bdd.tests.Steps
             Assert.True(Clients.All(c => c.HasExited));
         }
 
+        [Then(@"the reported total line coverage (is greater|equals) (.*)%")]
+        public static void ThenTheReportedTotalLineCoverageIsGreater(string comparisonString,
+            int expectedLineCoveragePercent)
+        {
+            var comparison = GetComparisonByName(comparisonString);
+
+            var clientsWithCoverlet = Clients.Where(c => c.IsCoverletEnabled);
+            foreach (var client in clientsWithCoverlet)
+            {
+                var actualLineCoveragePercent = GetLineCoverageFromCoverletOutput(client.ReadOutput());
+                Assert.True(comparison(actualLineCoveragePercent, expectedLineCoveragePercent),
+                    $"Mismatch: line coverage of {actualLineCoveragePercent}% {comparisonString} {expectedLineCoveragePercent}%");
+            }
+        }
+
+        private static Func<double, double, bool> GetComparisonByName(string comparisonString)
+        {
+            Dictionary<string, Func<double, double, bool>> comparisonMap = new()
+            {
+                { "is greater", (actual, expected) => actual > expected },
+                { "equals", (actual, expected) => Math.Abs(actual - expected) < 0.001 }
+            };
+            var comparison = comparisonMap[comparisonString];
+            return comparison;
+        }
+
+        private static double GetLineCoverageFromCoverletOutput(string coverletOutput)
+        {
+            var lineCoverageMatch = LineCoverageRegex.Match(coverletOutput);
+            var lineCoveragePercentString = lineCoverageMatch.Groups[1].Value;
+            var lineCoveragePercent = double.Parse(lineCoveragePercentString, CultureInfo.InvariantCulture);
+            return lineCoveragePercent;
+        }
+
         [Then]
         public static void ThenTheLogIsFreeOfExceptionMessages()
         {
             foreach (var client in Clients)
             {
                 Assert.DoesNotContain("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
-            }
-        }
-
-        [Then]
-        public static void ThenEachLogShowsAnExceptionMessage()
-        {
-            const string expectedExceptionMessage = "Unhandled exception.";
-
-            foreach (var client in Clients)
-            {
-                var output = client.ReadOutput();
-                Assert.Contains(expectedExceptionMessage, output, StringComparison.CurrentCultureIgnoreCase);
             }
         }
 

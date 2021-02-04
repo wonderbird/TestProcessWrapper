@@ -16,8 +16,6 @@ namespace RemoteControlledProcess
 
         private readonly string _appProjectName;
 
-        private readonly bool _isCoverletEnabled;
-
         private readonly string _projectDir;
 
         private int? _dotnetHostProcessId;
@@ -29,7 +27,7 @@ namespace RemoteControlledProcess
 
         public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
-            _isCoverletEnabled = isCoverletEnabled;
+            IsCoverletEnabled = isCoverletEnabled;
 
             var projectRelativeDir = Path.Combine("..", "..", "..", "..");
             _projectDir = Path.GetFullPath(projectRelativeDir);
@@ -40,6 +38,8 @@ namespace RemoteControlledProcess
 
             _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
         }
+
+        public bool IsCoverletEnabled { get; }
 
         public bool HasExited => _process == null || _process.HasExited;
 
@@ -92,7 +92,7 @@ namespace RemoteControlledProcess
         {
             ProcessStartInfo processStartInfo;
 
-            if (!_isCoverletEnabled)
+            if (!IsCoverletEnabled)
             {
                 processStartInfo = CreateProcessStartInfo("dotnet", _appDllName);
             }
