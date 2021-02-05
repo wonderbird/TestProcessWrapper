@@ -56,7 +56,10 @@ jobs:
         working-directory: RemoteControlledProcess.Nupkg.Tests
         
       - name: Generate coverage reports
-        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
+        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml;RemoteControlledProcess.Unit.Tests/TestResults/*.xml" \
+          "-targetdir:report" \
+          "-reporttypes:Html;lcov" \
+          "-title:RemoteControlledProcess"
 
       - name: Attach NuGet package to build artifacts
         uses: actions/upload-artifact@v2
@@ -70,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: coverage-reports
-          path: RemoteControlledProcess.Acceptance.Tests/TestResults/report
+          path: report
 
   publish-reports:
     runs-on: ubuntu-latest
