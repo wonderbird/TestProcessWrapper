@@ -24,11 +24,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess", "RemoteControlledProcess\RemoteControlledProcess.csproj", "{745DE089-A648-44B1-8FFD-E8AF48140FE6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RemoteControlledProcess.Nupkg.Tests", "RemoteControlledProcess.Nupkg.Tests", "{1EC0DDB2-52D4-4B05-A5DC-F423ADB0DF08}"
-ProjectSection(SolutionItems) = preProject
-	RemoteControlledProcess.Nupkg.Tests\.gitignore = RemoteControlledProcess.Nupkg.Tests\.gitignore
-	RemoteControlledProcess.Nupkg.Tests\smoketest.sh = RemoteControlledProcess.Nupkg.Tests\smoketest.sh
-	RemoteControlledProcess.Nupkg.Tests\NuGet-Local.config = RemoteControlledProcess.Nupkg.Tests\NuGet-Local.config
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		RemoteControlledProcess.Nupkg.Tests\.gitignore = RemoteControlledProcess.Nupkg.Tests\.gitignore
+		RemoteControlledProcess.Nupkg.Tests\smoketest.sh = RemoteControlledProcess.Nupkg.Tests\smoketest.sh
+		RemoteControlledProcess.Nupkg.Tests\NuGet-Local.config = RemoteControlledProcess.Nupkg.Tests\NuGet-Local.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.Unit.Tests", "RemoteControlledProcess.Unit.Tests\RemoteControlledProcess.Unit.Tests.csproj", "{7BC3300D-4599-409C-9839-A69E6E66CD7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,18 @@ Global
 		{745DE089-A648-44B1-8FFD-E8AF48140FE6}.Release|x64.Build.0 = Release|Any CPU
 		{745DE089-A648-44B1-8FFD-E8AF48140FE6}.Release|x86.ActiveCfg = Release|Any CPU
 		{745DE089-A648-44B1-8FFD-E8AF48140FE6}.Release|x86.Build.0 = Release|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Debug|x64.Build.0 = Debug|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Debug|x86.Build.0 = Debug|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x64.ActiveCfg = Release|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x64.Build.0 = Release|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x86.ActiveCfg = Release|Any CPU
+		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

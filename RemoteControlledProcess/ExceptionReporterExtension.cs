@@ -13,7 +13,7 @@ namespace RemoteControlledProcess
             var fileName = stackFrame?.GetFileName();
             var lineNumber = stackFrame?.GetFileLineNumber();
 
-            writer.WriteLine($"Unhandled exception in {fileName}:{lineNumber}.");
+            writer.WriteLine($"Unhandled exception in {fileName}:{lineNumber}");
             writer.WriteLine(exception.ToString());
         }
 

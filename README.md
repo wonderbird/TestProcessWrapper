@@ -67,7 +67,15 @@ run the application:
 
 ```sh
 dotnet build
+
+# Simply run the tests
 dotnet test
+
+# As an alternative, run the tests with coverage and produce a coverage report
+rm -r RemoteControlledProcess.Acceptance.Tests/TestResults && \
+  dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml' && \
+  reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
+open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 ```
 
 ### Known Issue
