@@ -43,7 +43,7 @@ namespace katarabbitmq.bdd.tests.Steps
         }
 
         [Then(@"the reported total line coverage (is greater|equals) (.*)%")]
-        public static void ThenTheReportedTotalLineCoverageIsGreater(string comparisonString,
+        public void ThenTheReportedTotalLineCoverageIsGreater(string comparisonString,
             int expectedLineCoveragePercent)
         {
             var comparison = GetComparisonByName(comparisonString);
@@ -68,10 +68,13 @@ namespace katarabbitmq.bdd.tests.Steps
             return comparison;
         }
 
-        private static double GetLineCoverageFromCoverletOutput(string coverletOutput)
+        private double GetLineCoverageFromCoverletOutput(string coverletOutput)
         {
             var lineCoverageMatch = LineCoverageRegex.Match(coverletOutput);
             var lineCoveragePercentString = lineCoverageMatch.Groups[1].Value;
+
+            _testOutputHelper?.WriteLine($"Extracted linecoverage string: \"{lineCoveragePercentString}\"");
+
             var lineCoveragePercent = double.Parse(lineCoveragePercentString, CultureInfo.InvariantCulture);
             return lineCoveragePercent;
         }
