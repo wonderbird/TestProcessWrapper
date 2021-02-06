@@ -19,13 +19,10 @@ command line tool in order to calculate code coverage.
 
 **Usage Examples**
 
-* Intended Use: [CorrectUsage.feature](RemoteControlledProcess.Acceptance.Tests/Features/CorrectUsage.feature)
+* Intended Use: [CorrectUsage.feature](RemoteControlledProcess.Acceptance.Tests/Features/CorrectUsage.feature) and [CorrectUsageStepDefinitions.cs](RemoteControlledProcess.Acceptance.Tests/Steps/CorrectUsageStepDefinitions.cs)
 * Most Simple Use: [SmokeTests.cs](RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs)
 
 ## Attention
-
-A shortcoming has just been recognized: The test results are written to the folder
-"./RemoteControlledProcess.Acceptance.Tests/TestResults". This will be fixed soon.
 
 You can use the `coverlet` wrapper only once per `dotnet` application, because `coverlet` instruments the `dotnet` DLL.
 If you use `coverlet` with two or more instances of the same application, `coverlet` will report an exception after
@@ -80,7 +77,7 @@ open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 
 ### Known Issue
 
-When you run the tests on a mac, then the tests using *two* `RemoteControlledProcess`es issue a crash report regarding
+When you run the tests on a mac, then the tests using *two* `ProcessWrapper`s issue a crash report regarding
 "dotnet".
 
 At the moment I cannot explain that behavior.
