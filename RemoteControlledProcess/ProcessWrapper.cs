@@ -107,9 +107,9 @@ namespace RemoteControlledProcess
         private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
         {
             var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportPath = Path.Combine(_projectDir, "RemoteControlledProcess.Acceptance.Tests",
-                "TestResults",
-                coverageReportFileName);
+            var coverageReportRelativeDir = Path.Join("..", "..", "..", "TestResults");
+            var coverageReportDir = Path.GetFullPath(coverageReportRelativeDir);
+            var coverageReportPath = Path.Combine(coverageReportDir, coverageReportFileName);
 
             var arguments =
                 $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura";
