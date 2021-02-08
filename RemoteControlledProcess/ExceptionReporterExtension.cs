@@ -9,21 +9,35 @@ namespace RemoteControlledProcess
     {
         public static void Write(this Exception exception, TextWriter writer)
         {
-            var stackFrame = new StackTrace(true).GetFrame(1);
-            var fileName = stackFrame?.GetFileName();
-            var lineNumber = stackFrame?.GetFileLineNumber();
-
-            writer.WriteLine($"Unhandled exception in {fileName}:{lineNumber}");
+            var exceptionOrigin = GetExceptionOriginFromStackTrace();
+            writer.WriteLine($"Unhandled exception in {exceptionOrigin}");
             writer.WriteLine(exception.ToString());
         }
 
         public static void Log(this Exception exception, ILogger logger)
         {
-            var stackFrame = new StackTrace(true).GetFrame(1);
-            var fileName = stackFrame?.GetFileName();
-            var lineNumber = stackFrame?.GetFileLineNumber();
+            var exceptionOrigin = GetExceptionOriginFromStackTrace();
+            logger.LogCritical(exception, "Unhandled exception in {FileName}:{@LineNumber}", exceptionOrigin.FileName,
+                exceptionOrigin.LineNumber);
+        }
 
-            logger.LogCritical(exception, "Unhandled exception in {FileName}:{@LineNumber}", fileName, lineNumber);
+        private static ExceptionOrigin GetExceptionOriginFromStackTrace()
+        {
+            var stackFrame = new StackTrace(true).GetFrame(2);
+            var exceptionOrigin = new ExceptionOrigin
+            {
+                FileName = stackFrame?.GetFileName(),
+                LineNumber = stackFrame?.GetFileLineNumber()
+            };
+            return exceptionOrigin;
+        }
+
+        private class ExceptionOrigin
+        {
+            public string FileName { get; init; }
+            public int? LineNumber { get; init; }
+
+            public override string ToString() => $"{FileName}:{LineNumber}";
         }
     }
 }
