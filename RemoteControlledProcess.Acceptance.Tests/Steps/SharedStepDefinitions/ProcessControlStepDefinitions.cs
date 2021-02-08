@@ -14,7 +14,8 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 
         private bool _isDisposed;
 
-        public ProcessControlStepDefinitions(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
+        public ProcessControlStepDefinitions(ITestOutputHelper testOutputHelper) =>
+            _testOutputHelper = testOutputHelper;
 
         public static List<ProcessWrapper> Clients { get; } = new();
 
