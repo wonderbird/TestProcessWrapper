@@ -1,7 +1,6 @@
-using RemoteControlledProcess;
 using Xunit;
 
-namespace katarabbitmq.bdd.tests.Features
+namespace RemoteControlledProcess.Acceptance.Tests.Features
 {
     public class SmokeTests
     {

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using katarabbitmq.bdd.tests.Steps.SharedStepDefinitions;
+using RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace katarabbitmq.bdd.tests.Steps
+namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
     public class CorrectUsageStepDefinitions

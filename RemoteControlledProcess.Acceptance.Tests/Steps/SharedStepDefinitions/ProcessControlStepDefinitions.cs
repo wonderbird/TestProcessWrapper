@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RemoteControlledProcess;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace katarabbitmq.bdd.tests.Steps.SharedStepDefinitions
+namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 {
     [Binding]
     public class ProcessControlStepDefinitions : IDisposable

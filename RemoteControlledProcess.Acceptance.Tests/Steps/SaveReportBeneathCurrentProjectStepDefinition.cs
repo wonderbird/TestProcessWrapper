@@ -3,7 +3,7 @@ using System.Linq;
 using TechTalk.SpecFlow;
 using Xunit;
 
-namespace katarabbitmq.bdd.tests.Steps
+namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
     public class SpecifyReportDirectoryStepDefinition
