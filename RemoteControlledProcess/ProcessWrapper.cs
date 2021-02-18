@@ -233,8 +233,10 @@ namespace RemoteControlledProcess
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") +
-                                        "completed.");
+
+            var processDescription = IsCoverletEnabled ? $"coverlet({_appProjectName})" : _appProjectName;
+            var conditionalNot = _process.HasExited ? "" : "NOT ";
+            TestOutputHelper?.WriteLine($"Process {processDescription} has {conditionalNot}completed.");
         }
 
         public void ForceTermination()
