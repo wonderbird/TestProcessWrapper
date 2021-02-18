@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RemoteControlledProcess.Nup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.Unit.Tests", "RemoteControlledProcess.Unit.Tests\RemoteControlledProcess.Unit.Tests.csproj", "{7BC3300D-4599-409C-9839-A69E6E66CD7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.Taskkill.Tests", "RemoteControlledProcess.Taskkill.Tests\RemoteControlledProcess.Taskkill.Tests.csproj", "{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,18 @@ Global
 		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x64.Build.0 = Release|Any CPU
 		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x86.ActiveCfg = Release|Any CPU
 		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x86.Build.0 = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x64.Build.0 = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x86.Build.0 = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|Any CPU.Build.0 = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x64.ActiveCfg = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x64.Build.0 = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x86.ActiveCfg = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
