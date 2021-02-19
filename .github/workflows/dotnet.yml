@@ -41,10 +41,10 @@ jobs:
           dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore RemoteControlledProcess.sln
 
       - name: Build
-        run: dotnet build --configuration Debug --no-restore
+        run: dotnet build --configuration Debug --no-restore RemoteControlledProcess.sln
 
       - name: Run tests sequentially with coverage
         run: dotnet test --no-restore --verbosity normal /p:BuildInParallel=false /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml' RemoteControlledProcess.Tests.proj 
