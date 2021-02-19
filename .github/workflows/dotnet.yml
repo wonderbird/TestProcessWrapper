@@ -46,8 +46,8 @@ jobs:
       - name: Build
         run: dotnet build --configuration Debug --no-restore
 
-      - name: Test with coverage
-        run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml'
+      - name: Run tests sequentially with coverage
+        run: dotnet test --no-restore --verbosity normal /p:BuildInParallel=false /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml' RemoteControlledProcess.Tests.proj 
 
       - name: Build NuGet package
         run: |
