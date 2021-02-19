@@ -54,6 +54,9 @@ jobs:
           dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=${{ env.packageVersion }}
           echo "packageVersion=${{ env.packageVersion }}" > RemoteControlledProcess/bin/Debug/VERSION.txt
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Test NuGet package
         run: ./smoketest.sh
         working-directory: RemoteControlledProcess.Nupkg.Tests
