@@ -33,7 +33,7 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 
 ### Prerequisites
 
-To compile, test and run this project the latest [.NET Core SDK](https://dotnet.microsoft.com/download) is required on
+To compile, test and run this project the latest [.NET SDK](https://dotnet.microsoft.com/download) is required on
 your machine. For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus).
 This requires python.
 
@@ -43,6 +43,9 @@ To use the `RemoteControlledProcess` library and to run the unit tests you need 
 dotnet tool install --global coverlet.console --configfile Nuget-OfficialOnly.config
 dotnet tool install --global dotnet-reportgenerator-globaltool --configfile Nuget-OfficialOnly.config
 ```
+
+If you are installing a dotnet tool for the first time, then you'll need to add the path to the dotnet tools to your
+system PATH. Please make sure that there is no "~" character in your PATH to coverlet.
 
 ## Build, Test, Run
 
