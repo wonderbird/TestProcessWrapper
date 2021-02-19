@@ -20,24 +20,8 @@ namespace RemoteControlledProcess.ConsumerDriven.Tests
                 return;
             }
 
-            var processName = "kill";
-            var arguments = "-l";
-
-            var processStartInfo = new ProcessStartInfo(processName)
-            {
-                UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                Arguments = arguments
-            };
-
-            var process = new Process { StartInfo = processStartInfo };
-            process.Start();
-            process.WaitForExit(30000);
-
-            var output = process.StandardOutput.ReadToEnd();
-            _testOutputHelper.WriteLine($"Process produced the following output: \"{output}\"");
+            var output = ProcessRunner.RunProcess("kill", "-l", _testOutputHelper);
+            
             Assert.Contains("term", output);
         }
     }
