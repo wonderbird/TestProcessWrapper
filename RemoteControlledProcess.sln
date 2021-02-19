@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RemoteControlledProcess.Nup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.Unit.Tests", "RemoteControlledProcess.Unit.Tests\RemoteControlledProcess.Unit.Tests.csproj", "{7BC3300D-4599-409C-9839-A69E6E66CD7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.Taskkill.Tests", "RemoteControlledProcess.Taskkill.Tests\RemoteControlledProcess.Taskkill.Tests.csproj", "{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.ConsumerDriven.Tests", "RemoteControlledProcess.ConsumerDriven.Tests\RemoteControlledProcess.ConsumerDriven.Tests.csproj", "{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

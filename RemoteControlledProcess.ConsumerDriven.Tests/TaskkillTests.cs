@@ -3,30 +3,25 @@ using System.Runtime.InteropServices;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace RemoteControlledProcess.Taskkill.Tests
+namespace RemoteControlledProcess.ConsumerDriven.Tests
 {
     public class TaskkillTests
     {
         private ITestOutputHelper _testOutputHelper;
 
         public TaskkillTests(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
-
+        
         [Fact]
         public void RunTaskkillProcess_OnWindows_ShowsProcessOutput()
         {
-            string processName;
-            string arguments;
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                _testOutputHelper.WriteLine($"Non-Windows OS detected. Skipping test RunTaskkillProcess_OnWindows_ShowsProcessOutput.");
+                return;
+            }
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                processName = "taskkill";
-                arguments = "/?";
-            }
-            else
-            {
-                processName = "kill";
-                arguments = "-l";
-            }
+            var processName = "taskkill";
+            var arguments = "/?";
 
             var processStartInfo = new ProcessStartInfo(processName)
             {
@@ -41,7 +36,10 @@ namespace RemoteControlledProcess.Taskkill.Tests
             process.Start();
             process.WaitForExit(30000);
 
-            _testOutputHelper.WriteLine($"Process produced the following output: \"{process.StandardOutput.ReadToEnd()}\"");
+            var output = process.StandardOutput.ReadToEnd();
+            _testOutputHelper.WriteLine($"Process produced the following output: \"{output}\"");
+            Assert.Contains("TASKKILL", output);
+            Assert.Contains("/PID", output);
         }
     }
 }
