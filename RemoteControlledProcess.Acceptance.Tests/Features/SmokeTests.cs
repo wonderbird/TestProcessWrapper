@@ -1,9 +1,14 @@
 using Xunit;
+using Xunit.Abstractions;
 
 namespace RemoteControlledProcess.Acceptance.Tests.Features
 {
     public class SmokeTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public SmokeTests(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
+
         /// <summary>
         ///     SmokeTest used to verify that the NuGet package has been created correctly.
         /// </summary>
@@ -18,8 +23,10 @@ namespace RemoteControlledProcess.Acceptance.Tests.Features
             processWrapper.Start();
             processWrapper.ShutdownGracefully();
             processWrapper.ForceTermination();
+
             var output = processWrapper.ReadOutput();
-            Assert.Contains("STOP", output);
+            _testOutputHelper.WriteLine($"Process produced the following output: \"{output}\"");
+            Assert.Contains("Process ID", output);
         }
     }
 }

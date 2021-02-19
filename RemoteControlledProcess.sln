@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0
 		run-application.bat = run-application.bat
 		run-application.sh = run-application.sh
 		Nuget-OfficialOnly.config = Nuget-OfficialOnly.config
+		RemoteControlledProcess.Tests.proj = RemoteControlledProcess.Tests.proj
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteControlledProcess.Application", "RemoteControlledProcess.Application\RemoteControlledProcess.Application.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"
@@ -31,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RemoteControlledProcess.Nup
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.Unit.Tests", "RemoteControlledProcess.Unit.Tests\RemoteControlledProcess.Unit.Tests.csproj", "{7BC3300D-4599-409C-9839-A69E6E66CD7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControlledProcess.ConsumerDriven.Tests", "RemoteControlledProcess.ConsumerDriven.Tests\RemoteControlledProcess.ConsumerDriven.Tests.csproj", "{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +93,18 @@ Global
 		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x64.Build.0 = Release|Any CPU
 		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x86.ActiveCfg = Release|Any CPU
 		{7BC3300D-4599-409C-9839-A69E6E66CD7F}.Release|x86.Build.0 = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x64.Build.0 = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Debug|x86.Build.0 = Debug|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|Any CPU.Build.0 = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x64.ActiveCfg = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x64.Build.0 = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x86.ActiveCfg = Release|Any CPU
+		{288D6EDE-DC2C-4EE7-A3BA-7FE605865413}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

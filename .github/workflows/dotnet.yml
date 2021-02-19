@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    
+
 env:
   packageVersionPrefix: ${{ '0.0.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
@@ -13,12 +13,15 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # os: [ macos-latest, ubuntu-latest, windows-latest  ]
+        os: [ windows-latest ]
+    runs-on: ${{ matrix.os }}
     name: Build and test
-
     steps:
       - uses: actions/checkout@v2
-          
+
       - name: Setup environment variables (main branch)
         if: github.ref == 'refs/heads/main'
         run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForMainBranch }}" >> $GITHUB_ENV
@@ -38,13 +41,17 @@ jobs:
           dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore RemoteControlledProcess.sln
 
       - name: Build
-        run: dotnet build --configuration Debug --no-restore
+        run: dotnet build --configuration Debug --no-restore RemoteControlledProcess.sln
 
-      - name: Test with coverage
-        run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml'
+      - name: Run tests sequentially with coverage
+        # By default tests run in parallel.
+        # Coverlet instrumentation requires running tests sequentially.
+        # Thus, using a separate project and the /p:BuildInParallel switch to serialize the test runs
+        # See also: https://github.com/nunit/nunit3-vs-adapter/issues/657
+        run: dotnet test --no-restore --verbosity normal /p:BuildInParallel=false /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml' RemoteControlledProcess.Tests.proj 
 
       - name: Build NuGet package
         run: |
@@ -54,7 +61,7 @@ jobs:
       - name: Test NuGet package
         run: ./smoketest.sh
         working-directory: RemoteControlledProcess.Nupkg.Tests
-        
+
       - name: Generate coverage reports
         run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml;RemoteControlledProcess.Unit.Tests/TestResults/*.xml" \
           "-targetdir:report" \
@@ -78,9 +85,9 @@ jobs:
   publish-reports:
     runs-on: ubuntu-latest
     name: Publish coverage reports
-    
+
     needs: build-and-test
-    
+
     steps:
       # the repository is required by codeclimate-action
       - uses: actions/checkout@v2
@@ -90,7 +97,7 @@ jobs:
         with:
           name: coverage-reports
           path: coverage-reports
-          
+
       - name: Publish coverage report to coveralls.io
         uses: coverallsapp/github-action@master
         with:
@@ -107,7 +114,7 @@ jobs:
   publish-nuget:
     runs-on: ubuntu-latest
     name: Publish NuGet package
-    
+
     needs: publish-reports
 
     steps:
@@ -116,7 +123,7 @@ jobs:
         with:
           name: nuget-package
           path: nuget-package
-          
+
       - name: Identify package version
         run: cat nuget-package/VERSION.txt >> $GITHUB_ENV
 

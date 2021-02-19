@@ -8,6 +8,8 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
+    // TODO: Double check whether serializing tests is really required - see dotnet.yml
+
     public sealed class ProcessWrapper : IDisposable
     {
         private readonly string _appDir;
@@ -233,8 +235,10 @@ namespace RemoteControlledProcess
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") +
-                                        "completed.");
+
+            var processDescription = IsCoverletEnabled ? $"coverlet({_appProjectName})" : _appProjectName;
+            var conditionalNot = _process.HasExited ? "" : "NOT ";
+            TestOutputHelper?.WriteLine($"Process {processDescription} has {conditionalNot}completed.");
         }
 
         public void ForceTermination()
