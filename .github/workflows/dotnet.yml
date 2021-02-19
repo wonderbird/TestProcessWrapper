@@ -47,6 +47,10 @@ jobs:
         run: dotnet build --configuration Debug --no-restore RemoteControlledProcess.sln
 
       - name: Run tests sequentially with coverage
+        # By default tests run in parallel.
+        # Coverlet instrumentation requires running tests sequentially.
+        # Thus, using a separate project and the /p:BuildInParallel switch to serialize the test runs
+        # See also: https://github.com/nunit/nunit3-vs-adapter/issues/657
         run: dotnet test --no-restore --verbosity normal /p:BuildInParallel=false /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml' RemoteControlledProcess.Tests.proj 
 
       - name: Build NuGet package

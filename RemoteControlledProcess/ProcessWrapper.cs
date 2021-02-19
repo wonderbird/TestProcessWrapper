@@ -8,6 +8,8 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
+    // TODO: Double check whether serializing tests is really required - see dotnet.yml
+
     public sealed class ProcessWrapper : IDisposable
     {
         private readonly string _appDir;
