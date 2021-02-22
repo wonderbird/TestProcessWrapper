@@ -4,7 +4,7 @@
     <content url="file://$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/16.7.1/build/netcoreapp2.1" />
     <content url="file://$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/16.8.3/build/netcoreapp2.1" />
     <content url="file://$USER_HOME$/.nuget/packages/microsoft.testplatform.testhost/16.8.3/build/netcoreapp2.1/Microsoft.TestPlatform.PlatformAbstractions.dll" />
-    <content url="file://$USER_HOME$/.nuget/packages/specflow.xunit/3.6.23/lib/netstandard2.0/TechTalk.SpecFlow.xUnit.SpecFlowPlugin.dll" />
+    <content url="file://$USER_HOME$/.nuget/packages/specflow.xunit/3.7.13/lib/netstandard2.0/TechTalk.SpecFlow.xUnit.SpecFlowPlugin.dll" />
     <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.reporters.netcoreapp10.dll" />
     <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.utility.netcoreapp10.dll" />
     <content url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.visualstudio.dotnetcore.testadapter.dll" />
