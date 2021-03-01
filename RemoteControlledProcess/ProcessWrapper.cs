@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    public sealed partial class ProcessWrapper : IDisposable
+    public sealed class ProcessWrapper : IDisposable
     {
         private readonly string _appDir;
 
@@ -27,6 +27,149 @@ namespace RemoteControlledProcess
 
         private Process _process;
         private ProcessStreamBuffer _processStreamBuffer;
+        
+        
+        public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
+        {
+            _isCoverletEnabled = isCoverletEnabled;
+
+            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
+            _projectDir = Path.GetFullPath(projectRelativeDir);
+
+            _appProjectName = appProjectName;
+
+            _appDllName = _appProjectName + ".dll";
+
+            _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
+        }
+
+        public bool HasExited => _process == null || _process.HasExited;
+
+        public bool IsRunning => _process != null && !_process.HasExited;
+
+        private static string BinFolder
+        {
+            get
+            {
+#if DEBUG
+                var binFolder = Path.Combine("bin", "Debug", "net5.0");
+#else
+                var binFolder = Path.Combine("bin", "Release", "net5.0");
+#endif
+                return binFolder;
+            }
+        }
+
+        public ITestOutputHelper TestOutputHelper { get; set; }
+
+       
+        public void Start()
+        {
+            _process = new Process { StartInfo = CreateProcessStartInfo() };
+
+            TestOutputHelper?.WriteLine(
+                $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
+            _process.Start();
+
+            _processStreamBuffer = new ProcessStreamBuffer();
+            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine,
+                handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
+
+            TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
+
+            WaitAndProcessRequiredStartupMessages();
+        }
+
+        private ProcessStartInfo CreateProcessStartInfo()
+        {
+            ProcessStartInfo processStartInfo;
+
+            if (!_isCoverletEnabled)
+            {
+                processStartInfo = CreateProcessStartInfo("dotnet", _appDllName);
+            }
+            else
+            {
+                processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
+            }
+
+            return processStartInfo;
+        }
+
+        private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
+        {
+            var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
+            var coverageReportPath = Path.Combine(_projectDir, "RemoteControlledProcess.Acceptance.Tests",
+                "TestResults",
+                coverageReportFileName);
+
+            var arguments =
+                $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura";
+
+            return CreateProcessStartInfo("coverlet", arguments);
+        }
+
+        private ProcessStartInfo CreateProcessStartInfo(string processName, string processArguments)
+        {
+            var processStartInfo = new ProcessStartInfo(processName)
+            {
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                Arguments = processArguments,
+                WorkingDirectory = _appDir
+            };
+
+            TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
+            TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");
+            return processStartInfo;
+        }
+
+        private void WaitAndProcessRequiredStartupMessages()
+        {
+            do
+            {
+                var startupMessage = ReadOutput();
+                ParseStartupMessage(startupMessage);
+
+                Thread.Sleep(100);
+            }
+            while (!_dotnetHostProcessId.HasValue);
+        }
+
+        public string ReadOutput() => _processStreamBuffer.StreamContent;
+
+        private void ParseStartupMessage(string startupMessage)
+        {
+            if (_dotnetHostProcessId.HasValue || !startupMessage.Contains("Process ID"))
+            {
+                return;
+            }
+
+            var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
+            var newLineAfterProcessIdIndex =
+                startupMessage.IndexOf("\n", processIdStartIndex, StringComparison.Ordinal);
+            var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
+            var processIdString = startupMessage.Substring(processIdStartIndex + 10, processIdNumberOfDigits);
+            _dotnetHostProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
+            TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
+        }
+
+        public void ShutdownGracefully()
+        {
+            SendTermSignalToProcess();
+            WaitForProcessExit();
+        }
+
+        private void SendTermSignalToProcess()
+        {
+            KillProcessFactory killProcessFactory = new KillProcessFactory(TestOutputHelper);
+
+            var killProcess = killProcessFactory.CreateStrategy()(_dotnetHostProcessId);
+            WaitForProcessToExitForUpTo2Seconds(killProcess);
+            KillProcessIfItIsStillRunning(killProcess);
+        }
 
         private void WaitForProcessToExitForUpTo2Seconds(Process killProcess)
         {
@@ -59,6 +202,12 @@ namespace RemoteControlledProcess
             _process.Kill();
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         private void Dispose(bool disposing)
         {
             if (_isDisposed)
@@ -73,6 +222,10 @@ namespace RemoteControlledProcess
             }
 
             _isDisposed = true;
+        }
+        ~ProcessWrapper()
+        {
+            Dispose(false);
         }
     }
 }

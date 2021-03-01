@@ -1,25 +1,26 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
     public sealed class KillProcessFactory
     {
-        public KillProcessFactory(int? dotnetHostProcessId, ITestOutputHelper testOutputHelper)
+        public KillProcessFactory(ITestOutputHelper testOutputHelper)
         {
-            _dotnetHostProcessId = dotnetHostProcessId;
             TestOutputHelper = testOutputHelper;
         }
-        private int? _dotnetHostProcessId;
+        
         public ITestOutputHelper TestOutputHelper { get; set; }
-        public Func<Process> CreateUnixStragey()
+        
+        public Func<int?, Process> CreateUnixStragey()
         {
-            return () =>
+            return (pid) =>
             {
                 var killCommand = "kill";
                 // ReSharper disable once PossibleInvalidOperationException
-                var killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
+                var killArguments = $"-s TERM {pid.Value}";
                 var signalName = "TERM";
                 TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
                 TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
@@ -29,13 +30,13 @@ namespace RemoteControlledProcess
         }
 
 
-        public Func<Process> CreateWindowsStrategy()
+        public Func<int?, Process> CreateWindowsStrategy()
         {
-            return () =>
+            return (pid) =>
             {
                 var killCommand = "taskkill";
                 // ReSharper disable once PossibleInvalidOperationException
-                var killArguments = $"/f /pid {_dotnetHostProcessId.Value}";
+                var killArguments = $"/f /pid {pid.Value}";
 
                 // Under Windows, SIGINT doesn't work. Thus we use the KILL signal.
                 //
@@ -52,5 +53,7 @@ namespace RemoteControlledProcess
                 return killProcess;
             };
         }
+
+        public Func<int?, Process> CreateStrategy() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? CreateWindowsStrategy() : CreateUnixStragey();
     }
 }
