@@ -8,3 +8,5 @@ FROM gitpod/workspace-dotnet
 
 RUN dotnet tool install --global coverlet.console \
     && curl -sL install.mob.sh | sudo sh
+
+ENV PATH="/home/gitpod/.dotnet/tools:${PATH}"
