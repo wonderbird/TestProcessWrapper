@@ -1,5 +1,6 @@
 # Test Helper: RemoteControlledProcess
 
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/RemoteControlledProcess)
 [![Build Status Badge](https://github.com/wonderbird/kata-rabbitmq/workflows/.NET%20Core/badge.svg)](https://github.com/wonderbird/kata-rabbitmq/actions?query=workflow%3A%22.NET+Core%22)
 [![Test Coverage (coveralls)](https://img.shields.io/coveralls/github/wonderbird/RemoteControlledProcess)](https://coveralls.io/github/wonderbird/RemoteControlledProcess)
 [![Test Coverage (codeclimate)](https://img.shields.io/codeclimate/coverage-letter/wonderbird/RemoteControlledProcess)](https://codeclimate.com/github/wonderbird/RemoteControlledProcess/trends/test_coverage_total)
