@@ -5,15 +5,15 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    public sealed class KillProcessFactory
+    public sealed class ProcessKillerFactory
     {
-        public KillProcessFactory(ITestOutputHelper testOutputHelper)
+        public ProcessKillerFactory(ITestOutputHelper testOutputHelper)
         {
             TestOutputHelper = testOutputHelper;
         }
-        
+
         public ITestOutputHelper TestOutputHelper { get; set; }
-        
+
         public Func<int?, Process> CreateUnixStragey()
         {
             return (pid) =>
@@ -54,6 +54,6 @@ namespace RemoteControlledProcess
             };
         }
 
-        public Func<int?, Process> CreateStrategy() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? CreateWindowsStrategy() : CreateUnixStragey();
+        public Func<int?, Process> CreateProcessKillingMethod() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? CreateWindowsStrategy() : CreateUnixStragey();
     }
 }

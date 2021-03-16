@@ -162,30 +162,37 @@ namespace RemoteControlledProcess
             WaitForProcessExit();
         }
 
+         // TODO: rename SendTermSignalToProcess appropriately
         private void SendTermSignalToProcess()
         {
-            KillProcessFactory killProcessFactory = new KillProcessFactory(TestOutputHelper);
+            var murderFactory = new ProcessKillerFactory(TestOutputHelper);
 
-            var killProcess = killProcessFactory.CreateStrategy()(_dotnetHostProcessId);
-            WaitForProcessToExitForUpTo2Seconds(killProcess);
-            KillProcessIfItIsStillRunning(killProcess);
+            var murder = murderFactory.CreateProcessKillingMethod();
+            var murderInProgress = murder(_dotnetHostProcessId);
+            removeEvidenceForMurder(murderInProgress);
         }
 
-        private void WaitForProcessToExitForUpTo2Seconds(Process killProcess)
+        private void removeEvidenceForMurder(Process theMurder)
         {
-            if (killProcess != null)
+            WaitSomeTimeForProcessToExit(theMurder);
+            KillProcessIfItIsStillRunning(theMurder);
+        }
+
+        private void WaitSomeTimeForProcessToExit(Process theProcess)
+        {
+            if (theProcess != null)
             {
                 TestOutputHelper?.WriteLine("Waiting for system call to complete.");
-                killProcess.WaitForExit(2000);
+                theProcess.WaitForExit(2000);
             }
         }
 
-        private void KillProcessIfItIsStillRunning(Process killProcess)
+        private void KillProcessIfItIsStillRunning(Process theProcess)
         {
-            if (!killProcess.HasExited)
+            if (!theProcess.HasExited)
             {
-                TestOutputHelper?.WriteLine("System call has " + (killProcess.HasExited ? "" : "NOT ") + "completed.");
-                killProcess.Kill();
+                TestOutputHelper?.WriteLine("System call has " + (theProcess.HasExited ? "" : "NOT ") + "completed.");
+                theProcess.Kill();
             }
         }
 
