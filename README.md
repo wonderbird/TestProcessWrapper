@@ -48,6 +48,12 @@ dotnet tool install --global dotnet-reportgenerator-globaltool --configfile Nuge
 If you are installing a dotnet tool for the first time, then you'll need to add the path to the dotnet tools to your
 system PATH. Please make sure that there is no "~" character in your PATH to coverlet.
 
+E.g. add the following line to the end of your shell rc file (e.g. ~/.zshrc):
+
+```shell
+export PATH="$PATH:$HOME/.dotnet/tools"
+```
+
 ## Build, Test, Run
 
 Run the following commands from the folder containing the `RemoteControlledProcess.sln` file in order to build, test and
