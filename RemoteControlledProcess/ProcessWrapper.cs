@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -27,6 +28,7 @@ namespace RemoteControlledProcess
 
         public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
+            ReadinessChecks = new List<Func<bool>>();
             IsCoverletEnabled = isCoverletEnabled;
 
             var projectRelativeDir = Path.Combine("..", "..", "..", "..");
@@ -59,6 +61,7 @@ namespace RemoteControlledProcess
         }
 
         public ITestOutputHelper TestOutputHelper { get; set; }
+        public List<Func<bool>> ReadinessChecks { get; }
 
         public void Dispose()
         {
@@ -140,6 +143,9 @@ namespace RemoteControlledProcess
             {
                 var startupMessage = ReadOutput();
                 ParseStartupMessage(startupMessage);
+
+                // TODO: Add test ensuring that the results of the readiness checks are considered correctly
+                ReadinessChecks.ForEach(check => check());
 
                 Thread.Sleep(100);
             }
