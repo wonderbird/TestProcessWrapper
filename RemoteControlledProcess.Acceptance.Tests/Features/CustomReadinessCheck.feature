@@ -4,6 +4,7 @@ Feature: Custom Readiness Check
   As a test developer using ProcessWrapper
   I want the startup to be delayed until my custom readiness check is ready.
   
+  @Ignore 
   Scenario: Custom readiness check
     Given An application was started with a custom readiness check 
     When the application is ready
