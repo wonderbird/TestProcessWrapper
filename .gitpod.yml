@@ -1,0 +1,10 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - init: dotnet restore && dotnet build --configuration Debug --no-restore
+    command: dotnet test; mob status
+
+vscode:
+  extensions:
+    - muhammad-sammy.csharp@1.23.9:BMArOoGwWqKRrH6s4E2/AQ==
