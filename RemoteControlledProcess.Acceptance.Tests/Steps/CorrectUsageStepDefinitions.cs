@@ -17,7 +17,7 @@ namespace katarabbitmq.bdd.tests.Steps
 
         public CorrectUsageStepDefinitions(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
-        public static List<ProcessWrapper> Clients { get; } = new();
+        public static List<TestProcessWrapper> Clients { get; } = new();
 
         public void Dispose()
         {
@@ -64,7 +64,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new ProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
+                var client = new TestProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 

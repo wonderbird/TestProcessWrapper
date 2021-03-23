@@ -2,45 +2,40 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using katarabbitmq.bdd.tests.Helpers;
 using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    public sealed class ProcessWrapper : IDisposable
+    class TestProjectInfo
     {
-        private readonly string _appDir;
+        public TestProjectInfo(string appProjectName)
+        {
+            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
+            ProjectDir = Path.GetFullPath(projectRelativeDir);
+            AppProjectName = appProjectName;
+        }
 
-        private readonly string _appDllName;
+        public string ProjectDir { get; }
+        public string AppProjectName { get; }
+        public string AppDllName => AppProjectName + ".dll";
+    }
 
-        private readonly string _appProjectName;
-
+    public sealed class TestProcessWrapper : IDisposable
+    {
         private readonly bool _isCoverletEnabled;
-
-        private readonly string _projectDir;
-
         private int? _dotnetHostProcessId;
-
         private bool _isDisposed;
-
         private Process _process;
         private ProcessStreamBuffer _processStreamBuffer;
-        
-        
-        public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
+        private readonly TestProjectInfo _testProjectInfo;
+
+        public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
             _isCoverletEnabled = isCoverletEnabled;
 
-            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
-            _projectDir = Path.GetFullPath(projectRelativeDir);
-
-            _appProjectName = appProjectName;
-
-            _appDllName = _appProjectName + ".dll";
-
-            _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
+            _testProjectInfo = new(appProjectName);
         }
 
         public bool HasExited => _process == null || _process.HasExited;
@@ -62,7 +57,7 @@ namespace RemoteControlledProcess
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
-       
+
         public void Start()
         {
             _process = new Process { StartInfo = CreateProcessStartInfo() };
@@ -86,7 +81,7 @@ namespace RemoteControlledProcess
 
             if (!_isCoverletEnabled)
             {
-                processStartInfo = CreateProcessStartInfo("dotnet", _appDllName);
+                processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
             }
             else
             {
@@ -98,13 +93,13 @@ namespace RemoteControlledProcess
 
         private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
         {
-            var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportPath = Path.Combine(_projectDir, "RemoteControlledProcess.Acceptance.Tests",
+            var coverageReportFileName = $"{_testProjectInfo.AppProjectName}.{Guid.NewGuid().ToString()}.xml";
+            var coverageReportPath = Path.Combine(_testProjectInfo.ProjectDir, "RemoteControlledProcess.Acceptance.Tests",
                 "TestResults",
                 coverageReportFileName);
 
             var arguments =
-                $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura";
+                $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {coverageReportPath} --format cobertura";
 
             return CreateProcessStartInfo("coverlet", arguments);
         }
@@ -118,7 +113,7 @@ namespace RemoteControlledProcess
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 Arguments = processArguments,
-                WorkingDirectory = _appDir
+                WorkingDirectory = Path.Combine(_testProjectInfo.ProjectDir, _testProjectInfo.AppProjectName, BinFolder)
             };
 
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
@@ -158,12 +153,11 @@ namespace RemoteControlledProcess
 
         public void ShutdownGracefully()
         {
-            SendTermSignalToProcess();
+            MurderTestProcess();
             WaitForProcessExit();
         }
 
-         // TODO: rename SendTermSignalToProcess appropriately
-        private void SendTermSignalToProcess()
+        private void MurderTestProcess()
         {
             var murderFactory = new ProcessKillerFactory(TestOutputHelper);
 
@@ -200,7 +194,7 @@ namespace RemoteControlledProcess
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") +
+            TestOutputHelper?.WriteLine($"Process {_testProjectInfo.AppProjectName} has " + (_process.HasExited ? "" : "NOT ") +
                                         "completed.");
         }
 
@@ -230,7 +224,7 @@ namespace RemoteControlledProcess
 
             _isDisposed = true;
         }
-        ~ProcessWrapper()
+        ~TestProcessWrapper()
         {
             Dispose(false);
         }
