@@ -1,3 +1,4 @@
+using Moq;
 using Xunit;
 
 namespace RemoteControlledProcess.Unit.Tests
@@ -7,7 +8,8 @@ namespace RemoteControlledProcess.Unit.Tests
         [Fact]
         public void Start_CustomReadinessCheckReturnsFalse_RepeatsReadinessCheck()
         {
-            var processWrapper = new ProcessWrapper("someProject", false);
+            var processFactory = new Mock<IProcessFactory>();
+            var processWrapper = new ProcessWrapper(processFactory.Object);
             processWrapper.Start();
         }
     }

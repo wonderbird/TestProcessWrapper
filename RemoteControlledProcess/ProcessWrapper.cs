@@ -28,6 +28,7 @@ namespace RemoteControlledProcess
         private ProcessStreamBuffer _processStreamBuffer;
 
         private readonly List<Func<bool>> _readinessChecks;
+        private IProcessFactory _processFactory = new ProcessFactory();
 
         public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
@@ -42,6 +43,13 @@ namespace RemoteControlledProcess
             _appDllName = _appProjectName + ".dll";
 
             _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
+        }
+
+        // TODO make this ProcessWrapper constructor private - it is only for testing purpose.
+        public ProcessWrapper(IProcessFactory processFactory)
+        : this("fakeProjectName", false)
+        {
+            _processFactory = processFactory;
         }
 
         public bool IsCoverletEnabled { get; }
@@ -79,8 +87,7 @@ namespace RemoteControlledProcess
 
         public void Start()
         {
-            var processFactory = new ProcessFactory();
-            _process = processFactory.CreateProcess();
+            _process = _processFactory.CreateProcess();
             _process.StartInfo = CreateProcessStartInfo();
 
             TestOutputHelper?.WriteLine(
