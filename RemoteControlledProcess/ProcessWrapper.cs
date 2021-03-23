@@ -24,11 +24,14 @@ namespace RemoteControlledProcess
         private bool _isDisposed;
 
         private Process _process;
+
         private ProcessStreamBuffer _processStreamBuffer;
+
+        private readonly List<Func<bool>> _readinessChecks;
 
         public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
-            ReadinessChecks = new List<Func<bool>>();
+            _readinessChecks = new List<Func<bool>>();
             IsCoverletEnabled = isCoverletEnabled;
 
             var projectRelativeDir = Path.Combine("..", "..", "..", "..");
@@ -47,6 +50,7 @@ namespace RemoteControlledProcess
 
         public bool IsRunning => _process != null && !_process.HasExited;
 
+
         private static string BinFolder
         {
             get
@@ -61,7 +65,6 @@ namespace RemoteControlledProcess
         }
 
         public ITestOutputHelper TestOutputHelper { get; set; }
-        public List<Func<bool>> ReadinessChecks { get; }
 
         public void Dispose()
         {
@@ -145,7 +148,7 @@ namespace RemoteControlledProcess
                 ParseStartupMessage(startupMessage);
 
                 // TODO: Add test ensuring that the results of the readiness checks are considered correctly
-                ReadinessChecks.ForEach(check => check());
+                _readinessChecks.ForEach(check => check());
 
                 Thread.Sleep(100);
             }
@@ -153,6 +156,11 @@ namespace RemoteControlledProcess
         }
 
         public string ReadOutput() => _processStreamBuffer.StreamContent;
+
+        public void AddReadinessCheck(Func<bool> readinessCheck)
+        {
+            _readinessChecks.Add(readinessCheck);
+        }
 
         private void ParseStartupMessage(string startupMessage)
         {
