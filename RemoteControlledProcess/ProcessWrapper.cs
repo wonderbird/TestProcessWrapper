@@ -23,7 +23,7 @@ namespace RemoteControlledProcess
 
         private bool _isDisposed;
 
-        private Process _process;
+        private IProcess _process;
 
         private ProcessStreamBuffer _processStreamBuffer;
 
@@ -79,7 +79,9 @@ namespace RemoteControlledProcess
 
         public void Start()
         {
-            _process = new Process { StartInfo = CreateProcessStartInfo() };
+            var processFactory = new ProcessFactory();
+            _process = processFactory.CreateProcess();
+            _process.StartInfo = CreateProcessStartInfo();
 
             TestOutputHelper?.WriteLine(
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
@@ -89,7 +91,7 @@ namespace RemoteControlledProcess
             _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine,
                 handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
 
-            TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
+            TestOutputHelper?.WriteLine($"Process has exited: {_process.HasExited} ...");
 
             WaitAndProcessRequiredStartupMessages();
         }
