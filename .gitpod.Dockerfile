@@ -6,4 +6,7 @@ FROM gitpod/workspace-dotnet
 #
 # More information: https://www.gitpod.io/docs/config-docker/
 
-RUN curl -sL install.mob.sh | sudo sh
+RUN dotnet tool install --global coverlet.console \
+    && curl -sL install.mob.sh | sudo sh
+
+ENV PATH="/home/gitpod/.dotnet/tools:${PATH}"
