@@ -21,4 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\RemoteControlledProcess\RemoteControlledProcess.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestResults" />
+  </ItemGroup>
 </Project>

@@ -25,14 +25,6 @@ namespace RemoteControlledProcess
     // TODO Rename file to match class name
     public sealed class TestProcessWrapper : IDisposable
     {
-        private readonly string _appDir;
-
-        private readonly string _appDllName;
-
-        private readonly string _appProjectName;
-
-        private readonly string _projectDir;
-
         private int? _dotnetHostProcessId;
 
         private bool _isDisposed;
@@ -41,7 +33,7 @@ namespace RemoteControlledProcess
 
         private ProcessStreamBuffer _processStreamBuffer;
 
-        private TestProjectInfo _testProjectInfo;
+        private readonly TestProjectInfo _testProjectInfo;
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
@@ -107,9 +99,9 @@ namespace RemoteControlledProcess
         private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
         {
             var coverageReportFileName = $"{_testProjectInfo.AppProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportPath = Path.Combine(_testProjectInfo.ProjectDir, "RemoteControlledProcess.Acceptance.Tests",
-                "TestResults",
-                coverageReportFileName);
+            var coverageReportRelativeDir = Path.Join("..", "..", "..", "TestResults");
+            var coverageReportDir = Path.GetFullPath(coverageReportRelativeDir);
+            var coverageReportPath = Path.Combine(coverageReportDir, coverageReportFileName);
 
             var arguments =
                 $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {coverageReportPath} --format cobertura";
