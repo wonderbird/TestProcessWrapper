@@ -20,6 +20,16 @@ namespace RemoteControlledProcess
         public string ProjectDir { get; }
         public string AppProjectName { get; }
         public string AppDllName => AppProjectName + ".dll";
+        public string CoverageReportPath
+        {
+            get
+            {
+                var coverageReportFileName = $"{AppProjectName}.{Guid.NewGuid().ToString()}.xml";
+                var coverageReportRelativeDir = Path.Join("..", "..", "..", "TestResults");
+                var coverageReportDir = Path.GetFullPath(coverageReportRelativeDir);
+                return Path.Combine(coverageReportDir, coverageReportFileName);
+            }
+        }
     }
 
     // TODO Rename file to match class name
@@ -98,13 +108,8 @@ namespace RemoteControlledProcess
 
         private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
         {
-            var coverageReportFileName = $"{_testProjectInfo.AppProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportRelativeDir = Path.Join("..", "..", "..", "TestResults");
-            var coverageReportDir = Path.GetFullPath(coverageReportRelativeDir);
-            var coverageReportPath = Path.Combine(coverageReportDir, coverageReportFileName);
-
             var arguments =
-                $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {coverageReportPath} --format cobertura";
+                $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {_testProjectInfo.CoverageReportPath} --format cobertura";
 
             return CreateProcessStartInfo("coverlet", arguments);
         }
