@@ -2,9 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
-using katarabbitmq.bdd.tests.Helpers;
 using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
@@ -23,7 +21,7 @@ namespace RemoteControlledProcess
         public string AppProjectName { get; }
         public string AppDllName => AppProjectName + ".dll";
     }
-    
+
     // TODO Rename file to match class name
     public sealed class TestProcessWrapper : IDisposable
     {
@@ -40,8 +38,10 @@ namespace RemoteControlledProcess
         private bool _isDisposed;
 
         private Process _process;
-        
+
         private ProcessStreamBuffer _processStreamBuffer;
+
+        private TestProjectInfo _testProjectInfo;
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
@@ -237,7 +237,7 @@ namespace RemoteControlledProcess
 
             _isDisposed = true;
         }
-        
+
         ~TestProcessWrapper()
         {
             Dispose(false);

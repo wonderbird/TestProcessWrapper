@@ -14,7 +14,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Features
         [Fact]
         public void SmokeTest()
         {
-            var processWrapper = new ProcessWrapper("RemoteControlledProcess.Application", false);
+            var processWrapper = new TestProcessWrapper("RemoteControlledProcess.Application", false);
             processWrapper.Start();
             processWrapper.ShutdownGracefully();
             processWrapper.ForceTermination();
