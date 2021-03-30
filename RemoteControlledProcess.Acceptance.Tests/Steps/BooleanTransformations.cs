@@ -1,7 +1,7 @@
 using System.Globalization;
 using TechTalk.SpecFlow;
 
-namespace katarabbitmq.bdd.tests.Steps
+namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
     public class BooleanTransformations

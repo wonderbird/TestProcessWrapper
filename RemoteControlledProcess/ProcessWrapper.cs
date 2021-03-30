@@ -2,12 +2,14 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using katarabbitmq.bdd.tests.Helpers;
 using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
+    // TODO extract class to separate file
     class TestProjectInfo
     {
         public TestProjectInfo(string appProjectName)
@@ -21,22 +23,34 @@ namespace RemoteControlledProcess
         public string AppProjectName { get; }
         public string AppDllName => AppProjectName + ".dll";
     }
-
+    
+    // TODO Rename file to match class name
     public sealed class TestProcessWrapper : IDisposable
     {
-        private readonly bool _isCoverletEnabled;
+        private readonly string _appDir;
+
+        private readonly string _appDllName;
+
+        private readonly string _appProjectName;
+
+        private readonly string _projectDir;
+
         private int? _dotnetHostProcessId;
+
         private bool _isDisposed;
+
         private Process _process;
+        
         private ProcessStreamBuffer _processStreamBuffer;
-        private readonly TestProjectInfo _testProjectInfo;
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
-            _isCoverletEnabled = isCoverletEnabled;
+            IsCoverletEnabled = isCoverletEnabled;
 
             _testProjectInfo = new(appProjectName);
         }
+
+        public bool IsCoverletEnabled { get; }
 
         public bool HasExited => _process == null || _process.HasExited;
 
@@ -56,7 +70,6 @@ namespace RemoteControlledProcess
         }
 
         public ITestOutputHelper TestOutputHelper { get; set; }
-
 
         public void Start()
         {
@@ -79,7 +92,7 @@ namespace RemoteControlledProcess
         {
             ProcessStartInfo processStartInfo;
 
-            if (!_isCoverletEnabled)
+            if (!IsCoverletEnabled)
             {
                 processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
             }
@@ -224,6 +237,7 @@ namespace RemoteControlledProcess
 
             _isDisposed = true;
         }
+        
         ~TestProcessWrapper()
         {
             Dispose(false);

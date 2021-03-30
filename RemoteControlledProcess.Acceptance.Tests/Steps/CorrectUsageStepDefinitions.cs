@@ -1,120 +1,69 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using RemoteControlledProcess;
+using System.Text.RegularExpressions;
+using RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace katarabbitmq.bdd.tests.Steps
+namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
-    public class CorrectUsageStepDefinitions : IDisposable
+    public class CorrectUsageStepDefinitions
     {
-        private readonly ITestOutputHelper _testOutputHelper;
+        private static readonly Regex LineCoverageRegex =
+            new(@"\|\sTotal\s*\|\s*([0-9\.]*)\%\s*\|\s*[0-9\.]*%\s*\|\s*[0-9\.]*%\s*\|", RegexOptions.Multiline);
 
-        private bool _isDisposed;
+        private readonly ITestOutputHelper _testOutputHelper;
 
         public CorrectUsageStepDefinitions(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
 
-        public static List<TestProcessWrapper> Clients { get; } = new();
-
-        public void Dispose()
+        [Then(@"the reported total line coverage (is greater|equals) (.*)%")]
+        public void ThenTheReportedTotalLineCoverageIsGreater(string comparisonString,
+            int expectedLineCoveragePercent)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            var comparison = GetComparisonByName(comparisonString);
+
+            var clientsWithCoverlet = ProcessControlStepDefinitions.Clients.Where(c => c.IsCoverletEnabled);
+            foreach (var client in clientsWithCoverlet)
+            {
+                var actualLineCoveragePercent = GetLineCoverageFromCoverletOutput(client.ReadOutput());
+                Assert.True(comparison(actualLineCoveragePercent, expectedLineCoveragePercent),
+                    $"Mismatch: line coverage of {actualLineCoveragePercent}% {comparisonString} {expectedLineCoveragePercent}%");
+            }
         }
 
-        [When]
-        public static void WhenATERMSignalIsSentToAllApplications()
+        private static Func<double, double, bool> GetComparisonByName(string comparisonString)
         {
-            ShutdownProcessesGracefully();
+            Dictionary<string, Func<double, double, bool>> comparisonMap = new()
+            {
+                { "is greater", (actual, expected) => actual > expected },
+                { "equals", (actual, expected) => Math.Abs(actual - expected) < 0.001 }
+            };
+            var comparison = comparisonMap[comparisonString];
+            return comparison;
         }
 
-        [Then]
-        public static void ThenAllApplicationsShutDown()
+        private double GetLineCoverageFromCoverletOutput(string coverletOutput)
         {
-            Assert.True(Clients.All(c => c.HasExited));
+            var lineCoverageMatch = LineCoverageRegex.Match(coverletOutput);
+            var lineCoveragePercentString = lineCoverageMatch.Groups[1].Value;
+
+            _testOutputHelper?.WriteLine($"Extracted linecoverage string: \"{lineCoveragePercentString}\"");
+
+            var lineCoveragePercent = double.Parse(lineCoveragePercentString, CultureInfo.InvariantCulture);
+            return lineCoveragePercent;
         }
 
         [Then]
         public static void ThenTheLogIsFreeOfExceptionMessages()
         {
-            foreach (var client in Clients)
+            foreach (var client in ProcessControlStepDefinitions.Clients)
             {
-                Assert.DoesNotContain("Unhandled exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
+                Assert.DoesNotContain("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
             }
-        }
-
-        [Then]
-        public static void ThenEachLogShowsAnExceptionMessage()
-        {
-            const string expectedExceptionMessage = "Unhandled exception.";
-
-            foreach (var client in Clients)
-            {
-                var output = client.ReadOutput();
-                Assert.Contains(expectedExceptionMessage, output, StringComparison.CurrentCultureIgnoreCase);
-            }
-        }
-
-        [Given(@"(.*) application is running with coverlet '(.*)'")]
-        [Given(@"(.*) applications are running with coverlet '(.*)'")]
-        public void GivenApplicationsAreRunning(int numberOfClients, bool isCoverletEnabled)
-        {
-            for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
-            {
-                var client = new TestProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
-                client.TestOutputHelper = _testOutputHelper;
-                client.Start();
-
-                Clients.Add(client);
-            }
-
-            Assert.True(Clients.All(c => c.IsRunning));
-        }
-
-        public static void ShutdownProcessesGracefully()
-        {
-            foreach (var client in Clients)
-            {
-                client.ShutdownGracefully();
-            }
-        }
-
-        [AfterScenario]
-        public static void ForceProcessTermination()
-        {
-            foreach (var client in Clients)
-            {
-                client.ForceTermination();
-                client.Dispose();
-            }
-
-            Clients.Clear();
-        }
-
-        ~CorrectUsageStepDefinitions()
-        {
-            Dispose(false);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (_isDisposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                foreach (var client in Clients)
-                {
-                    client?.Dispose();
-                }
-            }
-
-            _isDisposed = true;
         }
     }
 }

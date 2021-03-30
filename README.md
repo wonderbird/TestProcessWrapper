@@ -10,13 +10,24 @@
 [![CodeScene Code Health](https://codescene.io/projects/12257/status-badges/code-health)](https://codescene.io/projects/12257/jobs/latest-successful/results)
 [![CodeScene System Mastery](https://codescene.io/projects/12257/status-badges/system-mastery)](https://codescene.io/projects/12257/jobs/latest-successful/results)
 
-Launch and control `dotnet` processes wrapped into the `coverlet` code coverage analyzer.
+Launch and control `dotnet` processes wrapped into the [coverlet](https://github.com/coverlet-coverage/coverlet) code
+coverage analyzer.
+
+The class `ProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
+class captures the messages written to the Console and to Console.Error. It allows to terminate the process gracefully
+and forcefully. One of the processes can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet)
+command line tool in order to calculate code coverage.
+
+**Usage Examples**
+
+* Intended Use: [CorrectUsage.feature](RemoteControlledProcess.Acceptance.Tests/Features/CorrectUsage.feature) and [CorrectUsageStepDefinitions.cs](RemoteControlledProcess.Acceptance.Tests/Steps/CorrectUsageStepDefinitions.cs)
+* Most Simple Use: [SmokeTests.cs](RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs)
 
 ## Attention
 
 You can use the `coverlet` wrapper only once per `dotnet` application, because `coverlet` instruments the `dotnet` DLL.
-If you run two or more instances of a wrapped application, `coverlet` will report an exception and there will be zero
-coverage calculated.
+If you use `coverlet` with two or more instances of the same application, `coverlet` will report an exception after
+(or during) the application termination and the reported coverage will be 0.
 
 ## Development and Support Standard
 
@@ -41,8 +52,8 @@ This requires python.
 To use the `RemoteControlledProcess` library and to run the unit tests you need the following tools installed:
 
 ```shell
-dotnet tool install --global coverlet.console --configfile Nuget-OfficialOnly.config
-dotnet tool install --global dotnet-reportgenerator-globaltool --configfile Nuget-OfficialOnly.config
+dotnet tool install --global coverlet.console --configfile NuGet-OfficialOnly.config
+dotnet tool install --global dotnet-reportgenerator-globaltool --configfile NuGet-OfficialOnly.config
 ```
 
 If you are installing a dotnet tool for the first time, then you'll need to add the path to the dotnet tools to your
@@ -63,12 +74,20 @@ run the application:
 
 ```sh
 dotnet build
+
+# Simply run the tests
 dotnet test
+
+# As an alternative, run the tests with coverage and produce a coverage report
+rm -r RemoteControlledProcess.Acceptance.Tests/TestResults && \
+  dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml' && \
+  reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
+open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 ```
 
 ### Known Issue
 
-When you run the tests on a mac, then the tests using *two* `RemoteControlledProcess`es issue a crash report regarding
+When you run the tests on a mac, then the tests using *two* `ProcessWrapper`s issue a crash report regarding
 "dotnet".
 
 At the moment I cannot explain that behavior.
@@ -138,9 +157,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 ## .NET Core
 
-*
-
-GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
+* GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
 
 ## Behavior Driven Development (BDD)
 
@@ -153,11 +170,11 @@ GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspn
 
 ## Code Analysis
 
-* JetBrains s.r.o.: [dupFinder Command-Line Tool](https://www.jetbrains.com/help/resharper/dupFinder.html)
+* Microsoft: [Use code coverage for unit testing](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=linux)
 * GitHub: [coverlet-coverage / coverlet](https://github.com/coverlet-coverage/coverlet)
 * GitHub: [danielpalme / ReportGenerator](https://github.com/danielpalme/ReportGenerator)
-* Scott
-  Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
+* JetBrains s.r.o.: [dupFinder Command-Line Tool](https://www.jetbrains.com/help/resharper/dupFinder.html)
+* Scott Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
 * [EditorConfig.org](https://editorconfig.org)
 * GitHub: [dotnet / roslyn - .editorconfig](https://github.com/dotnet/roslyn/blob/master/.editorconfig)
 * Check all the badges on top of this README
