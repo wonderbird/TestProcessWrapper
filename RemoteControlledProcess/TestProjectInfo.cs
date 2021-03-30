@@ -3,7 +3,7 @@ using System.IO;
 
 namespace RemoteControlledProcess
 {
-    class TestProjectInfo
+    internal class TestProjectInfo
     {
         public TestProjectInfo(string appProjectName)
         {
@@ -15,6 +15,7 @@ namespace RemoteControlledProcess
         public string ProjectDir { get; }
         public string AppProjectName { get; }
         public string AppDllName => AppProjectName + ".dll";
+
         public string CoverageReportPath
         {
             get

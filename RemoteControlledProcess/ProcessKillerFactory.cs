@@ -7,16 +7,13 @@ namespace RemoteControlledProcess
 {
     public sealed class ProcessKillerFactory
     {
-        public ProcessKillerFactory(ITestOutputHelper testOutputHelper)
-        {
-            TestOutputHelper = testOutputHelper;
-        }
+        public ProcessKillerFactory(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
 
-        public ITestOutputHelper TestOutputHelper { get; set; }
+        private ITestOutputHelper TestOutputHelper { get; }
 
-        public Func<int?, Process> CreateUnixStragey()
+        private Func<int?, Process> CreateUnixStrategy()
         {
-            return (pid) =>
+            return pid =>
             {
                 var killCommand = "kill";
                 // ReSharper disable once PossibleInvalidOperationException
@@ -30,9 +27,9 @@ namespace RemoteControlledProcess
         }
 
 
-        public Func<int?, Process> CreateWindowsStrategy()
+        private Func<int?, Process> CreateWindowsStrategy()
         {
-            return (pid) =>
+            return pid =>
             {
                 var killCommand = "taskkill";
                 // ReSharper disable once PossibleInvalidOperationException
@@ -54,6 +51,7 @@ namespace RemoteControlledProcess
             };
         }
 
-        public Func<int?, Process> CreateProcessKillingMethod() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? CreateWindowsStrategy() : CreateUnixStragey();
+        public Func<int?, Process> CreateProcessKillingMethod() =>
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? CreateWindowsStrategy() : CreateUnixStrategy();
     }
 }

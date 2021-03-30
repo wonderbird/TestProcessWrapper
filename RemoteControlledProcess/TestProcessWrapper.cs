@@ -7,24 +7,19 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    // TODO Rename file to match class name
     public sealed class TestProcessWrapper : IDisposable
     {
-        private int? _dotnetHostProcessId;
-
-        private bool _isDisposed;
-
-        private Process _process;
-
-        private ProcessStreamBuffer _processStreamBuffer;
-
         private readonly TestProjectInfo _testProjectInfo;
+        private int? _dotnetHostProcessId;
+        private bool _isDisposed;
+        private Process _process;
+        private ProcessStreamBuffer _processStreamBuffer;
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
             IsCoverletEnabled = isCoverletEnabled;
 
-            _testProjectInfo = new(appProjectName);
+            _testProjectInfo = new TestProjectInfo(appProjectName);
         }
 
         public bool IsCoverletEnabled { get; }
@@ -47,6 +42,12 @@ namespace RemoteControlledProcess
         }
 
         public ITestOutputHelper TestOutputHelper { get; set; }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         public void Start()
         {
@@ -98,7 +99,8 @@ namespace RemoteControlledProcess
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 Arguments = processArguments,
-                WorkingDirectory = Path.Combine(_testProjectInfo.ProjectDir, _testProjectInfo.AppProjectName, BinFolder)
+                WorkingDirectory = Path.Combine(_testProjectInfo.ProjectDir, _testProjectInfo.AppProjectName,
+                    BinFolder)
             };
 
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
@@ -148,10 +150,10 @@ namespace RemoteControlledProcess
 
             var murder = murderFactory.CreateProcessKillingMethod();
             var murderInProgress = murder(_dotnetHostProcessId);
-            removeEvidenceForMurder(murderInProgress);
+            RemoveEvidenceForMurder(murderInProgress);
         }
 
-        private void removeEvidenceForMurder(Process theMurder)
+        private void RemoveEvidenceForMurder(Process theMurder)
         {
             WaitSomeTimeForProcessToExit(theMurder);
             KillProcessIfItIsStillRunning(theMurder);
@@ -179,19 +181,14 @@ namespace RemoteControlledProcess
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine($"Process {_testProjectInfo.AppProjectName} has " + (_process.HasExited ? "" : "NOT ") +
+            TestOutputHelper?.WriteLine($"Process {_testProjectInfo.AppProjectName} has " +
+                                        (_process.HasExited ? "" : "NOT ") +
                                         "completed.");
         }
 
         public void ForceTermination()
         {
             _process.Kill();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)

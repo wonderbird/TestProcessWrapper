@@ -1,6 +1,5 @@
 using System.IO;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace RemoteControlledProcess.Unit.Tests
