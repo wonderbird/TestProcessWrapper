@@ -9,6 +9,7 @@ dupfinder-report.*
 
 #SpecFlow Stuff
 *.feature.cs
+SpecFlow/
 
 ### MacOS filesystem helpers ###
 .DS_Store

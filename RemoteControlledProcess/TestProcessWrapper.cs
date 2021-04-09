@@ -2,41 +2,24 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    public sealed class ProcessWrapper : IDisposable
+    public sealed class TestProcessWrapper : IDisposable
     {
-        private readonly string _appDir;
-
-        private readonly string _appDllName;
-
-        private readonly string _appProjectName;
-
-        private readonly string _projectDir;
-
+        private readonly TestProjectInfo _testProjectInfo;
         private int? _dotnetHostProcessId;
-
         private bool _isDisposed;
-
         private Process _process;
         private ProcessStreamBuffer _processStreamBuffer;
 
-        public ProcessWrapper(string appProjectName, bool isCoverletEnabled)
+        public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
             IsCoverletEnabled = isCoverletEnabled;
 
-            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
-            _projectDir = Path.GetFullPath(projectRelativeDir);
-
-            _appProjectName = appProjectName;
-
-            _appDllName = _appProjectName + ".dll";
-
-            _appDir = Path.Combine(_projectDir, _appProjectName, BinFolder);
+            _testProjectInfo = new TestProjectInfo(appProjectName);
         }
 
         public bool IsCoverletEnabled { get; }
@@ -66,11 +49,6 @@ namespace RemoteControlledProcess
             GC.SuppressFinalize(this);
         }
 
-        ~ProcessWrapper()
-        {
-            Dispose(false);
-        }
-
         public void Start()
         {
             _process = new Process { StartInfo = CreateProcessStartInfo() };
@@ -94,7 +72,7 @@ namespace RemoteControlledProcess
 
             if (!IsCoverletEnabled)
             {
-                processStartInfo = CreateProcessStartInfo("dotnet", _appDllName);
+                processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
             }
             else
             {
@@ -106,13 +84,8 @@ namespace RemoteControlledProcess
 
         private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
         {
-            var coverageReportFileName = $"{_appProjectName}.{Guid.NewGuid().ToString()}.xml";
-            var coverageReportRelativeDir = Path.Join("..", "..", "..", "TestResults");
-            var coverageReportDir = Path.GetFullPath(coverageReportRelativeDir);
-            var coverageReportPath = Path.Combine(coverageReportDir, coverageReportFileName);
-
             var arguments =
-                $"\".\" --target \"dotnet\" --targetargs \"{_appDllName}\" --output {coverageReportPath} --format cobertura";
+                $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {_testProjectInfo.CoverageReportPath} --format cobertura";
 
             return CreateProcessStartInfo("coverlet", arguments);
         }
@@ -126,7 +99,8 @@ namespace RemoteControlledProcess
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 Arguments = processArguments,
-                WorkingDirectory = _appDir
+                WorkingDirectory = Path.Combine(_testProjectInfo.ProjectDir, _testProjectInfo.AppProjectName,
+                    BinFolder)
             };
 
             TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
@@ -166,66 +140,40 @@ namespace RemoteControlledProcess
 
         public void ShutdownGracefully()
         {
-            SendTermSignalToProcess();
+            MurderTestProcess();
             WaitForProcessExit();
         }
 
-        private void SendTermSignalToProcess()
+        private void MurderTestProcess()
         {
-            var killProcess = InvokeKillSystemCall();
-            WaitForKillSystemCallToFinish(killProcess);
-            TerminateKillSystemCall(killProcess);
+            var murderFactory = new ProcessKillerFactory(TestOutputHelper);
+
+            var murder = murderFactory.CreateProcessKillingMethod();
+            var murderInProgress = murder(_dotnetHostProcessId);
+            RemoveEvidenceForMurder(murderInProgress);
         }
 
-        private Process InvokeKillSystemCall()
+        private void RemoveEvidenceForMurder(Process theMurder)
         {
-            string killCommand;
-            string killArguments;
-            string signalName;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                killCommand = "taskkill";
-                killArguments = $"/f /pid {_dotnetHostProcessId.Value}";
-
-                // Under Windows, SIGINT doesn't work. Thus we use the KILL signal.
-                //
-                // To try this out you can place a breakpoint here and check on the
-                // command line yourself.
-                //
-                // This can be tolerated for our case here, because the application
-                // is intended to run in a linux docker container and because the
-                // build pipeline uses linux containers for testing.
-                signalName = "KILL";
-            }
-            else
-            {
-                killCommand = "kill";
-                killArguments = $"-s TERM {_dotnetHostProcessId.Value}";
-                signalName = "TERM";
-            }
-
-            TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
-            TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
-            var killProcess = Process.Start(killCommand, killArguments);
-            return killProcess;
+            WaitSomeTimeForProcessToExit(theMurder);
+            KillProcessIfItIsStillRunning(theMurder);
         }
 
-        private void WaitForKillSystemCallToFinish(Process killProcess)
+        private void WaitSomeTimeForProcessToExit(Process theProcess)
         {
-            if (killProcess != null)
+            if (theProcess != null)
             {
                 TestOutputHelper?.WriteLine("Waiting for system call to complete.");
-                killProcess.WaitForExit(2000);
+                theProcess.WaitForExit(2000);
             }
         }
 
-        private void TerminateKillSystemCall(Process killProcess)
+        private void KillProcessIfItIsStillRunning(Process theProcess)
         {
-            if (!killProcess.HasExited)
+            if (!theProcess.HasExited)
             {
-                TestOutputHelper?.WriteLine("System call has " + (killProcess.HasExited ? "" : "NOT ") + "completed.");
-                killProcess.Kill();
+                TestOutputHelper?.WriteLine("System call has " + (theProcess.HasExited ? "" : "NOT ") + "completed.");
+                theProcess.Kill();
             }
         }
 
@@ -233,7 +181,8 @@ namespace RemoteControlledProcess
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") +
+            TestOutputHelper?.WriteLine($"Process {_testProjectInfo.AppProjectName} has " +
+                                        (_process.HasExited ? "" : "NOT ") +
                                         "completed.");
         }
 
@@ -256,6 +205,11 @@ namespace RemoteControlledProcess
             }
 
             _isDisposed = true;
+        }
+
+        ~TestProcessWrapper()
+        {
+            Dispose(false);
         }
     }
 }
