@@ -7,7 +7,7 @@ on:
     branches: [ main ]
     
 env:
-  packageVersionPrefix: ${{ '0.0.' }}
+  packageVersionPrefix: ${{ '1.0.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
   packageVersionSuffixForMainBranch: ${{ '' }}
 
