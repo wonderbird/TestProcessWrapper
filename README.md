@@ -46,8 +46,9 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 ### Prerequisites
 
 To compile, test and run this project the latest [.NET SDK](https://dotnet.microsoft.com/download) is required on
-your machine. For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus).
-This requires python.
+your machine. To run the acceptance tests you need [Docker](https://www.docker.com/) installed. For calculating
+code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus). This requires
+[Python](https://www.python.org/).
 
 To use the `RemoteControlledProcess` library and to run the unit tests you need the following tools installed:
 
