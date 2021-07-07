@@ -25,7 +25,7 @@ namespace RemoteControlledProcess
 
         private IProcess _process;
 
-        private ProcessStreamBuffer _processStreamBuffer;
+        private IProcessStreamBuffer _processStreamBuffer;
 
         private readonly List<Func<bool>> _readinessChecks;
         private IProcessFactory _processFactory = new ProcessFactory();
@@ -74,6 +74,9 @@ namespace RemoteControlledProcess
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
+        // TODO check whether ProcessStreamBufferFactory can be private. It is exposed only to unit tests.
+        public IProcessStreamBufferFactory ProcessStreamBufferFactory { get; set; } = new ProcessStreamBufferFactory();
+
         public void Dispose()
         {
             Dispose(true);
@@ -94,7 +97,7 @@ namespace RemoteControlledProcess
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
             _process.Start();
 
-            _processStreamBuffer = new ProcessStreamBuffer();
+            _processStreamBuffer = ProcessStreamBufferFactory.CreateProcessStreamBuffer();
             _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine,
                 handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
 

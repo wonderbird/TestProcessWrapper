@@ -17,7 +17,7 @@ namespace RemoteControlledProcess
     ///         StandardOutput.ReadToEnd() hangs [duplicate]
     ///     </see>
     /// </remarks>
-    public sealed class ProcessStreamBuffer : IDisposable
+    public sealed class ProcessStreamBuffer : IProcessStreamBuffer
     {
         private readonly object _lock = new();
         private StringBuilder _buffer;
