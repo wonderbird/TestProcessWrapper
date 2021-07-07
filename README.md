@@ -1,4 +1,4 @@
-# Test Helper: RemoteControlledProcess
+# Test Helper: TestProcessWrapper
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/RemoteControlledProcess)
 [![Build Status Badge](https://github.com/wonderbird/kata-rabbitmq/workflows/.NET%20Core/badge.svg)](https://github.com/wonderbird/kata-rabbitmq/actions?query=workflow%3A%22.NET+Core%22)
@@ -13,7 +13,7 @@
 Launch and control `dotnet` processes wrapped into the [coverlet](https://github.com/coverlet-coverage/coverlet) code
 coverage analyzer.
 
-The class `ProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
+The class `TestProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
 class captures the messages written to the Console and to Console.Error. It allows to terminate the process gracefully
 and forcefully. One of the processes can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet)
 command line tool in order to calculate code coverage.
@@ -90,7 +90,7 @@ open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 
 #### Known Issue
 
-When you run the tests on a mac, then the tests using *two* `ProcessWrapper`s issue a crash report regarding
+When you run the tests on a mac, then the tests using *two* `TestProcessWrapper`s issue a crash report regarding
 "dotnet".
 
 At the moment I cannot explain that behavior.

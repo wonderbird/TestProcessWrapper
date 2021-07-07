@@ -1,8 +1,8 @@
 @CorrectUsage
 Feature: Correct Usage
   In order have reliable tests
-  As a test developer using ProcessWrapper
-  I want to know how ProcessWrapper shall be used
+  As a test developer using TestProcessWrapper
+  I want to know how TestProcessWrapper shall be used
 
   Scenario: Correct usage: 1 application with coverlet enabled
     Given 1 application is running with coverlet 'enabled'
