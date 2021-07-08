@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Xunit.Abstractions;
 
@@ -123,17 +124,22 @@ namespace RemoteControlledProcess
 
         private void WaitAndProcessRequiredStartupMessages()
         {
+            bool isReady;
+
             do
             {
+                // TODO: Checking for the correct startupMessage and waiting for the _dotnetHostProcessId is a readiness check. Move the corresponding logic into _readinessChecks.
                 var startupMessage = ReadOutput();
                 ParseStartupMessage(startupMessage);
 
                 // TODO: Add test ensuring that the results of the readiness checks are considered correctly
-                _readinessChecks.ForEach(check => check());
+                // TODO: Only re-execute failing readiness checks
+                isReady = _readinessChecks.All(check => check());
 
+                // TODO: Don't sleep if all _readinessChecks passed
                 Thread.Sleep(100);
             }
-            while (!_dotnetHostProcessId.HasValue);
+            while (!_dotnetHostProcessId.HasValue || !isReady);
         }
 
         public string ReadOutput() => _processStreamBuffer.StreamContent;
