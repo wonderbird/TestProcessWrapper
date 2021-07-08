@@ -1,4 +1,4 @@
-# Test Helper: RemoteControlledProcess
+# Test Helper: TestProcessWrapper
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/RemoteControlledProcess)
 [![Build Status Badge](https://github.com/wonderbird/kata-rabbitmq/workflows/.NET%20Core/badge.svg)](https://github.com/wonderbird/kata-rabbitmq/actions?query=workflow%3A%22.NET+Core%22)
@@ -13,7 +13,7 @@
 Launch and control `dotnet` processes wrapped into the [coverlet](https://github.com/coverlet-coverage/coverlet) code
 coverage analyzer.
 
-The class `ProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
+The class `TestProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
 class captures the messages written to the Console and to Console.Error. It allows to terminate the process gracefully
 and forcefully. One of the processes can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet)
 command line tool in order to calculate code coverage.
@@ -41,13 +41,13 @@ days to answer your questions. Please keep this in mind when using this project 
 Many thanks to [JetBrains](https://www.jetbrains.com/?from=RemoteControlledProcess) who provide
 an [Open Source License](https://www.jetbrains.com/community/opensource/) for this project ❤️.
 
-# Development
+## Development
 
 ### Prerequisites
 
-To compile, test and run this project the latest [.NET Core SDK](https://dotnet.microsoft.com/download) is required on
+To compile, test and run this project the latest [.NET SDK](https://dotnet.microsoft.com/download) is required on
 your machine. For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus).
-This requires python.
+This requires [Python](https://www.python.org/).
 
 To use the `RemoteControlledProcess` library and to run the unit tests you need the following tools installed:
 
@@ -56,12 +56,23 @@ dotnet tool install --global coverlet.console --configfile NuGet-OfficialOnly.co
 dotnet tool install --global dotnet-reportgenerator-globaltool --configfile NuGet-OfficialOnly.config
 ```
 
-## Build, Test, Run
+### Troubleshooting
+
+If you are installing a dotnet tool for the first time, then you'll need to add the path to the dotnet tools to your
+system PATH. Please make sure that there is no "~" character in your PATH to coverlet.
+
+E.g. add the following line to the end of your shell rc file (e.g. ~/.zshrc):
+
+```shell
+export PATH="$PATH:$HOME/.dotnet/tools"
+```
+
+### Build, Test, Run
 
 Run the following commands from the folder containing the `RemoteControlledProcess.sln` file in order to build, test and
 run the application:
 
-### Build the Solution and Run the Acceptance Tests
+#### Build the Solution and Run the Acceptance Tests
 
 ```sh
 dotnet build
@@ -76,14 +87,14 @@ rm -r RemoteControlledProcess.Acceptance.Tests/TestResults && \
 open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 ```
 
-### Known Issue
+#### Known Issue
 
-When you run the tests on a mac, then the tests using *two* `ProcessWrapper`s issue a crash report regarding
+When you run the tests on a mac, then the tests using *two* `TestProcessWrapper`s issue a crash report regarding
 "dotnet".
 
 At the moment I cannot explain that behavior.
 
-### Before Creating a Pull Request ...
+#### Before Creating a Pull Request ...
 
 ... apply code formatting rules
 
@@ -117,7 +128,7 @@ I allow generated files named `*.feature.cs` to exceed these thresholds.
 
 Finally, remove all code duplication. The next section describes how to detect code duplication.
 
-## Identify Code Duplication
+### Identify Code Duplication
 
 The `tools\dupfinder.bat` or `tools/dupfinder.sh` file calls
 the [JetBrains dupfinder](https://www.jetbrains.com/help/resharper/dupFinder.html) tool and creates an HTML report of
@@ -144,13 +155,13 @@ respectively.
 
 The report will be created as `dupfinder-report.html` in the current directory.
 
-# References
+## References
 
-## .NET Core
+### .NET Core
 
 * GitHub: [aspnet / Hosting / samples / GenericHostSample](https://github.com/aspnet/Hosting/tree/2.2.0/samples/GenericHostSample)
 
-## Behavior Driven Development (BDD)
+### Behavior Driven Development (BDD)
 
 * Tricentis: [SpecFlow - Getting Started](https://specflow.org/getting-started/)
 * The SpecFlow
@@ -159,7 +170,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
   Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
 * [Testcontainers](https://www.testcontainers.org/)
 
-## Code Analysis
+### Code Analysis
 
 * Microsoft: [Use code coverage for unit testing](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=linux)
 * GitHub: [coverlet-coverage / coverlet](https://github.com/coverlet-coverage/coverlet)

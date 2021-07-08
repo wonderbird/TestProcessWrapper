@@ -10,6 +10,8 @@ namespace RemoteControlledProcess
 
     public interface IProcess : IDisposable
     {
+        int Id { get; }
+
         bool HasExited { get; }
 
         ProcessStartInfo StartInfo { get; set; }

@@ -9,7 +9,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
     public class CustomReadinessCheckStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
-        private ProcessWrapper _client;
+        private TestProcessWrapper _client;
         private bool _isDisposed;
         private bool _isCustomCheckExecuted;
 
@@ -44,7 +44,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         [Given]
         public void GivenAnApplicationWasStartedWithACustomReadinessCheck()
         {
-            _client = new ProcessWrapper("RemoteControlledProcess.Application", false);
+            _client = new TestProcessWrapper("RemoteControlledProcess.Application", false);
             _client.TestOutputHelper = _testOutputHelper;
             _client.AddReadinessCheck(() =>
             {

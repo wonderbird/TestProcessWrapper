@@ -17,7 +17,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
         public ProcessControlStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
-        public static List<ProcessWrapper> Clients { get; } = new();
+        public static List<TestProcessWrapper> Clients { get; } = new();
 
         public void Dispose()
         {
@@ -43,7 +43,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new ProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
+                var client = new TestProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 

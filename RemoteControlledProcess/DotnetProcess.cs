@@ -5,6 +5,8 @@ namespace RemoteControlledProcess
 {
     public class DotnetProcess : IProcess
     {
+        public int Id => _process.Id;
+
         public bool HasExited => _process.HasExited;
 
         ~DotnetProcess()

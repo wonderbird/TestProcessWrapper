@@ -32,7 +32,7 @@ dotnet sln add SmokeTest.Test/SmokeTest.Test.csproj
 dotnet add SmokeTest.Test/SmokeTest.Test.csproj package Microsoft.Extensions.Logging.Abstractions
 echo
 
-echo "***** Coping smoke test which uses ProcessWrapper"
+echo "***** Coping smoke test which uses TestProcessWrapper"
 cp -v ../RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs SmokeTest.Test/UnitTest1.cs
 echo
 
