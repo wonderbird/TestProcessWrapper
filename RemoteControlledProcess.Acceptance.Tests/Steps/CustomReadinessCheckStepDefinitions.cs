@@ -10,20 +10,22 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private TestProcessWrapper _client;
-        private bool _isDisposed;
         private bool _isCustomCheckExecuted;
+        private bool _isDisposed;
 
-        public CustomReadinessCheckStepDefinitions(ScenarioContext scenarioContext, ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
-
-        ~CustomReadinessCheckStepDefinitions()
-        {
-            Dispose(false);
-        }
+        public CustomReadinessCheckStepDefinitions(ScenarioContext scenarioContext,
+            ITestOutputHelper testOutputHelper) =>
+            _testOutputHelper = testOutputHelper;
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        ~CustomReadinessCheckStepDefinitions()
+        {
+            Dispose(false);
         }
 
         private void Dispose(bool disposing)
@@ -67,4 +69,5 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         {
             Assert.True(_isCustomCheckExecuted, "Custom readiness check has not been executed.");
         }
-    }}
+    }
+}

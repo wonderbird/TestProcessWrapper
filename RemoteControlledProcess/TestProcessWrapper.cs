@@ -10,13 +10,13 @@ namespace RemoteControlledProcess
 {
     public sealed class TestProcessWrapper : IDisposable
     {
+        private readonly List<Func<bool>> _readinessChecks;
         private readonly TestProjectInfo _testProjectInfo;
         private int? _dotnetHostProcessId;
         private bool _isDisposed;
         private IProcess _process;
+        private readonly IProcessFactory _processFactory = new ProcessFactory();
         private IProcessStreamBuffer _processStreamBuffer;
-        private readonly List<Func<bool>> _readinessChecks;
-        private IProcessFactory _processFactory = new ProcessFactory();
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
@@ -28,10 +28,8 @@ namespace RemoteControlledProcess
 
         // TODO make this ProcessWrapper constructor private - it is only for testing purpose.
         public TestProcessWrapper(IProcessFactory processFactory)
-        : this("fakeProjectName", false)
-        {
+            : this("fakeProjectName", false) =>
             _processFactory = processFactory;
-        }
 
         public bool IsCoverletEnabled { get; }
 

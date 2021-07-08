@@ -1,5 +1,3 @@
-using System;
-
 namespace RemoteControlledProcess
 {
     public class ProcessStreamBufferFactory : IProcessStreamBufferFactory

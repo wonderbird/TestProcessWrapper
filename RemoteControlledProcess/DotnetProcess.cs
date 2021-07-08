@@ -5,14 +5,11 @@ namespace RemoteControlledProcess
 {
     public class DotnetProcess : IProcess
     {
+        private readonly Process _process = new();
+        private bool _isDisposed;
         public int Id => _process.Id;
 
         public bool HasExited => _process.HasExited;
-
-        ~DotnetProcess()
-        {
-            Dispose(false);
-        }
 
         public ProcessStartInfo StartInfo
         {
@@ -46,13 +43,15 @@ namespace RemoteControlledProcess
             _process.Kill();
         }
 
-        private readonly Process _process = new();
-        private bool _isDisposed;
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        ~DotnetProcess()
+        {
+            Dispose(false);
         }
 
         private void Dispose(bool disposing)

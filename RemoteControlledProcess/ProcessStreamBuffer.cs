@@ -42,11 +42,6 @@ namespace RemoteControlledProcess
             GC.SuppressFinalize(this);
         }
 
-        ~ProcessStreamBuffer()
-        {
-            Dispose(false);
-        }
-
         public void BeginCapturing(Action beginReadLine, Action<DataReceivedEventHandler> subscribeToDataReceivedEvent,
             Action<DataReceivedEventHandler> unsubscribeFromDataReceivedEvent)
         {
@@ -60,6 +55,11 @@ namespace RemoteControlledProcess
 
             subscribeToDataReceivedEvent(appendEventDataToOutputBuffer);
             beginReadLine();
+        }
+
+        ~ProcessStreamBuffer()
+        {
+            Dispose(false);
         }
 
         private void appendEventDataToOutputBuffer(object sender, DataReceivedEventArgs eventArg)
