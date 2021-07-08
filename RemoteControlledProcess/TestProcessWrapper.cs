@@ -18,6 +18,7 @@ namespace RemoteControlledProcess
         private IProcess _process;
         private readonly IProcessFactory _processFactory = new ProcessFactory();
         private IProcessStreamBuffer _processStreamBuffer;
+        private readonly IProcessStreamBufferFactory _processStreamBufferFactory = new ProcessStreamBufferFactory();
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
@@ -27,10 +28,12 @@ namespace RemoteControlledProcess
             _testProjectInfo = new TestProjectInfo(appProjectName);
         }
 
-        // TODO make this ProcessWrapper constructor private - it is only for testing purpose.
-        public TestProcessWrapper(IProcessFactory processFactory)
-            : this("fakeProjectName", false) =>
+        internal TestProcessWrapper(IProcessFactory processFactory, IProcessStreamBufferFactory streamBufferFactory)
+            : this("fakeProjectName", false)
+        {
             _processFactory = processFactory;
+            _processStreamBufferFactory = streamBufferFactory;
+        }
 
         public bool IsCoverletEnabled { get; }
 
@@ -53,9 +56,6 @@ namespace RemoteControlledProcess
 
         public ITestOutputHelper TestOutputHelper { get; set; }
 
-        // TODO check whether ProcessStreamBufferFactory can be private. It is exposed only to unit tests.
-        public IProcessStreamBufferFactory ProcessStreamBufferFactory { get; set; } = new ProcessStreamBufferFactory();
-
         public void Dispose()
         {
             Dispose(true);
@@ -71,7 +71,7 @@ namespace RemoteControlledProcess
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
             _process.Start();
 
-            _processStreamBuffer = ProcessStreamBufferFactory.CreateProcessStreamBuffer();
+            _processStreamBuffer = _processStreamBufferFactory.CreateProcessStreamBuffer();
             _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine,
                 handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
 

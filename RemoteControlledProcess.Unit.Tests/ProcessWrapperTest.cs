@@ -30,8 +30,7 @@ namespace RemoteControlledProcess.Unit.Tests
             var processStreamBufferFactory = new Mock<IProcessStreamBufferFactory>();
             processStreamBufferFactory.Setup(x => x.CreateProcessStreamBuffer()).Returns(processStreamBuffer.Object);
 
-            var processWrapper = new TestProcessWrapper(processFactory.Object);
-            processWrapper.ProcessStreamBufferFactory = processStreamBufferFactory.Object;
+            var processWrapper = new TestProcessWrapper(processFactory.Object, processStreamBufferFactory.Object);
 
             var customReadinessCheck = new FirstFailingThenSucceedingReadinessCheck();
             processWrapper.AddReadinessCheck(() => customReadinessCheck.Execute());
