@@ -9,9 +9,11 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
+    public delegate bool ReadinessCheck(string processOutput);
+
     public sealed class TestProcessWrapper : IDisposable
     {
-        private readonly List<Func<bool>> _readinessChecks;
+        private readonly List<ReadinessCheck> _readinessChecks;
         private readonly TestProjectInfo _testProjectInfo;
         private int? _dotnetHostProcessId;
         private bool _isDisposed;
@@ -22,7 +24,7 @@ namespace RemoteControlledProcess
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
-            _readinessChecks = new List<Func<bool>>();
+            _readinessChecks = new List<ReadinessCheck>();
             IsCoverletEnabled = isCoverletEnabled;
 
             _testProjectInfo = new TestProjectInfo(appProjectName);
@@ -129,12 +131,12 @@ namespace RemoteControlledProcess
             do
             {
                 // TODO: Checking for the correct startupMessage and waiting for the _dotnetHostProcessId is a readiness check. Move the corresponding logic into _readinessChecks.
-                var startupMessage = ReadOutput();
-                ParseStartupMessage(startupMessage);
+                // TODO: First, make the output a parameter to readiness checks, then refactor as written in the line above.
+                var processOutput = ReadOutput();
+                ParseStartupMessage(processOutput);
 
-                // TODO: Add test ensuring that the results of the readiness checks are considered correctly
                 // TODO: Only re-execute failing readiness checks
-                isReady = _readinessChecks.All(check => check());
+                isReady = _readinessChecks.All(check => check(processOutput));
 
                 // TODO: Don't sleep if all _readinessChecks passed
                 Thread.Sleep(100);
@@ -144,7 +146,7 @@ namespace RemoteControlledProcess
 
         public string ReadOutput() => _processStreamBuffer.StreamContent;
 
-        public void AddReadinessCheck(Func<bool> readinessCheck)
+        public void AddReadinessCheck(ReadinessCheck readinessCheck)
         {
             _readinessChecks.Add(readinessCheck);
         }

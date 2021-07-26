@@ -48,7 +48,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         {
             _client = new TestProcessWrapper("RemoteControlledProcess.Application", false);
             _client.TestOutputHelper = _testOutputHelper;
-            _client.AddReadinessCheck(() =>
+            _client.AddReadinessCheck(_ =>
             {
                 _isCustomCheckExecuted = true;
                 return true;

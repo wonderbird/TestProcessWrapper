@@ -9,7 +9,7 @@ namespace RemoteControlledProcess.Unit.Tests
         {
             public int NumberOfCalls { get; private set; }
 
-            public bool Execute()
+            public bool Execute(string _)
             {
                 NumberOfCalls++;
                 return NumberOfCalls != 1;
@@ -33,11 +33,10 @@ namespace RemoteControlledProcess.Unit.Tests
             var processWrapper = new TestProcessWrapper(processFactory.Object, processStreamBufferFactory.Object);
 
             var customReadinessCheck = new FirstFailingThenSucceedingReadinessCheck();
-            processWrapper.AddReadinessCheck(() => customReadinessCheck.Execute());
+            processWrapper.AddReadinessCheck(processOutput => customReadinessCheck.Execute(processOutput));
 
             processWrapper.Start();
 
-            // TODO: The custom readiness check must be introduced and tested now. Probably some refactoring upfront ...
             Assert.Equal(2, customReadinessCheck.NumberOfCalls);
         }
     }
