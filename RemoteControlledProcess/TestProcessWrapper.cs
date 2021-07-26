@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -126,22 +125,20 @@ namespace RemoteControlledProcess
 
         private void WaitAndProcessRequiredStartupMessages()
         {
-            bool isReady;
+            var processIdReader = new ProcessIdReader();
+            AddReadinessCheck(processOutput => processIdReader.Read(processOutput));
 
+            bool isReady;
             do
             {
-                // TODO: Checking for the correct startupMessage and waiting for the _dotnetHostProcessId is a readiness check. Move the corresponding logic into _readinessChecks.
-                // TODO: First, make the output a parameter to readiness checks, then refactor as written in the line above.
                 var processOutput = ReadOutput();
-                ParseStartupMessage(processOutput);
-
-                // TODO: Only re-execute failing readiness checks
                 isReady = _readinessChecks.All(check => check(processOutput));
-
-                // TODO: Don't sleep if all _readinessChecks passed
                 Thread.Sleep(100);
             }
-            while (!_dotnetHostProcessId.HasValue || !isReady);
+            while (!isReady);
+
+            _dotnetHostProcessId = processIdReader.ProcessId;
+            TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
         }
 
         public string ReadOutput() => _processStreamBuffer.StreamContent;
@@ -149,22 +146,6 @@ namespace RemoteControlledProcess
         public void AddReadinessCheck(ReadinessCheck readinessCheck)
         {
             _readinessChecks.Add(readinessCheck);
-        }
-
-        private void ParseStartupMessage(string startupMessage)
-        {
-            if (_dotnetHostProcessId.HasValue || !startupMessage.Contains("Process ID"))
-            {
-                return;
-            }
-
-            var processIdStartIndex = startupMessage.IndexOf("Process ID", StringComparison.Ordinal);
-            var newLineAfterProcessIdIndex =
-                startupMessage.IndexOf("\n", processIdStartIndex, StringComparison.Ordinal);
-            var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
-            var processIdString = startupMessage.Substring(processIdStartIndex + 10, processIdNumberOfDigits);
-            _dotnetHostProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
-            TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
         }
 
         public void ShutdownGracefully()
