@@ -43,7 +43,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
             _isDisposed = true;
         }
 
-        [Given]
+        [Given(@"An application was started with a custom readiness check")]
         public void GivenAnApplicationWasStartedWithACustomReadinessCheck()
         {
             _client = new TestProcessWrapper("RemoteControlledProcess.Application", false);
