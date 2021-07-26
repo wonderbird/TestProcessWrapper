@@ -25,8 +25,8 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
             GC.SuppressFinalize(this);
         }
 
-        [When]
-        public static void WhenATERMSignalIsSentToAllApplications()
+        [When(@"all applications are shut down gracefully")]
+        public static void WhenAllApplicationsAreShutDownGracefully()
         {
             ShutdownProcessesGracefully();
         }
@@ -53,7 +53,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
             Assert.True(Clients.All(c => c.IsRunning));
         }
 
-        public static void ShutdownProcessesGracefully()
+        private static void ShutdownProcessesGracefully()
         {
             foreach (var client in Clients)
             {
