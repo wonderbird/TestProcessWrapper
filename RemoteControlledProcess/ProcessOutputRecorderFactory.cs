@@ -1,6 +1,6 @@
 namespace RemoteControlledProcess
 {
-    public class ProcessOutputRecorderFactory : IProcessOutputRecorderFactory
+    internal class ProcessOutputRecorderFactory : IProcessOutputRecorderFactory
     {
         public IProcessOutputRecorder Create() => new ProcessOutputRecorder();
     }

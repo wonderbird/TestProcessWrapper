@@ -2,7 +2,7 @@ using System;
 
 namespace RemoteControlledProcess
 {
-    public interface IProcessOutputRecorder : IDisposable
+    internal interface IProcessOutputRecorder : IDisposable
     {
         string Output { get; }
 

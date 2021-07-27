@@ -1,6 +1,6 @@
 namespace RemoteControlledProcess
 {
-    public interface IProcessFactory
+    internal interface IProcessFactory
     {
         IProcess CreateProcess();
     }

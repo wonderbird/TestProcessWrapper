@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace RemoteControlledProcess
 {
-    public class DotnetProcess : IProcess
+    internal class DotnetProcess : IProcess
     {
         private readonly Process _process = new();
         private bool _isDisposed;

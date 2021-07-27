@@ -17,7 +17,7 @@ namespace RemoteControlledProcess
     ///         StandardOutput.ReadToEnd() hangs [duplicate]
     ///     </see>
     /// </remarks>
-    public sealed class ProcessOutputRecorder : IProcessOutputRecorder
+    internal class ProcessOutputRecorder : IProcessOutputRecorder
     {
         private readonly object _lock = new();
         private StringBuilder _buffer;

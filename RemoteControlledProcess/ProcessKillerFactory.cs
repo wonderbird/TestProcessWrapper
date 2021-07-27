@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    public sealed class ProcessKillerFactory
+    internal class ProcessKillerFactory
     {
         public ProcessKillerFactory(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
 

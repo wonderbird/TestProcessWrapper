@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace RemoteControlledProcess
 {
-    public class ProcessIdReader
+    internal class ProcessIdReader
     {
         public int ProcessId { get; private set; }
 

@@ -10,7 +10,7 @@ namespace RemoteControlledProcess
 {
     public delegate bool ReadinessCheck(string processOutput);
 
-    public sealed class TestProcessWrapper : IDisposable
+    public class TestProcessWrapper : IDisposable
     {
         private readonly List<ReadinessCheck> _readinessChecks = new();
         private readonly TestProjectInfo _testProjectInfo;
