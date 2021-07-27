@@ -8,7 +8,6 @@ namespace RemoteControlledProcess.Unit.Tests
         [Fact]
         public void Start_CustomReadinessCheckReturnsFalse_RepeatsReadinessCheck()
         {
-            // TODO make test more readable
             var process = new Mock<IProcess>();
             var processFactory = new Mock<IProcessFactory>();
             processFactory.Setup(x => x.CreateProcess()).Returns(process.Object);
