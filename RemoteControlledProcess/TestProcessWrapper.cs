@@ -12,14 +12,17 @@ namespace RemoteControlledProcess
 
     public class TestProcessWrapper : IDisposable
     {
+        private readonly IProcessFactory _processFactory = new ProcessFactory();
+
+        private readonly IProcessOutputRecorderFactory _processOutputRecorderFactory =
+            new ProcessOutputRecorderFactory();
+
         private readonly List<ReadinessCheck> _readinessChecks = new();
         private readonly TestProjectInfo _testProjectInfo;
         private int? _dotnetHostProcessId;
         private bool _isDisposed;
         private IProcess _process;
-        private readonly IProcessFactory _processFactory = new ProcessFactory();
         private IProcessOutputRecorder _processOutputRecorder;
-        private readonly IProcessOutputRecorderFactory _processOutputRecorderFactory = new ProcessOutputRecorderFactory();
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {

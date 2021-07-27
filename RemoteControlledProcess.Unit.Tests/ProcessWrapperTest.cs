@@ -5,17 +5,6 @@ namespace RemoteControlledProcess.Unit.Tests
 {
     public class ProcessWrapperTest
     {
-        private class FirstFailingThenSucceedingReadinessCheck
-        {
-            public int NumberOfCalls { get; private set; }
-
-            public bool Execute(string _)
-            {
-                NumberOfCalls++;
-                return NumberOfCalls != 1;
-            }
-        }
-
         [Fact]
         public void Start_CustomReadinessCheckReturnsFalse_RepeatsReadinessCheck()
         {
@@ -38,6 +27,17 @@ namespace RemoteControlledProcess.Unit.Tests
             processWrapper.Start();
 
             Assert.Equal(2, customReadinessCheck.NumberOfCalls);
+        }
+
+        private class FirstFailingThenSucceedingReadinessCheck
+        {
+            public int NumberOfCalls { get; private set; }
+
+            public bool Execute(string _)
+            {
+                NumberOfCalls++;
+                return NumberOfCalls != 1;
+            }
         }
     }
 }
