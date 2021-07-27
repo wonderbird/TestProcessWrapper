@@ -24,13 +24,13 @@ namespace RemoteControlledProcess.Unit.Tests
             var processFactory = new Mock<IProcessFactory>();
             processFactory.Setup(x => x.CreateProcess()).Returns(process.Object);
 
-            var processStreamBuffer = new Mock<IProcessStreamBuffer>();
-            processStreamBuffer.Setup(x => x.StreamContent).Returns("Process ID 999\n");
+            var processOutputRecorder = new Mock<IProcessOutputRecorder>();
+            processOutputRecorder.Setup(x => x.Output).Returns("Process ID 999\n");
 
-            var processStreamBufferFactory = new Mock<IProcessStreamBufferFactory>();
-            processStreamBufferFactory.Setup(x => x.CreateProcessStreamBuffer()).Returns(processStreamBuffer.Object);
+            var processOutputRecorderFactory = new Mock<IProcessOutputRecorderFactory>();
+            processOutputRecorderFactory.Setup(x => x.Create()).Returns(processOutputRecorder.Object);
 
-            var processWrapper = new TestProcessWrapper(processFactory.Object, processStreamBufferFactory.Object);
+            var processWrapper = new TestProcessWrapper(processFactory.Object, processOutputRecorderFactory.Object);
 
             var customReadinessCheck = new FirstFailingThenSucceedingReadinessCheck();
             processWrapper.AddReadinessCheck(processOutput => customReadinessCheck.Execute(processOutput));

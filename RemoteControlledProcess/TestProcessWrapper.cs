@@ -12,28 +12,26 @@ namespace RemoteControlledProcess
 
     public sealed class TestProcessWrapper : IDisposable
     {
-        private readonly List<ReadinessCheck> _readinessChecks;
+        private readonly List<ReadinessCheck> _readinessChecks = new();
         private readonly TestProjectInfo _testProjectInfo;
         private int? _dotnetHostProcessId;
         private bool _isDisposed;
         private IProcess _process;
         private readonly IProcessFactory _processFactory = new ProcessFactory();
-        private IProcessStreamBuffer _processStreamBuffer;
-        private readonly IProcessStreamBufferFactory _processStreamBufferFactory = new ProcessStreamBufferFactory();
+        private IProcessOutputRecorder _processOutputRecorder;
+        private readonly IProcessOutputRecorderFactory _processOutputRecorderFactory = new ProcessOutputRecorderFactory();
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
-            _readinessChecks = new List<ReadinessCheck>();
-            IsCoverletEnabled = isCoverletEnabled;
-
             _testProjectInfo = new TestProjectInfo(appProjectName);
+            IsCoverletEnabled = isCoverletEnabled;
         }
 
-        internal TestProcessWrapper(IProcessFactory processFactory, IProcessStreamBufferFactory streamBufferFactory)
+        internal TestProcessWrapper(IProcessFactory processFactory, IProcessOutputRecorderFactory outputRecorderFactory)
             : this("fakeProjectName", false)
         {
             _processFactory = processFactory;
-            _processStreamBufferFactory = streamBufferFactory;
+            _processOutputRecorderFactory = outputRecorderFactory;
         }
 
         public bool IsCoverletEnabled { get; }
@@ -72,13 +70,12 @@ namespace RemoteControlledProcess
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
             _process.Start();
 
-            _processStreamBuffer = _processStreamBufferFactory.CreateProcessStreamBuffer();
-            _processStreamBuffer.BeginCapturing(_process.BeginOutputReadLine,
-                handler => _process.OutputDataReceived += handler, handler => _process.OutputDataReceived -= handler);
+            _processOutputRecorder = _processOutputRecorderFactory.Create();
+            _processOutputRecorder.StartRecording(_process);
 
             TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
 
-            WaitAndProcessRequiredStartupMessages();
+            WaitForProcessIdAndReadinessChecks();
         }
 
         private ProcessStartInfo CreateProcessStartInfo()
@@ -123,11 +120,19 @@ namespace RemoteControlledProcess
             return processStartInfo;
         }
 
-        private void WaitAndProcessRequiredStartupMessages()
+        private void WaitForProcessIdAndReadinessChecks()
         {
             var processIdReader = new ProcessIdReader();
             AddReadinessCheck(processOutput => processIdReader.Read(processOutput));
 
+            WaitForReadinessChecks();
+
+            _dotnetHostProcessId = processIdReader.ProcessId;
+            TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
+        }
+
+        private void WaitForReadinessChecks()
+        {
             bool isReady;
             do
             {
@@ -136,12 +141,9 @@ namespace RemoteControlledProcess
                 Thread.Sleep(100);
             }
             while (!isReady);
-
-            _dotnetHostProcessId = processIdReader.ProcessId;
-            TestOutputHelper?.WriteLine($"Process ID: {_dotnetHostProcessId.Value}");
         }
 
-        public string ReadOutput() => _processStreamBuffer.StreamContent;
+        public string ReadOutput() => _processOutputRecorder.Output;
 
         public void AddReadinessCheck(ReadinessCheck readinessCheck)
         {
@@ -211,7 +213,7 @@ namespace RemoteControlledProcess
             if (disposing)
             {
                 _process?.Dispose();
-                _processStreamBuffer?.Dispose();
+                _processOutputRecorder?.Dispose();
             }
 
             _isDisposed = true;

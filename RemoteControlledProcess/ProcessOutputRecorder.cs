@@ -6,7 +6,7 @@ using System.Threading;
 namespace RemoteControlledProcess
 {
     /// <summary>
-    ///     Asynchronously read from StandardOutput or StandardError of a process.
+    ///     Asynchronously read from StandardOutput of a process.
     /// </summary>
     /// <remarks>
     ///     This class implements an asynchronous method to read a process stream reliably.
@@ -17,7 +17,7 @@ namespace RemoteControlledProcess
     ///         StandardOutput.ReadToEnd() hangs [duplicate]
     ///     </see>
     /// </remarks>
-    public sealed class ProcessStreamBuffer : IProcessStreamBuffer
+    public sealed class ProcessOutputRecorder : IProcessOutputRecorder
     {
         private readonly object _lock = new();
         private StringBuilder _buffer;
@@ -25,7 +25,7 @@ namespace RemoteControlledProcess
         private Action<DataReceivedEventHandler> _unsubscribeFromDataReceivedEvent;
         private AutoResetEvent _waitHandle;
 
-        public string StreamContent
+        public string Output
         {
             get
             {
@@ -42,10 +42,9 @@ namespace RemoteControlledProcess
             GC.SuppressFinalize(this);
         }
 
-        public void BeginCapturing(Action beginReadLine, Action<DataReceivedEventHandler> subscribeToDataReceivedEvent,
-            Action<DataReceivedEventHandler> unsubscribeFromDataReceivedEvent)
+        public void StartRecording(IProcess process)
         {
-            _unsubscribeFromDataReceivedEvent = unsubscribeFromDataReceivedEvent;
+            _unsubscribeFromDataReceivedEvent = handler => process.OutputDataReceived -= handler;
             _waitHandle = new AutoResetEvent(false);
 
             lock (_lock)
@@ -53,16 +52,16 @@ namespace RemoteControlledProcess
                 _buffer = new StringBuilder();
             }
 
-            subscribeToDataReceivedEvent(appendEventDataToOutputBuffer);
-            beginReadLine();
+            process.OutputDataReceived += AppendEventDataToOutputBuffer;
+            process.BeginOutputReadLine();
         }
 
-        ~ProcessStreamBuffer()
+        ~ProcessOutputRecorder()
         {
             Dispose(false);
         }
 
-        private void appendEventDataToOutputBuffer(object sender, DataReceivedEventArgs eventArg)
+        private void AppendEventDataToOutputBuffer(object sender, DataReceivedEventArgs eventArg)
         {
             if (eventArg.Data == null)
             {
@@ -86,7 +85,7 @@ namespace RemoteControlledProcess
 
             if (disposing)
             {
-                _unsubscribeFromDataReceivedEvent(appendEventDataToOutputBuffer);
+                _unsubscribeFromDataReceivedEvent(AppendEventDataToOutputBuffer);
                 _waitHandle?.Dispose();
             }
 
