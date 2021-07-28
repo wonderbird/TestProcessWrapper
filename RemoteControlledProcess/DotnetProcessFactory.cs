@@ -3,7 +3,7 @@ using System.IO;
 
 namespace RemoteControlledProcess
 {
-    internal class ProcessFactory : IProcessFactory
+    internal class DotnetProcessFactory : IProcessFactory
     {
         private bool _isCoverletEnabled;
         private TestProjectInfo _testProjectInfo;

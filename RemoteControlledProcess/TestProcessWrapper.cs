@@ -12,7 +12,7 @@ namespace RemoteControlledProcess
     public class TestProcessWrapper : IDisposable
     {
         private readonly string _appProjectName;
-        private readonly IProcessFactory _processFactory = new ProcessFactory();
+        private readonly IProcessFactory _processFactory = new DotnetProcessFactory();
 
         private readonly IProcessOutputRecorderFactory _processOutputRecorderFactory =
             new ProcessOutputRecorderFactory();
