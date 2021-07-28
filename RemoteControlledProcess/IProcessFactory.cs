@@ -2,6 +2,6 @@ namespace RemoteControlledProcess
 {
     internal interface IProcessFactory
     {
-        IProcess CreateProcess();
+        IProcess Create(string appProjectName, bool isCoverletEnabled);
     }
 }

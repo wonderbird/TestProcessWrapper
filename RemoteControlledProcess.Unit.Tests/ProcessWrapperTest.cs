@@ -10,7 +10,7 @@ namespace RemoteControlledProcess.Unit.Tests
         {
             var process = new Mock<IProcess>();
             var processFactory = new Mock<IProcessFactory>();
-            processFactory.Setup(x => x.CreateProcess()).Returns(process.Object);
+            processFactory.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<bool>())).Returns(process.Object);
 
             var processOutputRecorder = new Mock<IProcessOutputRecorder>();
             processOutputRecorder.Setup(x => x.Output).Returns("Process ID 999\n");

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using Xunit.Abstractions;
@@ -12,13 +11,13 @@ namespace RemoteControlledProcess
 
     public class TestProcessWrapper : IDisposable
     {
+        private readonly string _appProjectName;
         private readonly IProcessFactory _processFactory = new ProcessFactory();
 
         private readonly IProcessOutputRecorderFactory _processOutputRecorderFactory =
             new ProcessOutputRecorderFactory();
 
         private readonly List<ReadinessCheck> _readinessChecks = new();
-        private readonly TestProjectInfo _testProjectInfo;
         private int? _dotnetHostProcessId;
         private bool _isDisposed;
         private IProcess _process;
@@ -26,7 +25,7 @@ namespace RemoteControlledProcess
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
-            _testProjectInfo = new TestProjectInfo(appProjectName);
+            _appProjectName = appProjectName;
             IsCoverletEnabled = isCoverletEnabled;
         }
 
@@ -43,19 +42,6 @@ namespace RemoteControlledProcess
 
         public bool IsRunning => _process != null && !_process.HasExited;
 
-        private static string BinFolder
-        {
-            get
-            {
-#if DEBUG
-                var binFolder = Path.Combine("bin", "Debug", "net5.0");
-#else
-                var binFolder = Path.Combine("bin", "Release", "net5.0");
-#endif
-                return binFolder;
-            }
-        }
-
         public ITestOutputHelper TestOutputHelper { get; set; }
 
         public void Dispose()
@@ -66,61 +52,17 @@ namespace RemoteControlledProcess
 
         public void Start()
         {
-            _process = _processFactory.CreateProcess();
-            _process.StartInfo = CreateProcessStartInfo();
+            _process = _processFactory.Create(_appProjectName, IsCoverletEnabled);
 
             TestOutputHelper?.WriteLine(
-                $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} ...");
+                $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ...");
+
             _process.Start();
 
             _processOutputRecorder = _processOutputRecorderFactory.Create();
             _processOutputRecorder.StartRecording(_process);
 
-            TestOutputHelper?.WriteLine($"Process ID: {_process.Id} has exited: {_process.HasExited} ...");
-
             WaitForProcessIdAndReadinessChecks();
-        }
-
-        private ProcessStartInfo CreateProcessStartInfo()
-        {
-            ProcessStartInfo processStartInfo;
-
-            if (!IsCoverletEnabled)
-            {
-                processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
-            }
-            else
-            {
-                processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
-            }
-
-            return processStartInfo;
-        }
-
-        private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
-        {
-            var arguments =
-                $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {_testProjectInfo.CoverageReportPath} --format cobertura";
-
-            return CreateProcessStartInfo("coverlet", arguments);
-        }
-
-        private ProcessStartInfo CreateProcessStartInfo(string processName, string processArguments)
-        {
-            var processStartInfo = new ProcessStartInfo(processName)
-            {
-                UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                Arguments = processArguments,
-                WorkingDirectory = Path.Combine(_testProjectInfo.ProjectDir, _testProjectInfo.AppProjectName,
-                    BinFolder)
-            };
-
-            TestOutputHelper?.WriteLine($".NET Application: {processStartInfo.Arguments}");
-            TestOutputHelper?.WriteLine($"Application path: {processStartInfo.WorkingDirectory}");
-            return processStartInfo;
         }
 
         private void WaitForProcessIdAndReadinessChecks()
@@ -196,7 +138,7 @@ namespace RemoteControlledProcess
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(2000);
-            TestOutputHelper?.WriteLine($"Process {_testProjectInfo.AppProjectName} has " +
+            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " +
                                         (_process.HasExited ? "" : "NOT ") +
                                         "completed.");
         }
