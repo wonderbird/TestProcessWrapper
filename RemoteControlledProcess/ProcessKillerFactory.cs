@@ -6,18 +6,20 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    public sealed class ProcessKillerFactory
+    internal class ProcessKillerFactory
     {
         public ProcessKillerFactory(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
 
         private ITestOutputHelper TestOutputHelper { get; }
 
-        private Func<int?, Process> CreateKillStrategy(string killCommand, string killArgumentsWithPidPlaceholder, string signalName)
+        private Func<int?, Process> CreateKillStrategy(string killCommand, string killArgumentsWithPidPlaceholder,
+            string signalName)
         {
             return pid =>
             {
                 // ReSharper disable once PossibleInvalidOperationException
-                var killArguments = string.Format(CultureInfo.InvariantCulture, killArgumentsWithPidPlaceholder, pid.Value);
+                var killArguments = string.Format(CultureInfo.InvariantCulture, killArgumentsWithPidPlaceholder,
+                    pid.Value);
                 TestOutputHelper?.WriteLine($"Sending {signalName} signal to process ...");
                 TestOutputHelper?.WriteLine($"Invoking system call: {killCommand} {killArguments}");
                 var killProcess = Process.Start(killCommand, killArguments);
