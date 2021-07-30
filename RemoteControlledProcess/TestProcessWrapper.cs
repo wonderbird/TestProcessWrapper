@@ -168,5 +168,10 @@ namespace RemoteControlledProcess
         {
             Dispose(false);
         }
+
+        public void AddEnvironmentVariable(string name, string value)
+        {
+            int i = _readinessChecks.Count;
+        }
     }
 }
