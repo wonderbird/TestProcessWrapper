@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -8,14 +9,23 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
     public class PassEnvironmentVariablesStepDefinitions
     {
         private string _outputWhenReady;
-        private const string EnvironmentVariableName = "CONFIGURED_ENVIRONMENT_VARIABLE";
-        const string EnvironmentVariableValue = "Test configured environment variable";
 
-        [Given(@"environment variables have been configured")]
-        public void GivenEnvironmentVariablesHaveBeenConfigured()
+        private readonly Dictionary<string, string> environmentVariables = new()
+        {
+            { "CONFIGURED_ENVIRONMENT_VARIABLE_1", "Test FIRST configured environment variable" },
+            { "CONFIGURED_ENVIRONMENT_VARIABLE_2", "Test SECOND configured environment variable" },
+        };
+
+        [Given(@"two environment variables have been configured")]
+        public void GivenTwoEnvironmentVariablesHaveBeenConfigured()
         {
             var client = SingleProcessControlStepDefinitions.Client;
-            client.AddEnvironmentVariable(EnvironmentVariableName, EnvironmentVariableValue);
+
+            foreach (var (name, value) in environmentVariables)
+            {
+                client.AddEnvironmentVariable(name, value);
+            }
+
             client.AddReadinessCheck(output =>
             {
                 _outputWhenReady = output;
@@ -26,7 +36,10 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         [Then(@"the application has received the configured environment variables")]
         public void ThenTheApplicationHasReceivedTheConfiguredEnvironmentVariables()
         {
-            Assert.True(_outputWhenReady.Contains(EnvironmentVariableValue), "Value of environment variable was not printed.");
+            foreach (var (name, value) in environmentVariables)
+            {
+                Assert.True(_outputWhenReady.Contains(value), $"Value of environment variable {name} was not printed.");
+            }
         }
     }
 }

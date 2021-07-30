@@ -7,6 +7,6 @@ Feature: Pass Environment Variables
 @mytag
 Scenario: Pass Environment Variables to the Process controlled by TestProcessWrapper
   Given An application was wrapped into TestProcessWrapper
-	And environment variables have been configured
+	And two environment variables have been configured
 	When the application is ready
 	Then the application has received the configured environment variables

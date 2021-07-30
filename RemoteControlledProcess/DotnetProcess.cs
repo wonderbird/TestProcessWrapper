@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 
 namespace RemoteControlledProcess
 {
@@ -41,6 +42,11 @@ namespace RemoteControlledProcess
         public void Kill()
         {
             _process.Kill();
+        }
+
+        public void AddEnvironmentVariable(string name, string value)
+        {
+            _process.StartInfo.AddEnvironmentVariable(name, value);
         }
 
         public void Dispose()

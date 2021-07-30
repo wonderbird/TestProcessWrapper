@@ -22,6 +22,7 @@ namespace RemoteControlledProcess
         private bool _isDisposed;
         private IProcess _process;
         private IProcessOutputRecorder _processOutputRecorder;
+        private readonly Dictionary<string, string> _environmentVariables = new();
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
@@ -53,16 +54,24 @@ namespace RemoteControlledProcess
         public void Start()
         {
             _process = _processFactory.Create(_appProjectName, IsCoverletEnabled);
+            AddEnvironmentVariablesToProcess();
 
             TestOutputHelper?.WriteLine(
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ...");
-
             _process.Start();
 
             _processOutputRecorder = _processOutputRecorderFactory.Create();
             _processOutputRecorder.StartRecording(_process);
 
             WaitForProcessIdAndReadinessChecks();
+        }
+
+        private void AddEnvironmentVariablesToProcess()
+        {
+            foreach (var (name, value) in _environmentVariables)
+            {
+                _process.AddEnvironmentVariable(name, value);
+            }
         }
 
         private void WaitForProcessIdAndReadinessChecks()
@@ -171,7 +180,7 @@ namespace RemoteControlledProcess
 
         public void AddEnvironmentVariable(string name, string value)
         {
-            int i = _readinessChecks.Count;
+            _environmentVariables[name] = value;
         }
     }
 }

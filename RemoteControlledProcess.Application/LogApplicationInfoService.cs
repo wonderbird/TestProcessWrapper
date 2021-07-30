@@ -14,10 +14,19 @@ namespace katarabbitmq.client.app
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            LogEnvironmentVariable("CONFIGURED_ENVIRONMENT_VARIABLE_1");
+            LogEnvironmentVariable("CONFIGURED_ENVIRONMENT_VARIABLE_2");
+
             var processId = Environment.ProcessId;
             _logger.LogInformation($"Process ID {processId}");
 
             return Task.CompletedTask;
+        }
+
+        private void LogEnvironmentVariable(string name)
+        {
+            var value = Environment.GetEnvironmentVariable(name);
+            _logger.LogInformation($"Configured environment variable 1: \"{value}\"");
         }
     }
 }
