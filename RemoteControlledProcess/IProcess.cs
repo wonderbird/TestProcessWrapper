@@ -11,6 +11,8 @@ namespace RemoteControlledProcess
 
         ProcessStartInfo StartInfo { get; set; }
 
+        void AddEnvironmentVariable(string name, string value);
+
         void Start();
 
         void BeginOutputReadLine();
@@ -20,7 +22,5 @@ namespace RemoteControlledProcess
         void WaitForExit(int milliseconds);
 
         void Kill();
-
-        void AddEnvironmentVariable(string name, string value);
     }
 }

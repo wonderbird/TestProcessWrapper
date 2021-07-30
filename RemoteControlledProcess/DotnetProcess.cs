@@ -18,6 +18,11 @@ namespace RemoteControlledProcess
             set => _process.StartInfo = value;
         }
 
+        public void AddEnvironmentVariable(string name, string value)
+        {
+            _process.StartInfo.AddEnvironmentVariable(name, value);
+        }
+
         public void Start()
         {
             _process.Start();
@@ -42,11 +47,6 @@ namespace RemoteControlledProcess
         public void Kill()
         {
             _process.Kill();
-        }
-
-        public void AddEnvironmentVariable(string name, string value)
-        {
-            _process.StartInfo.AddEnvironmentVariable(name, value);
         }
 
         public void Dispose()

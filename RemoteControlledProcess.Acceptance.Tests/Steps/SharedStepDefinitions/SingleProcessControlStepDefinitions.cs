@@ -8,12 +8,13 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
     public class SingleProcessControlStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
-        public static TestProcessWrapper Client { get; private set; }
         private bool _isDisposed;
 
         public SingleProcessControlStepDefinitions(ScenarioContext scenarioContext,
             ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
+
+        public static TestProcessWrapper Client { get; private set; }
 
         public void Dispose()
         {
