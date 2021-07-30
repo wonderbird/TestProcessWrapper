@@ -1,67 +1,22 @@
-using System;
+using RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions;
 using TechTalk.SpecFlow;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
-    public class CustomReadinessCheckStepDefinitions : IDisposable
+    public class CustomReadinessCheckStepDefinitions
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-        private TestProcessWrapper _client;
         private bool _isCustomCheckExecuted;
-        private bool _isDisposed;
 
-        public CustomReadinessCheckStepDefinitions(ScenarioContext scenarioContext,
-            ITestOutputHelper testOutputHelper) =>
-            _testOutputHelper = testOutputHelper;
-
-        public void Dispose()
+        [Given(@"a custom readiness check was configured")]
+        public void GivenACustomReadinessCheckWasConfigured()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~CustomReadinessCheckStepDefinitions()
-        {
-            Dispose(false);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (_isDisposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                _client?.Dispose();
-            }
-
-            _isDisposed = true;
-        }
-
-        [Given(@"An application was started with a custom readiness check")]
-        public void GivenAnApplicationWasStartedWithACustomReadinessCheck()
-        {
-            _client = new TestProcessWrapper("RemoteControlledProcess.Application", false);
-            _client.TestOutputHelper = _testOutputHelper;
-            _client.AddReadinessCheck(_ =>
+            SingleProcessControlStepDefinitions.Client.AddReadinessCheck(_ =>
             {
                 _isCustomCheckExecuted = true;
                 return true;
             });
-            _client.Start();
-        }
-
-        [When]
-        public void WhenTheApplicationIsReady()
-        {
-            _client.ShutdownGracefully();
-            _client.ForceTermination();
-            _client.Dispose();
         }
 
         [Then]

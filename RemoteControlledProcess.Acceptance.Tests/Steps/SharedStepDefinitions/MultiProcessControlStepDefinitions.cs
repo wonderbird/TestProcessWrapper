@@ -8,13 +8,13 @@ using Xunit.Abstractions;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 {
     [Binding]
-    public class ProcessControlStepDefinitions : IDisposable
+    public class MultiProcessControlStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
         private bool _isDisposed;
 
-        public ProcessControlStepDefinitions(ITestOutputHelper testOutputHelper) =>
+        public MultiProcessControlStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
         public static List<TestProcessWrapper> Clients { get; } = new();
@@ -73,7 +73,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
             Clients.Clear();
         }
 
-        ~ProcessControlStepDefinitions()
+        ~MultiProcessControlStepDefinitions()
         {
             Dispose(false);
         }

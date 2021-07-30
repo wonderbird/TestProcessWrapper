@@ -6,72 +6,18 @@ using Xunit.Abstractions;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
-    public class PassEnvironmentVariablesStepDefinitions : IDisposable
+    public class PassEnvironmentVariablesStepDefinitions
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-        private TestProcessWrapper _client;
-        private bool _isDisposed;
-        private readonly ScenarioContext _scenarioContext;
-
-        public PassEnvironmentVariablesStepDefinitions(ScenarioContext scenarioContext,
-            ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-            _scenarioContext = scenarioContext;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~PassEnvironmentVariablesStepDefinitions()
-        {
-            Dispose(false);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (_isDisposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                _client?.Dispose();
-            }
-
-            _isDisposed = true;
-        }
-
         [Given(@"environment variables have been configured")]
-        public void GivenEnvironmentVariablesHaveBeenConfigured()
+        public static void GivenEnvironmentVariablesHaveBeenConfigured()
         {
-            _scenarioContext.Pending();
-        }
-
-        [Given(@"the application has been started")]
-        public void GivenTheApplicationHasBeenStarted()
-        {
-            _client = new TestProcessWrapper("RemoteControlledProcess.Application", false);
-            _client.TestOutputHelper = _testOutputHelper;
-            _client.Start();
-        }
-
-        [When]
-        public void WhenTheApplicationIsReady()
-        {
-            _client.ShutdownGracefully();
-            _client.ForceTermination();
-            _client.Dispose();
         }
 
         [Then(@"the application has received the configured environment variables")]
-        public void ThenTheApplicationHasReceivedTheConfiguredEnvironmentVariables()
+        public static void ThenTheApplicationHasReceivedTheConfiguredEnvironmentVariables()
         {
-            _scenarioContext.Pending();
+            // TODO: Implement the assertion
+            Assert.True(false, "Test is not implemented yet.");
         }
     }
 }
