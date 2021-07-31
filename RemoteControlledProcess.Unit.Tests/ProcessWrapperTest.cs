@@ -5,20 +5,38 @@ namespace RemoteControlledProcess.Unit.Tests
 {
     public class ProcessWrapperTest
     {
-        [Fact]
-        public void Start_CustomReadinessCheckReturnsFalse_RepeatsReadinessCheck()
+        private readonly Mock<IProcess> _process;
+        private readonly Mock<IProcessFactory> _processFactory;
+        private readonly Mock<IProcessOutputRecorderFactory> _processOutputRecorderFactory;
+
+        public ProcessWrapperTest()
         {
-            var process = new Mock<IProcess>();
-            var processFactory = new Mock<IProcessFactory>();
-            processFactory.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<bool>())).Returns(process.Object);
+            _process = new Mock<IProcess>();
+
+            _processFactory = new Mock<IProcessFactory>();
+            _processFactory.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<bool>())).Returns(_process.Object);
 
             var processOutputRecorder = new Mock<IProcessOutputRecorder>();
             processOutputRecorder.Setup(x => x.Output).Returns("Process ID 999\n");
 
-            var processOutputRecorderFactory = new Mock<IProcessOutputRecorderFactory>();
-            processOutputRecorderFactory.Setup(x => x.Create()).Returns(processOutputRecorder.Object);
+            _processOutputRecorderFactory = new Mock<IProcessOutputRecorderFactory>();
+            _processOutputRecorderFactory.Setup(x => x.Create()).Returns(processOutputRecorder.Object);
+        }
 
-            var processWrapper = new TestProcessWrapper(processFactory.Object, processOutputRecorderFactory.Object);
+        [Fact]
+        public void Start_NoEnvironmentVariablesConfigured_NoVariablePassedToProcess()
+        {
+            var processWrapper = new TestProcessWrapper(_processFactory.Object, _processOutputRecorderFactory.Object);
+
+            processWrapper.Start();
+
+            _process.Verify(p => p.AddEnvironmentVariable(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(0));
+        }
+
+        [Fact]
+        public void Start_CustomReadinessCheckReturnsFalse_RepeatsReadinessCheck()
+        {
+            var processWrapper = new TestProcessWrapper(_processFactory.Object, _processOutputRecorderFactory.Object);
 
             var customReadinessCheck = new FirstFailingThenSucceedingReadinessCheck();
             processWrapper.AddReadinessCheck(processOutput => customReadinessCheck.Execute(processOutput));

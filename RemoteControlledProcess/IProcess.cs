@@ -11,6 +11,8 @@ namespace RemoteControlledProcess
 
         ProcessStartInfo StartInfo { get; set; }
 
+        void AddEnvironmentVariable(string name, string value);
+
         void Start();
 
         void BeginOutputReadLine();

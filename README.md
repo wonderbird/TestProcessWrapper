@@ -20,8 +20,13 @@ command line tool in order to calculate code coverage.
 
 **Usage Examples**
 
-* Intended Use: [CorrectUsage.feature](RemoteControlledProcess.Acceptance.Tests/Features/CorrectUsage.feature) and [CorrectUsageStepDefinitions.cs](RemoteControlledProcess.Acceptance.Tests/Steps/CorrectUsageStepDefinitions.cs)
-* Most Simple Use: [SmokeTests.cs](RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs)
+The most simple use is described by the acceptance test [SmokeTests.cs](RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs).
+
+You may find detailed usage examples in the [Acceptance Test Suite (BDD)](RemoteControlledProcess.Acceptance.Tests).
+
+First read a [Gherkin](https://specflow.org/learn/gherkin/) `.feature` file from the [Features](RemoteControlledProcess.Acceptance.Tests/Features) folder. It explains why each feature exists and which use scenarios are addressed.
+Then read the corresponding `*StepDefinition.cs` file in the [Steps](RemoteControlledProcess.Acceptance.Tests/Steps) folder. It shows how the test steps from the feature file (given, when, then) are actually implemented.
+Note, that some frequently used steps are implemented in the [SharedStepDefinitions](RemoteControlledProcess.Acceptance.Tests/Steps/SharedStepDefinitions) folder.
 
 ## Attention
 
@@ -87,6 +92,8 @@ rm -r RemoteControlledProcess.Acceptance.Tests/TestResults && \
   reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml" "-targetdir:RemoteControlledProcess.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:RemoteControlledProcess"
 open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 ```
+
+The script `build.sh` builds the NuGet package like the build pipeline does it. This can be helpful when debugging issues popping up in the build pipeline.
 
 #### Known Issue
 

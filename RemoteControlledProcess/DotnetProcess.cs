@@ -17,6 +17,11 @@ namespace RemoteControlledProcess
             set => _process.StartInfo = value;
         }
 
+        public void AddEnvironmentVariable(string name, string value)
+        {
+            _process.StartInfo.EnvironmentVariables.Add(name, value);
+        }
+
         public void Start()
         {
             _process.Start();

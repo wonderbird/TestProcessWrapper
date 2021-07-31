@@ -26,7 +26,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         {
             var comparison = GetComparisonByName(comparisonString);
 
-            var clientsWithCoverlet = ProcessControlStepDefinitions.Clients.Where(c => c.IsCoverletEnabled);
+            var clientsWithCoverlet = MultiProcessControlStepDefinitions.Clients.Where(c => c.IsCoverletEnabled);
             foreach (var client in clientsWithCoverlet)
             {
                 var actualLineCoveragePercent = GetLineCoverageFromCoverletOutput(client.ReadOutput());
@@ -60,7 +60,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         [Then]
         public static void ThenTheLogIsFreeOfExceptionMessages()
         {
-            foreach (var client in ProcessControlStepDefinitions.Clients)
+            foreach (var client in MultiProcessControlStepDefinitions.Clients)
             {
                 Assert.DoesNotContain("exception", client.ReadOutput(), StringComparison.CurrentCultureIgnoreCase);
             }

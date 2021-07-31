@@ -12,6 +12,7 @@ namespace RemoteControlledProcess
     public class TestProcessWrapper : IDisposable
     {
         private readonly string _appProjectName;
+        private readonly Dictionary<string, string> _environmentVariables = new();
         private readonly IProcessFactory _processFactory = new DotnetProcessFactory();
 
         private readonly IProcessOutputRecorderFactory _processOutputRecorderFactory =
@@ -50,19 +51,32 @@ namespace RemoteControlledProcess
             GC.SuppressFinalize(this);
         }
 
+        public void AddEnvironmentVariable(string name, string value)
+        {
+            _environmentVariables[name] = value;
+        }
+
         public void Start()
         {
             _process = _processFactory.Create(_appProjectName, IsCoverletEnabled);
+            AddEnvironmentVariablesToProcess();
 
             TestOutputHelper?.WriteLine(
                 $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ...");
-
             _process.Start();
 
             _processOutputRecorder = _processOutputRecorderFactory.Create();
             _processOutputRecorder.StartRecording(_process);
 
             WaitForProcessIdAndReadinessChecks();
+        }
+
+        private void AddEnvironmentVariablesToProcess()
+        {
+            foreach (var (name, value) in _environmentVariables)
+            {
+                _process.AddEnvironmentVariable(name, value);
+            }
         }
 
         private void WaitForProcessIdAndReadinessChecks()
