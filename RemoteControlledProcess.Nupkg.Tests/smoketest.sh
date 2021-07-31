@@ -68,3 +68,6 @@ if [ $SUCCESS -ne 0 ]; then
   echo "in the folder referenced by NuGet.config in the current directory?"
   exit 1
 fi
+
+echo "***** Removing overwritten NuGet.config"
+rm -v NuGet.config
