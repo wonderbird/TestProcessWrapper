@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 
 namespace RemoteControlledProcess
 {
@@ -20,7 +19,7 @@ namespace RemoteControlledProcess
 
         public void AddEnvironmentVariable(string name, string value)
         {
-            _process.StartInfo.AddEnvironmentVariable(name, value);
+            _process.StartInfo.EnvironmentVariables.Add(name, value);
         }
 
         public void Start()

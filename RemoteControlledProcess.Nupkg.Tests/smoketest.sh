@@ -30,7 +30,7 @@ dotnet sln add SmokeTest.Test/SmokeTest.Test.csproj
 
 # We need to add the dependencies of our own NuGet package before switching to the local package directory
 dotnet add SmokeTest.Test/SmokeTest.Test.csproj package Microsoft.Extensions.Logging.Abstractions
-dotnet add SmokeTest.Test/SmokeTest.Test.csproj package Microsoft.NET.Test.Sdk
+dotnet add SmokeTest.Test/SmokeTest.Test.csproj package xunit.abstractions
 echo
 
 echo "***** Coping smoke test which uses TestProcessWrapper"
