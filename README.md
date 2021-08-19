@@ -22,7 +22,7 @@ command line tool in order to calculate code coverage.
 
 The most simple use is described by the acceptance test [SmokeTests.cs](RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs).
 
-You may find detailed usage examples in the [Acceptance Test Suite (BDD)](RemoteControlledProcess.Acceptance.Tests).
+You can find detailed usage examples in the [Acceptance Test Suite (BDD)](RemoteControlledProcess.Acceptance.Tests).
 
 First read a [Gherkin](https://specflow.org/learn/gherkin/) `.feature` file from the [Features](RemoteControlledProcess.Acceptance.Tests/Features) folder. It explains why each feature exists and which use scenarios are addressed.
 Then read the corresponding `*StepDefinition.cs` file in the [Steps](RemoteControlledProcess.Acceptance.Tests/Steps) folder. It shows how the test steps from the feature file (given, when, then) are actually implemented.
