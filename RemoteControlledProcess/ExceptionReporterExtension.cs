@@ -17,8 +17,11 @@ namespace RemoteControlledProcess
         public static void Log(this Exception exception, ILogger logger)
         {
             var exceptionOrigin = GetExceptionOriginFromStackTrace();
+            // TODO: Re-enable Inspection CA1848 "Use the LoggerMessage delegates"
+#pragma warning disable CA1848
             logger.LogCritical(exception, "Unhandled exception in {FileName}:{@LineNumber}", exceptionOrigin.FileName,
                 exceptionOrigin.LineNumber);
+#pragma warning restore CA1848
         }
 
         private static ExceptionOrigin GetExceptionOriginFromStackTrace()
