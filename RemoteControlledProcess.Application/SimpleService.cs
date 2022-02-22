@@ -3,9 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RemoteControlledProcess;
 
-namespace katarabbitmq.client.app
+namespace RemoteControlledProcess.Application
 {
     public class SimpleService : BackgroundService
     {
@@ -29,10 +28,7 @@ namespace katarabbitmq.client.app
             catch (OperationCanceledException)
             {
                 // This exception is desired, when shutdown is requested. No action is necessary.
-                // TODO: Re-enable Inspection CA1848 "Use the LoggerMessage delegates"
-#pragma warning disable CA1848
-                Logger.LogInformation("Operation has been canceled");
-#pragma warning restore CA1848
+                Logger.OperationCancelled();
             }
             catch (Exception e)
             {
@@ -46,11 +42,8 @@ namespace katarabbitmq.client.app
 
         private void RegisterCancellationRequest(CancellationToken stoppingToken)
         {
-            // TODO: Re-enable Inspection CA1848 "Use the LoggerMessage delegates"
-#pragma warning disable CA1848
-            Logger.LogInformation("Waiting for cancellation request");
-            stoppingToken.Register(() => Logger.LogInformation("STOP request received"));
-#pragma warning restore CA1848
+            Logger.WaitingForCancellationRequest();
+            stoppingToken.Register(() => Logger.StopRequestReceived());
             stoppingToken.ThrowIfCancellationRequested();
         }
 
@@ -61,11 +54,8 @@ namespace katarabbitmq.client.app
 
         private void ShutdownService()
         {
-            // TODO: Re-enable Inspection CA1848 "Use the LoggerMessage delegates"
-#pragma warning disable CA1848
-            Logger.LogInformation("Shutting down ...");
-            Logger.LogDebug("Shutdown complete");
-#pragma warning restore CA1848
+            Logger.ShuttingDown();
+            Logger.ShutDownComplete();
         }
     }
 }

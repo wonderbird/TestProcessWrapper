@@ -1,8 +1,7 @@
 using System;
 using Microsoft.Extensions.Hosting;
-using RemoteControlledProcess;
 
-namespace katarabbitmq.client.app
+namespace RemoteControlledProcess.Application
 {
     public static class Program
     {
