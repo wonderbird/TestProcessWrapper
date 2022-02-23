@@ -7,6 +7,12 @@ namespace RemoteControlledProcess
 {
     public static class ExceptionReporterExtension
     {
+        private static readonly Action<ILogger, string, int?, Exception> LogUnhandledExceptionAction;
+
+        static ExceptionReporterExtension() =>
+            LogUnhandledExceptionAction =
+                LoggerMessage.Define<string, int?>(LogLevel.Critical, new EventId(1, nameof(Log)), "Unhandled exception in {FileName}:{@LineNumber}");
+
         public static void Write(this Exception exception, TextWriter writer)
         {
             var exceptionOrigin = GetExceptionOriginFromStackTrace();
@@ -17,11 +23,7 @@ namespace RemoteControlledProcess
         public static void Log(this Exception exception, ILogger logger)
         {
             var exceptionOrigin = GetExceptionOriginFromStackTrace();
-            // TODO: Re-enable Inspection CA1848 "Use the LoggerMessage delegates"
-#pragma warning disable CA1848
-            logger.LogCritical(exception, "Unhandled exception in {FileName}:{@LineNumber}", exceptionOrigin.FileName,
-                exceptionOrigin.LineNumber);
-#pragma warning restore CA1848
+            LogUnhandledExceptionAction(logger, exceptionOrigin.FileName, exceptionOrigin.LineNumber, exception);
         }
 
         private static ExceptionOrigin GetExceptionOriginFromStackTrace()
