@@ -1,4 +1,5 @@
 using System.IO;
+using MELT;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -37,7 +38,8 @@ namespace RemoteControlledProcess.Unit.Tests
         public void Log_CalledInCatchBlock_LogsCriticalMessageWithExpectedRegex()
         {
             // Arrange
-            var loggerMock = new Mock<ILogger>();
+            var loggerFactory = TestLoggerFactory.Create();
+            var logger = loggerFactory.CreateLogger<ExceptionReporterExtensionTest>();
 
             try
             {
@@ -46,16 +48,15 @@ namespace RemoteControlledProcess.Unit.Tests
             catch (UnitTestException e)
             {
                 // Act
-                e.Log(loggerMock.Object);
+                e.Log(logger);
             }
 
             // Assert
             var expectedMessageRegex =
                 "Unhandled exception in .*RemoteControlledProcess.Unit.Tests/ExceptionReporterExtensionTest.cs:[0-9]+";
-            var actualLogLevel = (LogLevel)loggerMock.Invocations[0].Arguments[0];
-            var actualMessage = loggerMock.Invocations[0].Arguments[2].ToString();
-            Assert.Equal(LogLevel.Critical, actualLogLevel);
-            Assert.Matches(expectedMessageRegex, actualMessage);
+            var log = Assert.Single(loggerFactory.Sink.LogEntries);
+            Assert.Equal(LogLevel.Critical, log.LogLevel);
+            Assert.Matches(expectedMessageRegex, log.Message);
         }
     }
 }
