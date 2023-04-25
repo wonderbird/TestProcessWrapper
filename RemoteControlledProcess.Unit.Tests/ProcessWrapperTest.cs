@@ -46,7 +46,7 @@ namespace RemoteControlledProcess.Unit.Tests
             Assert.Equal(2, customReadinessCheck.NumberOfCalls);
         }
 
-        private class FirstFailingThenSucceedingReadinessCheck
+        private sealed class FirstFailingThenSucceedingReadinessCheck
         {
             public int NumberOfCalls { get; private set; }
 

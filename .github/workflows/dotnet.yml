@@ -6,7 +6,7 @@ on:
     branches: [ main ]
     
 env:
-  packageVersionPrefix: ${{ '3.0.' }}
+  packageVersionPrefix: ${{ '4.0.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
   packageVersionSuffixForMainBranch: ${{ '' }}
 
@@ -27,9 +27,9 @@ jobs:
         run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForFeatureBranch }}" >> $GITHUB_ENV
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.x
 
       - name: Install dotnet global tools (coverlet, reportgenerator)
         run: |

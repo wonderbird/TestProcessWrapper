@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <PackageId>Boos.RemoteControlledProcess</PackageId>
         <Version>0.0.0-alpha</Version>
         <title>RemoteControlledProcess</title>
@@ -12,7 +12,7 @@
         <Summary>Launch and control dotnet processes wrapped into the coverlet code coverage analyzer.</Summary>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/wonderbird/RemoteControlledProcess</PackageProjectUrl>
-        <Copyright>Copyright (c) Stefan Boos 2021</Copyright>
+        <Copyright>Copyright (c) Stefan Boos 2021-2023</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
