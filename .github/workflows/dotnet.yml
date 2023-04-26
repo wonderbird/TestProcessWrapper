@@ -16,7 +16,7 @@ jobs:
     name: Build and test
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
           
       - name: Setup environment variables (main branch)
         if: github.ref == 'refs/heads/main'
@@ -61,7 +61,7 @@ jobs:
           "-title:RemoteControlledProcess"
 
       - name: Attach NuGet package to build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: nuget-package
           path: |
@@ -69,7 +69,7 @@ jobs:
             RemoteControlledProcess/bin/Debug/VERSION.txt
 
       - name: Attach coverage reports to build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-reports
           path: report
@@ -83,10 +83,10 @@ jobs:
     
     steps:
       # the repository is required by codeclimate-action
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download coverage reports
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: coverage-reports
           path: coverage-reports
@@ -98,7 +98,7 @@ jobs:
           path-to-lcov: coverage-reports/lcov.info
 
       - name: Publish coverage report to CodeClimate
-        uses: paambaati/codeclimate-action@v2.7.5
+        uses: paambaati/codeclimate-action@v4.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
@@ -113,7 +113,7 @@ jobs:
 
     steps:
       - name: Download NuGet package
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: nuget-package
           path: nuget-package
