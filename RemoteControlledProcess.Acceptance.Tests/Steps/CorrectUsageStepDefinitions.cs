@@ -13,8 +13,11 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
     [Binding]
     public class CorrectUsageStepDefinitions
     {
+        // TODO: Fix Warning: [SYSLIB1045] Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time.
+        #pragma warning disable SYSLIB1045
         private static readonly Regex LineCoverageRegex =
             new(@"\|\sTotal\s*\|\s*([0-9\.]*)\%\s*\|\s*[0-9\.]*%\s*\|\s*[0-9\.]*%\s*\|", RegexOptions.Multiline);
+        #pragma warning restore SYSLIB1045
 
         private readonly ITestOutputHelper _testOutputHelper;
 

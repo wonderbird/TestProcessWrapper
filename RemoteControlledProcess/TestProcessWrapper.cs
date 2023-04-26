@@ -151,7 +151,7 @@ namespace RemoteControlledProcess
         private void WaitForProcessExit()
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
-            _process.WaitForExit(2000);
+            _process.WaitForExit(10000);
             TestOutputHelper?.WriteLine($"Process {_appProjectName} has " +
                                         (_process.HasExited ? "" : "NOT ") +
                                         "completed.");

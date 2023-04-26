@@ -19,8 +19,8 @@ dotnet nuget locals all --clear
 echo
 
 echo "***** Copying test application used by smoke test"
-mkdir -p RemoteControlledProcess.Application/bin/Debug/net6.0
-cp -vR ../RemoteControlledProcess.Application/bin/Debug/net6.0/* RemoteControlledProcess.Application/bin/Debug/net6.0
+mkdir -p RemoteControlledProcess.Application/bin/Debug/net7.0
+cp -vR ../RemoteControlledProcess.Application/bin/Debug/net7.0/* RemoteControlledProcess.Application/bin/Debug/net7.0
 echo
 
 echo "***** Preparing new dotnet solution with an xunit test project"

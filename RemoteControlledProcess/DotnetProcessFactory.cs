@@ -13,9 +13,9 @@ namespace RemoteControlledProcess
             get
             {
 #if DEBUG
-                var binFolder = Path.Combine("bin", "Debug", "net6.0");
+                var binFolder = Path.Combine("bin", "Debug", "net7.0");
 #else
-                var binFolder = Path.Combine("bin", "Release", "net6.0");
+                var binFolder = Path.Combine("bin", "Release", "net7.0");
 #endif
                 return binFolder;
             }
