@@ -8,13 +8,17 @@ namespace RemoteControlledProcess.Application
     {
         public static IHostBuilder Create<
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-        THostedService>()
+                THostedService
+        >()
             where THostedService : class, IHostedService
         {
             return Host.CreateDefaultBuilder()
-                .ConfigureServices((_, services) =>
-                    services.AddHostedService<THostedService>()
-                        .AddHostedService<LogApplicationInfoService>());
+                .ConfigureServices(
+                    (_, services) =>
+                        services
+                            .AddHostedService<THostedService>()
+                            .AddHostedService<LogApplicationInfoService>()
+                );
         }
     }
 }

@@ -10,7 +10,8 @@ namespace RemoteControlledProcess.Application
     {
         private readonly ILogger<LogApplicationInfoService> _logger;
 
-        public LogApplicationInfoService(ILogger<LogApplicationInfoService> logger) => _logger = logger;
+        public LogApplicationInfoService(ILogger<LogApplicationInfoService> logger) =>
+            _logger = logger;
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {

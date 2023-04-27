@@ -10,9 +10,10 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
         private readonly ITestOutputHelper _testOutputHelper;
         private bool _isDisposed;
 
-        public SingleProcessControlStepDefinitions(ScenarioContext scenarioContext,
-            ITestOutputHelper testOutputHelper) =>
-            _testOutputHelper = testOutputHelper;
+        public SingleProcessControlStepDefinitions(
+            ScenarioContext scenarioContext,
+            ITestOutputHelper testOutputHelper
+        ) => _testOutputHelper = testOutputHelper;
 
         public static TestProcessWrapper Client { get; private set; }
 

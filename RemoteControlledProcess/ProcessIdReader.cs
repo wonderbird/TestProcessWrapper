@@ -15,11 +15,21 @@ namespace RemoteControlledProcess
             }
 
             var processIdStartIndex = processOutput.IndexOf("Process ID", StringComparison.Ordinal);
-            var newLineAfterProcessIdIndex =
-                processOutput.IndexOf("\n", processIdStartIndex, StringComparison.Ordinal);
+            var newLineAfterProcessIdIndex = processOutput.IndexOf(
+                "\n",
+                processIdStartIndex,
+                StringComparison.Ordinal
+            );
             var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
-            var processIdString = processOutput.Substring(processIdStartIndex + 10, processIdNumberOfDigits);
-            ProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
+            var processIdString = processOutput.Substring(
+                processIdStartIndex + 10,
+                processIdNumberOfDigits
+            );
+            ProcessId = int.Parse(
+                processIdString,
+                NumberStyles.Integer,
+                CultureInfo.InvariantCulture
+            );
 
             return true;
         }

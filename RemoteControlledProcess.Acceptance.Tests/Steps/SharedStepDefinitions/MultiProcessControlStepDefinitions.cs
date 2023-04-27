@@ -43,7 +43,10 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new TestProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
+                var client = new TestProcessWrapper(
+                    "RemoteControlledProcess.Application",
+                    isCoverletEnabled
+                );
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 

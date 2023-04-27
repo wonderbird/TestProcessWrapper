@@ -30,7 +30,10 @@ namespace RemoteControlledProcess
             IsCoverletEnabled = isCoverletEnabled;
         }
 
-        internal TestProcessWrapper(IProcessFactory processFactory, IProcessOutputRecorderFactory outputRecorderFactory)
+        internal TestProcessWrapper(
+            IProcessFactory processFactory,
+            IProcessOutputRecorderFactory outputRecorderFactory
+        )
             : this("fakeProjectName", false)
         {
             _processFactory = processFactory;
@@ -62,7 +65,8 @@ namespace RemoteControlledProcess
             AddEnvironmentVariablesToProcess();
 
             TestOutputHelper?.WriteLine(
-                $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ...");
+                $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ..."
+            );
             _process.Start();
 
             _processOutputRecorder = _processOutputRecorderFactory.Create();
@@ -98,8 +102,7 @@ namespace RemoteControlledProcess
                 var processOutput = ReadOutput();
                 isReady = _readinessChecks.All(check => check(processOutput));
                 Thread.Sleep(100);
-            }
-            while (!isReady);
+            } while (!isReady);
         }
 
         public string ReadOutput() => _processOutputRecorder.Output;
@@ -143,7 +146,9 @@ namespace RemoteControlledProcess
         {
             if (!theProcess.HasExited)
             {
-                TestOutputHelper?.WriteLine("System call has " + (theProcess.HasExited ? "" : "NOT ") + "completed.");
+                TestOutputHelper?.WriteLine(
+                    "System call has " + (theProcess.HasExited ? "" : "NOT ") + "completed."
+                );
                 theProcess.Kill();
             }
         }
@@ -152,9 +157,11 @@ namespace RemoteControlledProcess
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(10000);
-            TestOutputHelper?.WriteLine($"Process {_appProjectName} has " +
-                                        (_process.HasExited ? "" : "NOT ") +
-                                        "completed.");
+            TestOutputHelper?.WriteLine(
+                $"Process {_appProjectName} has "
+                    + (_process.HasExited ? "" : "NOT ")
+                    + "completed."
+            );
         }
 
         public void ForceTermination()

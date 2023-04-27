@@ -11,10 +11,15 @@ namespace RemoteControlledProcess.Unit.Tests
         private const string ExceptionMessage = "Exception generated for test purpose";
 
         [Theory]
-        [InlineData(0,
-            "Unhandled exception in .*RemoteControlledProcess.Unit.Tests/ExceptionReporterExtensionTest.cs:[0-9]+")]
+        [InlineData(
+            0,
+            "Unhandled exception in .*RemoteControlledProcess.Unit.Tests/ExceptionReporterExtensionTest.cs:[0-9]+"
+        )]
         [InlineData(1, ExceptionMessage)]
-        public void Write_CalledInCatchBlock_WrittenMessagesMatch(int invocationIndex, string expectedMessageRegex)
+        public void Write_CalledInCatchBlock_WrittenMessagesMatch(
+            int invocationIndex,
+            string expectedMessageRegex
+        )
         {
             // Arrange
             var writerMock = new Mock<TextWriter>();

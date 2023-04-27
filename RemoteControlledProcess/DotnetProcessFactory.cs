@@ -66,8 +66,11 @@ namespace RemoteControlledProcess
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 Arguments = processArguments,
-                WorkingDirectory = Path.Combine(_testProjectInfo.ProjectDir, _testProjectInfo.AppProjectName,
-                    BinFolder)
+                WorkingDirectory = Path.Combine(
+                    _testProjectInfo.ProjectDir,
+                    _testProjectInfo.AppProjectName,
+                    BinFolder
+                )
             };
 
             return processStartInfo;
