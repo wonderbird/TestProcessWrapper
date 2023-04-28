@@ -95,13 +95,6 @@ open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 
 The script `build.sh` builds the NuGet package like the build pipeline does it. This can be helpful when debugging issues popping up in the build pipeline.
 
-#### Known Issue
-
-When you run the tests on a mac, then the tests using *two* `TestProcessWrapper`s issue a crash report regarding
-"dotnet".
-
-At the moment I cannot explain that behavior.
-
 #### Before Creating a Pull Request ...
 
 ... fix static code analysis warnings reported by [SonarLint](https://www.sonarsource.com/products/sonarlint/)
