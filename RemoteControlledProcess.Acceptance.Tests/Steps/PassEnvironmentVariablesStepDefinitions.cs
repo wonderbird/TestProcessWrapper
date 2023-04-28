@@ -8,11 +8,18 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
     [Binding]
     public class PassEnvironmentVariablesStepDefinitions
     {
-        private readonly Dictionary<string, string> _environmentVariables = new()
-        {
-            { "CONFIGURED_ENVIRONMENT_VARIABLE_1", "Test FIRST configured environment variable" },
-            { "CONFIGURED_ENVIRONMENT_VARIABLE_2", "Test SECOND configured environment variable" }
-        };
+        private readonly Dictionary<string, string> _environmentVariables =
+            new()
+            {
+                {
+                    "CONFIGURED_ENVIRONMENT_VARIABLE_1",
+                    "Test FIRST configured environment variable"
+                },
+                {
+                    "CONFIGURED_ENVIRONMENT_VARIABLE_2",
+                    "Test SECOND configured environment variable"
+                }
+            };
 
         private string _outputWhenReady;
 
@@ -38,7 +45,10 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         {
             foreach (var (name, value) in _environmentVariables)
             {
-                Assert.True(_outputWhenReady.Contains(value), $"Value of environment variable {name} was not printed.");
+                Assert.True(
+                    _outputWhenReady.Contains(value),
+                    $"Value of environment variable {name} was not printed."
+                );
             }
         }
     }

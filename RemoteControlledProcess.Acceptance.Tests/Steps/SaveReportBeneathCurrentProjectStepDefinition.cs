@@ -23,7 +23,8 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
                 var directory = Path.Join("..", "..", "..", "TestResults");
                 var searchPattern = "RemoteControlledProcess.Application.*.xml";
 
-                return Directory.EnumerateFiles(directory, searchPattern, SearchOption.TopDirectoryOnly)
+                return Directory
+                    .EnumerateFiles(directory, searchPattern, SearchOption.TopDirectoryOnly)
                     .Count();
             }
             catch (DirectoryNotFoundException)

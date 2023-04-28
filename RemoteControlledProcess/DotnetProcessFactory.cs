@@ -49,14 +49,6 @@ namespace RemoteControlledProcess
             return processStartInfo;
         }
 
-        private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
-        {
-            var arguments =
-                $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {_testProjectInfo.CoverageReportPath} --format cobertura";
-
-            return CreateProcessStartInfo("coverlet", arguments);
-        }
-
         private ProcessStartInfo CreateProcessStartInfo(string processName, string processArguments)
         {
             var processStartInfo = new ProcessStartInfo(processName)
@@ -66,11 +58,22 @@ namespace RemoteControlledProcess
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 Arguments = processArguments,
-                WorkingDirectory = Path.Combine(_testProjectInfo.ProjectDir, _testProjectInfo.AppProjectName,
-                    BinFolder)
+                WorkingDirectory = Path.Combine(
+                    _testProjectInfo.ProjectDir,
+                    _testProjectInfo.AppProjectName,
+                    BinFolder
+                )
             };
 
             return processStartInfo;
+        }
+
+        private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
+        {
+            var arguments =
+                $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {_testProjectInfo.CoverageReportPath} --format cobertura";
+
+            return CreateProcessStartInfo("coverlet", arguments);
         }
     }
 }

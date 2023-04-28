@@ -5,14 +5,15 @@ using Xunit.Abstractions;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 {
     [Binding]
-    public class SingleProcessControlStepDefinitions : IDisposable
+    public sealed class SingleProcessControlStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private bool _isDisposed;
 
-        public SingleProcessControlStepDefinitions(ScenarioContext scenarioContext,
-            ITestOutputHelper testOutputHelper) =>
-            _testOutputHelper = testOutputHelper;
+        public SingleProcessControlStepDefinitions(
+            ScenarioContext scenarioContext,
+            ITestOutputHelper testOutputHelper
+        ) => _testOutputHelper = testOutputHelper;
 
         public static TestProcessWrapper Client { get; private set; }
 

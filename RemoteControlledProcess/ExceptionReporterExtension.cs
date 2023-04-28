@@ -7,11 +7,16 @@ namespace RemoteControlledProcess
 {
     public static class ExceptionReporterExtension
     {
-        private static readonly Action<ILogger, string, int?, Exception> LogUnhandledExceptionAction;
-
-        static ExceptionReporterExtension() =>
-            LogUnhandledExceptionAction =
-                LoggerMessage.Define<string, int?>(LogLevel.Critical, new EventId(1, nameof(Log)), "Unhandled exception in {FileName}:{@LineNumber}");
+        private static readonly Action<
+            ILogger,
+            string,
+            int?,
+            Exception
+        > LogUnhandledExceptionAction = LoggerMessage.Define<string, int?>(
+            LogLevel.Critical,
+            new EventId(1, nameof(Log)),
+            "Unhandled exception in {FileName}:{@LineNumber}"
+        );
 
         public static void Write(this Exception exception, TextWriter writer)
         {
@@ -23,7 +28,12 @@ namespace RemoteControlledProcess
         public static void Log(this Exception exception, ILogger logger)
         {
             var exceptionOrigin = GetExceptionOriginFromStackTrace();
-            LogUnhandledExceptionAction(logger, exceptionOrigin.FileName, exceptionOrigin.LineNumber, exception);
+            LogUnhandledExceptionAction(
+                logger,
+                exceptionOrigin.FileName,
+                exceptionOrigin.LineNumber,
+                exception
+            );
         }
 
         private static ExceptionOrigin GetExceptionOriginFromStackTrace()
@@ -37,7 +47,7 @@ namespace RemoteControlledProcess
             return exceptionOrigin;
         }
 
-        private class ExceptionOrigin
+        private sealed class ExceptionOrigin
         {
             public string FileName { get; init; }
             public int? LineNumber { get; init; }

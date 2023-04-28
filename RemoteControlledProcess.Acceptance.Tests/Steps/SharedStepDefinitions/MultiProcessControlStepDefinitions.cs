@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 {
     [Binding]
-    public class MultiProcessControlStepDefinitions : IDisposable
+    public sealed class MultiProcessControlStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
@@ -43,7 +43,10 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new TestProcessWrapper("RemoteControlledProcess.Application", isCoverletEnabled);
+                var client = new TestProcessWrapper(
+                    "RemoteControlledProcess.Application",
+                    isCoverletEnabled
+                );
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 
