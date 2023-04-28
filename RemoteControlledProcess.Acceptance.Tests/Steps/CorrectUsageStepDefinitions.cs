@@ -11,16 +11,13 @@ using Xunit.Abstractions;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
-    public class CorrectUsageStepDefinitions
+    public partial class CorrectUsageStepDefinitions
     {
-        // TODO: Fix Warning: [SYSLIB1045] Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time.
-#pragma warning disable SYSLIB1045
-        private static readonly Regex LineCoverageRegex =
-            new(
-                @"\|\sTotal\s*\|\s*([0-9\.]*)\%\s*\|\s*[0-9\.]*%\s*\|\s*[0-9\.]*%\s*\|",
-                RegexOptions.Multiline
-            );
-#pragma warning restore SYSLIB1045
+        [GeneratedRegex(
+            @"\|\sTotal\s*\|\s*([0-9\.]*)\%\s*\|\s*[0-9\.]*%\s*\|\s*[0-9\.]*%\s*\|",
+            RegexOptions.Multiline
+        )]
+        private static partial Regex LineCoverageRegex();
 
         private readonly ITestOutputHelper _testOutputHelper;
 
@@ -64,7 +61,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
 
         private double GetLineCoverageFromCoverletOutput(string coverletOutput)
         {
-            var lineCoverageMatch = LineCoverageRegex.Match(coverletOutput);
+            var lineCoverageMatch = LineCoverageRegex().Match(coverletOutput);
             var lineCoveragePercentString = lineCoverageMatch.Groups[1].Value;
 
             _testOutputHelper?.WriteLine(

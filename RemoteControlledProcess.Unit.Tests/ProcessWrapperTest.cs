@@ -52,9 +52,7 @@ namespace RemoteControlledProcess.Unit.Tests
             );
 
             var customReadinessCheck = new FirstFailingThenSucceedingReadinessCheck();
-            processWrapper.AddReadinessCheck(
-                processOutput => customReadinessCheck.Execute()
-            );
+            processWrapper.AddReadinessCheck(processOutput => customReadinessCheck.Execute());
 
             processWrapper.Start();
 
