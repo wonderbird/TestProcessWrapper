@@ -104,10 +104,12 @@ At the moment I cannot explain that behavior.
 
 #### Before Creating a Pull Request ...
 
+... fix static code analysis warnings reported by [SonarLint](https://www.sonarsource.com/products/sonarlint/)
+
 ... apply code formatting rules
 
 ```shell
-dotnet format
+dotnet csharpier .
 ```
 
 ... and check code metrics using [metrix++](https://github.com/metrixplusplus/metrixplusplus)
@@ -178,8 +180,13 @@ The report will be created as `dupfinder-report.html` in the current directory.
   Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
 * [Testcontainers](https://www.testcontainers.org/)
 
+### Code Style
+
+* Bela VanderVoort: [CSharpier](https://csharpier.com/) - an opinionated code formatter
+
 ### Code Analysis
 
+* SonarSource S.A.: [SonarLint IDE Extension](https://www.sonarsource.com/products/sonarlint/)
 * Microsoft: [Use code coverage for unit testing](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=linux)
 * GitHub: [coverlet-coverage / coverlet](https://github.com/coverlet-coverage/coverlet)
 * GitHub: [danielpalme / ReportGenerator](https://github.com/danielpalme/ReportGenerator)
