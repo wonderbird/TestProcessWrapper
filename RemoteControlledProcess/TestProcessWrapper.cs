@@ -9,7 +9,7 @@ namespace RemoteControlledProcess
 {
     public delegate bool ReadinessCheck(string processOutput);
 
-    public class TestProcessWrapper : IDisposable
+    public sealed class TestProcessWrapper : IDisposable
     {
         private readonly string _appProjectName;
         private readonly Dictionary<string, string> _environmentVariables = new();

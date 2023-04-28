@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 {
     [Binding]
-    public class MultiProcessControlStepDefinitions : IDisposable
+    public sealed class MultiProcessControlStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
 

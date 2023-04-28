@@ -12,14 +12,11 @@ namespace RemoteControlledProcess
             string,
             int?,
             Exception
-        > LogUnhandledExceptionAction;
-
-        static ExceptionReporterExtension() =>
-            LogUnhandledExceptionAction = LoggerMessage.Define<string, int?>(
-                LogLevel.Critical,
-                new EventId(1, nameof(Log)),
-                "Unhandled exception in {FileName}:{@LineNumber}"
-            );
+        > LogUnhandledExceptionAction = LoggerMessage.Define<string, int?>(
+            LogLevel.Critical,
+            new EventId(1, nameof(Log)),
+            "Unhandled exception in {FileName}:{@LineNumber}"
+        );
 
         public static void Write(this Exception exception, TextWriter writer)
         {
@@ -50,7 +47,7 @@ namespace RemoteControlledProcess
             return exceptionOrigin;
         }
 
-        private class ExceptionOrigin
+        private sealed class ExceptionOrigin
         {
             public string FileName { get; init; }
             public int? LineNumber { get; init; }

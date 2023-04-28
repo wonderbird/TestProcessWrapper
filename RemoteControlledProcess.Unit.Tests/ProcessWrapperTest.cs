@@ -53,7 +53,7 @@ namespace RemoteControlledProcess.Unit.Tests
 
             var customReadinessCheck = new FirstFailingThenSucceedingReadinessCheck();
             processWrapper.AddReadinessCheck(
-                processOutput => customReadinessCheck.Execute(processOutput)
+                processOutput => customReadinessCheck.Execute()
             );
 
             processWrapper.Start();
@@ -65,7 +65,7 @@ namespace RemoteControlledProcess.Unit.Tests
         {
             public int NumberOfCalls { get; private set; }
 
-            public bool Execute(string _)
+            public bool Execute()
             {
                 NumberOfCalls++;
                 return NumberOfCalls != 1;

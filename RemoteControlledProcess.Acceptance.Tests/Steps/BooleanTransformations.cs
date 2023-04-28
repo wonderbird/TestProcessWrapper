@@ -4,7 +4,7 @@ using TechTalk.SpecFlow;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
     [Binding]
-    public class BooleanTransformations
+    public static class BooleanTransformations
     {
         [StepArgumentTransformation]
         public static bool TransformHumanReadableBooleanSwitchExpression(string expression) =>

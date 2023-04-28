@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 {
     [Binding]
-    public class SingleProcessControlStepDefinitions : IDisposable
+    public sealed class SingleProcessControlStepDefinitions : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private bool _isDisposed;
