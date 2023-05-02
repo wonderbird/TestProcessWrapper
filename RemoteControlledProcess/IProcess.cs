@@ -5,11 +5,9 @@ namespace RemoteControlledProcess
 {
     internal interface IProcess : IDisposable
     {
-        int Id { get; }
-
         bool HasExited { get; }
 
-        ProcessStartInfo StartInfo { get; set; }
+        ProcessStartInfo StartInfo { get; }
 
         void AddEnvironmentVariable(string name, string value);
 
