@@ -18,6 +18,13 @@ class captures the messages written to the Console and to Console.Error. It allo
 and forcefully. One of the processes can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet)
 command line tool in order to calculate code coverage.
 
+An example process is given in this repository: [RemoteControlledProcess.Application](./RemoteControlledProcess.Application)
+
+**Important**
+
+The tested process must report its process ID on the console. An example is
+[RemoteControlledProcess.Application/LogApplicationInfoService.cs](./RemoteControlledProcess.Application/LogApplicationInfoService.cs).
+
 **Usage Examples**
 
 The most simple use is described by the acceptance test [SmokeTests.cs](RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs).

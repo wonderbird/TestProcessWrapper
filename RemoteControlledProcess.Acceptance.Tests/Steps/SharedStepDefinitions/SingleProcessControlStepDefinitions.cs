@@ -4,6 +4,7 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
 {
+    // TODO: Can we delete SingleProcessControlStepDefinition and use MultiProcessControlStepDefinition instead? This would make life easier for the shared steps accessing the clients.
     [Binding]
     public sealed class SingleProcessControlStepDefinitions : IDisposable
     {

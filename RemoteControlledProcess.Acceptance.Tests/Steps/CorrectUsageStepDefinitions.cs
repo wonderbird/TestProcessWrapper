@@ -10,6 +10,10 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess.Acceptance.Tests.Steps
 {
+    // If your IDE reports an CS8795 error "Partial method 'Regex LineCoverageRegex()' must have an implementation
+    // part because it has accessibility modifiers.", then restart your IDE.
+    // Most probably you are facing a caching problem and the compile is actually working.
+    // See: https://www.reddit.com/r/csharp/comments/yrkl90/generatedregex_in_static_class/
     [Binding]
     public partial class CorrectUsageStepDefinitions
     {
@@ -25,7 +29,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
             _testOutputHelper = testOutputHelper;
 
         [Then(@"the reported total line coverage (is greater|equals) (.*)%")]
-        public void ThenTheReportedTotalLineCoverageIsGreater(
+        public void ThenTheReportedTotalLineCoverageIsGreaterEquals(
             string comparisonString,
             int expectedLineCoveragePercent
         )
@@ -64,6 +68,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
             var lineCoverageMatch = LineCoverageRegex().Match(coverletOutput);
             var lineCoveragePercentString = lineCoverageMatch.Groups[1].Value;
 
+            // TODO: Why is the coverage not printed to the debug console?
             _testOutputHelper?.WriteLine(
                 $"Extracted linecoverage string: \"{lineCoveragePercentString}\""
             );
