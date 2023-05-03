@@ -37,9 +37,9 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
             Assert.True(Clients.All(c => c.HasExited));
         }
 
-        [Given(@"(.*) application is running with coverlet '(.*)'")]
-        [Given(@"(.*) applications are running with coverlet '(.*)'")]
-        public void GivenApplicationsAreRunning(int numberOfClients, bool isCoverletEnabled)
+        [Given(@"(.*) '(short|long)' lived application is running with coverlet '(.*)'")]
+        [Given(@"(.*) '(short|long)' lived applications are running with coverlet '(.*)'")]
+        public void GivenApplicationsAreRunning(int numberOfClients, bool isLongLived, bool isCoverletEnabled)
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {

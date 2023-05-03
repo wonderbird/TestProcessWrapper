@@ -9,5 +9,9 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         [StepArgumentTransformation]
         public static bool TransformHumanReadableBooleanSwitchExpression(string expression) =>
             "ENABLED" == expression.ToUpper(CultureInfo.CurrentCulture);
+
+        [StepArgumentTransformation]
+        public static bool TransformIsLongLivedBooleanSwitchExpression(string expression) =>
+            "LONG" == expression.ToUpper(CultureInfo.CurrentCulture);
     }
 }
