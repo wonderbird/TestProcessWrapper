@@ -68,7 +68,6 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
             var lineCoverageMatch = LineCoverageRegex().Match(coverletOutput);
             var lineCoveragePercentString = lineCoverageMatch.Groups[1].Value;
 
-            // TODO: Why is the coverage not printed to the debug console?
             _testOutputHelper?.WriteLine(
                 $"Extracted linecoverage string: \"{lineCoveragePercentString}\""
             );

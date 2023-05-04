@@ -6,11 +6,11 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
     [Binding]
     public static class BooleanTransformations
     {
-        [StepArgumentTransformation]
+        [StepArgumentTransformation(@"(enabled|disabled)")]
         public static bool TransformHumanReadableBooleanSwitchExpression(string expression) =>
             "ENABLED" == expression.ToUpper(CultureInfo.CurrentCulture);
 
-        [StepArgumentTransformation]
+        [StepArgumentTransformation(@"(long|short)")]
         public static bool TransformIsLongLivedBooleanSwitchExpression(string expression) =>
             "LONG" == expression.ToUpper(CultureInfo.CurrentCulture);
     }

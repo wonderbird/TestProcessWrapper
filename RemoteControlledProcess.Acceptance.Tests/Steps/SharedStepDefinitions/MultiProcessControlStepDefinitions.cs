@@ -37,14 +37,19 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
             Assert.True(Clients.All(c => c.HasExited));
         }
 
-        [Given(@"(.*) '(short|long)' lived application is running with coverlet '(.*)'")]
-        [Given(@"(.*) '(short|long)' lived applications are running with coverlet '(.*)'")]
-        public void GivenApplicationsAreRunning(int numberOfClients, bool isLongLived, bool isCoverletEnabled)
+        [Given(@"(.*) '(long|short)' lived application is running with coverlet '(enabled|disabled)'")]
+        [Given(@"(.*) '(long|short)' lived applications are running with coverlet '(enabled|disabled)'")]
+        public void GivenLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isLongLived, bool isCoverletEnabled)
         {
+            // Note: The wrong BooleanTransformation is used -> instead of converting (short|long) we convert (enabled|disabled) ...
+            var appProjectName = isLongLived
+                ? "RemoteControlledProcess.Application"
+                : "RemoteControlledProcess.ShortLived.Application";
+
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
                 var client = new TestProcessWrapper(
-                    "RemoteControlledProcess.Application",
+                    appProjectName,
                     isCoverletEnabled
                 );
                 client.TestOutputHelper = _testOutputHelper;
