@@ -46,20 +46,24 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
             Assert.True(Clients.All(c => c.HasExited));
         }
 
-        [Given(@"(.*) '(long|short)' lived application is running with coverlet '(enabled|disabled)'")]
-        [Given(@"(.*) '(long|short)' lived applications are running with coverlet '(enabled|disabled)'")]
-        public void GivenLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isLongLived, bool isCoverletEnabled)
+        [Given(@"(.*) long lived application is running with coverlet '(enabled|disabled)'")]
+        [Given(@"(.*) long lived applications are running with coverlet '(enabled|disabled)'")]
+        public void GivenLongLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isCoverletEnabled)
         {
-            var appProjectName = isLongLived
-                ? "RemoteControlledProcess.Application"
-                : "RemoteControlledProcess.ShortLived.Application";
+            const string appProjectName = "RemoteControlledProcess.Application";
 
             CreateAndStartAllApplications(numberOfClients, isCoverletEnabled, appProjectName);
 
-            if (isLongLived)
-            {
-                Assert.True(Clients.All(c => c.IsRunning));
-            }
+            Assert.True(Clients.All(c => c.IsRunning));
+        }
+
+        [Given(@"(.*) short lived application is running with coverlet '(enabled|disabled)'")]
+        [Given(@"(.*) short lived applications are running with coverlet '(enabled|disabled)'")]
+        public void GivenShortLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isCoverletEnabled)
+        {
+            const string appProjectName = "RemoteControlledProcess.ShortLived.Application";
+
+            CreateAndStartAllApplications(numberOfClients, isCoverletEnabled, appProjectName);
         }
 
         private void CreateAndStartAllApplications(int numberOfClients, bool isCoverletEnabled, string appProjectName)
