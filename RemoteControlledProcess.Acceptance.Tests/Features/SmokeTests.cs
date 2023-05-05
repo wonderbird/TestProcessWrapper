@@ -21,8 +21,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Features
             processWrapper.Start();
             processWrapper.ShutdownGracefully();
             processWrapper.ForceTermination();
-            var output = processWrapper.ReadOutput();
-            Assert.Contains("STOP", output);
+            Assert.Contains("STOP", processWrapper.RecordedOutput);
         }
     }
 }

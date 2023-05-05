@@ -7,22 +7,51 @@ using Xunit.Abstractions;
 
 namespace RemoteControlledProcess
 {
-    public delegate bool ReadinessCheck(string processOutput);
-
     public sealed class TestProcessWrapper : IDisposable
     {
+        #region Private members
+
         private readonly string _appProjectName;
+
         private readonly Dictionary<string, string> _environmentVariables = new();
+
+        private readonly List<ReadinessCheck> _readinessChecks = new();
+
         private readonly IProcessFactory _processFactory = new DotnetProcessFactory();
+
+        private IProcess _process;
+
+        /// <summary>
+        /// Id of the process under test.
+        /// </summary>
+        /// <see cref="ProcessIdReader"/>
+        private int? _dotnetHostProcessId;
 
         private readonly IProcessOutputRecorderFactory _processOutputRecorderFactory =
             new ProcessOutputRecorderFactory();
 
-        private readonly List<ReadinessCheck> _readinessChecks = new();
-        private int? _dotnetHostProcessId;
-        private bool _isDisposed;
-        private IProcess _process;
         private IProcessOutputRecorder _processOutputRecorder;
+
+        #endregion
+
+        #region Public properties
+
+        public string RecordedOutput => _processOutputRecorder.Output;
+
+        public bool IsCoverletEnabled { get; }
+
+        public bool HasExited => _process == null || _process.HasExited;
+
+        public bool IsRunning => _process is { HasExited: false };
+
+        #endregion
+
+        #region Create and configure TestProcessWrapper
+
+        /// <summary>
+        /// Log execution details to the SpecFlow TestOutputHelper.
+        /// </summary>
+        public ITestOutputHelper TestOutputHelper { get; set; }
 
         public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
         {
@@ -40,24 +69,19 @@ namespace RemoteControlledProcess
             _processOutputRecorderFactory = outputRecorderFactory;
         }
 
-        public bool IsCoverletEnabled { get; }
-
-        public bool HasExited => _process == null || _process.HasExited;
-
-        public bool IsRunning => _process != null && !_process.HasExited;
-
-        public ITestOutputHelper TestOutputHelper { get; set; }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         public void AddEnvironmentVariable(string name, string value)
         {
             _environmentVariables[name] = value;
         }
+
+        public void AddReadinessCheck(ReadinessCheck readinessCheck)
+        {
+            _readinessChecks.Add(readinessCheck);
+        }
+
+        #endregion
+
+        #region Start wrapped process
 
         public void Start()
         {
@@ -99,17 +123,30 @@ namespace RemoteControlledProcess
             bool isReady;
             do
             {
-                var processOutput = ReadOutput();
-                isReady = _readinessChecks.All(check => check(processOutput));
+                isReady = _readinessChecks.All(check => check(RecordedOutput));
                 Thread.Sleep(100);
-            } while (!isReady);
+            }
+            while (!isReady);
         }
 
-        public string ReadOutput() => _processOutputRecorder.Output;
+        #endregion
 
-        public void AddReadinessCheck(ReadinessCheck readinessCheck)
+        #region Shutdown / Terminate wrapped process
+
+        public void WaitForProcessExit()
         {
-            _readinessChecks.Add(readinessCheck);
+            TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
+            _process.WaitForExit(10000);
+            TestOutputHelper?.WriteLine(
+                $"Process {_appProjectName} has "
+                + (_process.HasExited ? "" : "NOT ")
+                + "completed."
+            );
+        }
+
+        public void ForceTermination()
+        {
+            _process.Kill();
         }
 
         public void ShutdownGracefully()
@@ -153,20 +190,21 @@ namespace RemoteControlledProcess
             }
         }
 
-        public void WaitForProcessExit()
+        #endregion
+
+        #region Implement IDispsable
+
+        private bool _isDisposed;
+
+        ~TestProcessWrapper()
         {
-            TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
-            _process.WaitForExit(10000);
-            TestOutputHelper?.WriteLine(
-                $"Process {_appProjectName} has "
-                    + (_process.HasExited ? "" : "NOT ")
-                    + "completed."
-            );
+            Dispose(false);
         }
 
-        public void ForceTermination()
+        public void Dispose()
         {
-            _process.Kill();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)
@@ -185,9 +223,8 @@ namespace RemoteControlledProcess
             _isDisposed = true;
         }
 
-        ~TestProcessWrapper()
-        {
-            Dispose(false);
-        }
+        #endregion
     }
+
+    public delegate bool ReadinessCheck(string processOutput);
 }

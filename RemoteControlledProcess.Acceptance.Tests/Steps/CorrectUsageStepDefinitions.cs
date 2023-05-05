@@ -42,9 +42,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
             );
             foreach (var client in clientsWithCoverlet)
             {
-                var actualLineCoveragePercent = GetLineCoverageFromCoverletOutput(
-                    client.ReadOutput()
-                );
+                var actualLineCoveragePercent = GetLineCoverageFromCoverletOutput(client.RecordedOutput);
                 Assert.True(
                     comparison(actualLineCoveragePercent, expectedLineCoveragePercent),
                     $"Mismatch: line coverage of {actualLineCoveragePercent}% {comparisonString} {expectedLineCoveragePercent}%"
@@ -85,11 +83,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         {
             foreach (var client in MultiProcessControlStepDefinitions.Clients)
             {
-                Assert.DoesNotContain(
-                    "exception",
-                    client.ReadOutput(),
-                    StringComparison.CurrentCultureIgnoreCase
-                );
+                Assert.DoesNotContain("exception", client.RecordedOutput, StringComparison.CurrentCultureIgnoreCase);
             }
         }
     }
