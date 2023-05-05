@@ -50,7 +50,6 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
         [Given(@"(.*) '(long|short)' lived applications are running with coverlet '(enabled|disabled)'")]
         public void GivenLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isLongLived, bool isCoverletEnabled)
         {
-            // Note: The wrong BooleanTransformation is used -> instead of converting (short|long) we convert (enabled|disabled) ...
             var appProjectName = isLongLived
                 ? "RemoteControlledProcess.Application"
                 : "RemoteControlledProcess.ShortLived.Application";
