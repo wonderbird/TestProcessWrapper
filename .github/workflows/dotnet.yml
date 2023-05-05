@@ -9,7 +9,7 @@ on:
 
 env:
   RETENTION_DAYS: 5
-  packageVersionPrefix: ${{ '4.0.' }}
+  packageVersionPrefix: ${{ '5.0.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
   packageVersionSuffixForMainBranch: ${{ '' }}
 
