@@ -55,6 +55,16 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
                 ? "RemoteControlledProcess.Application"
                 : "RemoteControlledProcess.ShortLived.Application";
 
+            CreateAndStartAllApplications(numberOfClients, isCoverletEnabled, appProjectName);
+
+            if (isLongLived)
+            {
+                Assert.True(Clients.All(c => c.IsRunning));
+            }
+        }
+
+        private void CreateAndStartAllApplications(int numberOfClients, bool isCoverletEnabled, string appProjectName)
+        {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
                 var client = new TestProcessWrapper(
@@ -65,11 +75,6 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
                 client.Start();
 
                 Clients.Add(client);
-            }
-
-            if (isLongLived)
-            {
-                Assert.True(Clients.All(c => c.IsRunning));
             }
         }
 
