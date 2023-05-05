@@ -5,5 +5,6 @@ Feature: Short Lived Application
 
 Scenario: Application shuts down after printing its process id
 	Given 1 'short' lived application is running with coverlet 'enabled'
-  When all applications are shut down gracefully
-	Then the reported total line coverage is greater 0%
+  When all applications had enough time to finish
+  Then all applications shut down
+	And the reported total line coverage is greater 0%

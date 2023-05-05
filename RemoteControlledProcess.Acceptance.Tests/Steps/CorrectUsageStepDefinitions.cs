@@ -28,6 +28,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
         public CorrectUsageStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
+        // TODO the coverage verification is used from multiple scenarios and should be moved to its own file
         [Then(@"the reported total line coverage (is greater|equals) (.*)%")]
         public void ThenTheReportedTotalLineCoverageIsGreaterEquals(
             string comparisonString,

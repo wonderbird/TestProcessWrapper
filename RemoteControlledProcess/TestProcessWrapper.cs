@@ -153,7 +153,7 @@ namespace RemoteControlledProcess
             }
         }
 
-        private void WaitForProcessExit()
+        public void WaitForProcessExit()
         {
             TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
             _process.WaitForExit(10000);

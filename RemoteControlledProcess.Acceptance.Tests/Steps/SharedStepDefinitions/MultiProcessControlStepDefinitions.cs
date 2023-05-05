@@ -31,6 +31,15 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
             ShutdownProcessesGracefully();
         }
 
+        [When(@"all applications had enough time to finish")]
+        public static void WhenAllApplicationsHadEnoughTimeToFinish()
+        {
+            foreach (var client in Clients)
+            {
+                client.WaitForProcessExit();
+            }
+        }
+
         [Then]
         public static void ThenAllApplicationsShutDown()
         {
@@ -58,7 +67,10 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
                 Clients.Add(client);
             }
 
-            Assert.True(Clients.All(c => c.IsRunning));
+            if (isLongLived)
+            {
+                Assert.True(Clients.All(c => c.IsRunning));
+            }
         }
 
         private static void ShutdownProcessesGracefully()
