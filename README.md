@@ -20,8 +20,8 @@ command line tool in order to calculate code coverage.
 
 Example processes are given in this repository:
 
-- [RemoteControlledProcess.LongLived.Application](./RemoteControlledProcess.LongLived.Application) - daemon process only terminating after having received a signal
-- [RemoteControlledProcess.ShortLived.Application](./RemoteControlledProcess.ShortLived.Application) - command line process terminating quickly on its own
+- [RemoteControlledProcess.LongLived.Application](./RemoteControlledProcess.LongLived.Application) - daemon process; terminates after receiving a signal
+- [RemoteControlledProcess.ShortLived.Application](./RemoteControlledProcess.ShortLived.Application) - command line process; terminates quickly by itself
 
 **Important**
 
