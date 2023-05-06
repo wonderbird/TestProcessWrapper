@@ -1,7 +1,7 @@
 using System.Globalization;
 using TechTalk.SpecFlow;
 
-namespace RemoteControlledProcess.Acceptance.Tests.Steps
+namespace RemoteControlledProcess.Acceptance.Tests.Steps.Common
 {
     [Binding]
     public static class BooleanTransformations

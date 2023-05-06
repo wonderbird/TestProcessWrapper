@@ -1,4 +1,4 @@
-using RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions;
+using RemoteControlledProcess.Acceptance.Tests.Steps.Common;
 using TechTalk.SpecFlow;
 using Xunit;
 

@@ -5,7 +5,7 @@ using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace RemoteControlledProcess.Acceptance.Tests.Steps.SharedStepDefinitions
+namespace RemoteControlledProcess.Acceptance.Tests.Steps.Common
 {
     [Binding]
     public sealed class MultiProcessControlStepDefinitions : IDisposable
