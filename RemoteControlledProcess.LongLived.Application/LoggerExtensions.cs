@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 
-namespace RemoteControlledProcess.Application;
+namespace RemoteControlledProcess.LongLived.Application;
 
 internal static class LoggerExtensions
 {

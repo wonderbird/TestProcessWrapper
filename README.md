@@ -14,16 +14,19 @@ Launch and control `dotnet` processes wrapped into the [coverlet](https://github
 coverage analyzer.
 
 The class `TestProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
-class captures the messages written to the Console and to Console.Error. It allows to terminate the process gracefully
+class captures the messages written to the `Console` and to `Console.Error`. It allows to terminate the process gracefully
 and forcefully. One of the processes can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet)
 command line tool in order to calculate code coverage.
 
-An example process is given in this repository: [RemoteControlledProcess.Application](./RemoteControlledProcess.Application)
+Example processes are given in this repository:
+
+- [RemoteControlledProcess.LongLived.Application](./RemoteControlledProcess.LongLived.Application) - daemon process only terminating after having received a signal
+- [RemoteControlledProcess.ShortLived.Application](./RemoteControlledProcess.ShortLived.Application) - command line process terminating quickly on its own
 
 **Important**
 
 The tested process must report its process ID on the console. An example is
-[RemoteControlledProcess.Application/LogApplicationInfoService.cs](./RemoteControlledProcess.Application/LogApplicationInfoService.cs).
+[RemoteControlledProcess.LongLived.Application/LogApplicationInfoService.cs](./RemoteControlledProcess.LongLived.Application/LogApplicationInfoService.cs).
 
 **Usage Examples**
 

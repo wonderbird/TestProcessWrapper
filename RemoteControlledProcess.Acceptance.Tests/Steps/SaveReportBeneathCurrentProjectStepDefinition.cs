@@ -21,7 +21,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps
             try
             {
                 var directory = Path.Join("..", "..", "..", "TestResults");
-                var searchPattern = "RemoteControlledProcess.Application.*.xml";
+                var searchPattern = "RemoteControlledProcess.LongLived.Application.*.xml";
 
                 return Directory
                     .EnumerateFiles(directory, searchPattern, SearchOption.TopDirectoryOnly)

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace RemoteControlledProcess.Application
+namespace RemoteControlledProcess.LongLived.Application
 {
     public class LogApplicationInfoService : BackgroundService
     {

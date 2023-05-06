@@ -9,7 +9,7 @@
 
 echo "***** Cleaning up previous test run"
 rm -vrf ./SmokeTest.Test
-rm -vrf ./RemoteControlledProcess.Application
+rm -vrf ./RemoteControlledProcess.LongLived.Application
 rm -vf ./SmokeTest.sln
 echo
 
@@ -19,8 +19,8 @@ dotnet nuget locals all --clear
 echo
 
 echo "***** Copying test application used by smoke test"
-mkdir -p RemoteControlledProcess.Application/bin/Debug/net7.0
-cp -vR ../RemoteControlledProcess.Application/bin/Debug/net7.0/* RemoteControlledProcess.Application/bin/Debug/net7.0
+mkdir -p RemoteControlledProcess.LongLived.Application/bin/Debug/net7.0
+cp -vR ../RemoteControlledProcess.LongLived.Application/bin/Debug/net7.0/* RemoteControlledProcess.LongLived.Application/bin/Debug/net7.0
 echo
 
 echo "***** Preparing new dotnet solution with an xunit test project"

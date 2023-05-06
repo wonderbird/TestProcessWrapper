@@ -1,8 +1,8 @@
 using System;
 using Microsoft.Extensions.Hosting;
 
-// TODO: Rename RemoteControlledProcess.Application to RemoteControlledProcess.LongLived.Application
-namespace RemoteControlledProcess.Application
+// TODO: Rename RemoteControlledProcess.LongLived.Application to RemoteControlledProcess.LongLived.Application
+namespace RemoteControlledProcess.LongLived.Application
 {
     public static class Program
     {

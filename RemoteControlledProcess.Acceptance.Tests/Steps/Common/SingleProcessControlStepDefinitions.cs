@@ -46,7 +46,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.Common
         [Given(@"An application was wrapped into TestProcessWrapper")]
         public void GivenAnApplicationWasWrappedIntoTestProcessWrapper()
         {
-            Client = new TestProcessWrapper("RemoteControlledProcess.Application", false);
+            Client = new TestProcessWrapper("RemoteControlledProcess.LongLived.Application", false);
             Client.TestOutputHelper = _testOutputHelper;
         }
 

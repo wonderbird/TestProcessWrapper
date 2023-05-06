@@ -50,7 +50,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Steps.Common
         [Given(@"(.*) long lived applications are running with coverlet '(enabled|disabled)'")]
         public void GivenLongLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isCoverletEnabled)
         {
-            const string appProjectName = "RemoteControlledProcess.Application";
+            const string appProjectName = "RemoteControlledProcess.LongLived.Application";
 
             CreateAndStartAllApplications(numberOfClients, isCoverletEnabled, appProjectName);
 

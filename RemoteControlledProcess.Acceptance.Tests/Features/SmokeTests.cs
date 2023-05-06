@@ -15,7 +15,7 @@ namespace RemoteControlledProcess.Acceptance.Tests.Features
         public void SmokeTest()
         {
             var processWrapper = new TestProcessWrapper(
-                "RemoteControlledProcess.Application",
+                "RemoteControlledProcess.LongLived.Application",
                 false
             );
             processWrapper.Start();
