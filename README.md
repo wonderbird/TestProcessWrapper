@@ -29,11 +29,11 @@ The tested process must report its process ID on the console. An example is
 
 The most simple use is described by the acceptance test [SmokeTests.cs](RemoteControlledProcess.Acceptance.Tests/Features/SmokeTests.cs).
 
-You can find detailed usage examples in the [Acceptance Test Suite (BDD)](RemoteControlledProcess.Acceptance.Tests).
+You can find detailed usage examples in the [Acceptance Test Suite (BDD)](RemoteControlledProcess.Acceptance.Tests). If you'd like to have easy to read HTML documentation, then generate [LivingDoc](https://docs.specflow.org/projects/getting-started/en/latest/gettingstartedrider/Step8r.html) as described in the corresponding section [Create Feature Documentation (LivingDoc)](#create-feature-documentation-livingdoc) below.
 
-First read a [Gherkin](https://specflow.org/learn/gherkin/) `.feature` file from the [Features](RemoteControlledProcess.Acceptance.Tests/Features) folder. It explains why each feature exists and which use scenarios are addressed.
+If you don't need LivingDoc, first read a [Gherkin](https://specflow.org/learn/gherkin/) `.feature` file from the [Features](RemoteControlledProcess.Acceptance.Tests/Features) folder. It explains why each feature exists and which use scenarios are addressed.
 Then read the corresponding `*StepDefinition.cs` file in the [Steps](RemoteControlledProcess.Acceptance.Tests/Steps) folder. It shows how the test steps from the feature file (given, when, then) are actually implemented.
-Note, that some frequently used steps are implemented in the [SharedStepDefinitions](RemoteControlledProcess.Acceptance.Tests/Steps/SharedStepDefinitions) folder.
+Note, that some frequently used steps are implemented in the [Common](RemoteControlledProcess.Acceptance.Tests/Steps/Common) folder.
 
 ## Attention
 
@@ -101,6 +101,29 @@ open RemoteControlledProcess.Acceptance.Tests/TestResults/report/index.html
 ```
 
 The script `build.sh` builds the NuGet package like the build pipeline does it. This can be helpful when debugging issues popping up in the build pipeline.
+
+#### Create Feature Documentation (LivingDoc)
+
+As this project uses SpecFlow for acceptance tests, you can generate an HTML overview of all features including the test status as follows:
+
+```shell
+# Prerequisite: Install the LivingDoc CLI once
+dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
+```
+
+```shell
+# Run the acceptance tests to generate the TestExecution.json
+# for LivingDoc
+dotnet test RemoteControlledProcess.Acceptance.Tests
+
+# Generate LivingDoc
+cd RemoteControlledProcess.Acceptance.Tests/bin/Debug/net7.0
+livingdoc test-assembly RemoteControlledProcess.Acceptance.Tests.dll -t TestExecution.json
+cd ../../../..
+
+# Open the generated HTML in a browser
+open RemoteControlledProcess.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
+```
 
 #### Before Creating a Pull Request ...
 
@@ -178,6 +201,8 @@ The report will be created as `dupfinder-report.html` in the current directory.
   Team: [SpecFlow.xUnit — documentation](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html)
 * The SpecFlow
   Team: [SpecFlow - Getting Started with a new project](https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/Getting-Started-With-A-New-Project.html?utm_source=website&utm_medium=newproject&utm_campaign=getting_started)
+* The SpecFlow Team: [Add Living Documentation](https://docs.specflow.org/projects/getting-started/en/latest/gettingstartedrider/Step8r.html)
+* The SpecFlow Team: [Generating LivingDoc using CLI](https://docs.specflow.org/projects/specflow-livingdoc/en/latest/LivingDocGenerator/Generating-Documentation.html)
 * [Testcontainers](https://www.testcontainers.org/)
 
 ### Code Style
