@@ -9,9 +9,9 @@ on:
 
 env:
   RETENTION_DAYS: 5
-  packageVersionPrefix: ${{ '4.0.' }}
+  packageVersionPrefix: ${{ '5.0.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
-  packageVersionSuffixForMainBranch: ${{ '' }}
+  packageVersionSuffixForMainBranch: ${{ '-alpha' }}
 
 jobs:
   build-and-test:
@@ -38,6 +38,7 @@ jobs:
         run: |
           dotnet tool install --global coverlet.console
           dotnet tool install --global dotnet-reportgenerator-globaltool
+          dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
       - name: Install dependencies
         run: dotnet restore
@@ -50,32 +51,42 @@ jobs:
 
       - name: Build NuGet package
         run: |
-          dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj /p:PackageVersion=${{ env.packageVersion }}
-          echo "packageVersion=${{ env.packageVersion }}" > RemoteControlledProcess/bin/Debug/VERSION.txt
+          dotnet pack TestProcessWrapper/TestProcessWrapper.csproj /p:PackageVersion=${{ env.packageVersion }}
+          echo "packageVersion=${{ env.packageVersion }}" > TestProcessWrapper/bin/Debug/VERSION.txt
 
       - name: Test NuGet package
         run: ./smoketest.sh
-        working-directory: RemoteControlledProcess.Nupkg.Tests
+        working-directory: TestProcessWrapper.Nupkg.Tests
         
       - name: Generate coverage reports
-        run: reportgenerator "-reports:RemoteControlledProcess.Acceptance.Tests/TestResults/*.xml;RemoteControlledProcess.Unit.Tests/TestResults/*.xml" \
+        run: reportgenerator "-reports:TestProcessWrapper.Acceptance.Tests/TestResults/*.xml;TestProcessWrapper.Unit.Tests/TestResults/*.xml" \
           "-targetdir:report" \
           "-reporttypes:Html;lcov" \
-          "-title:RemoteControlledProcess"
+          "-title:TestProcessWrapper"
+        
+      - name: Generate SpecFlow LivingDoc
+        run: livingdoc test-assembly TestProcessWrapper.Acceptance.Tests.dll -t TestExecution.json
+        working-directory: TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0
 
       - name: Attach NuGet package to build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: nuget-package
           path: |
-            RemoteControlledProcess/bin/Debug/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg
-            RemoteControlledProcess/bin/Debug/VERSION.txt
+            TestProcessWrapper/bin/Debug/Boos.TestProcessWrapper.${{ env.packageVersion }}.nupkg
+            TestProcessWrapper/bin/Debug/VERSION.txt
 
       - name: Attach coverage reports to build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: coverage-reports
           path: report
+
+      - name: Attach LivingDoc to build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: LivingDoc
+          path: TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
 
   publish-reports:
     runs-on: ubuntu-latest
@@ -125,5 +136,5 @@ jobs:
         run: cat nuget-package/VERSION.txt >> $GITHUB_ENV
 
       - name: Publish NuGet package
-        run: dotnet nuget push nuget-package/Boos.RemoteControlledProcess.${{ env.packageVersion }}.nupkg --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push nuget-package/Boos.TestProcessWrapper.${{ env.packageVersion }}.nupkg --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
   

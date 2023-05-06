@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pushd RemoteControlledProcess.Application/bin/Debug/net7.0
-DOTNET_ENVIRONMENT=Development dotnet RemoteControlledProcess.Application.dll
+pushd TestProcessWrapper.LongLived.Application/bin/Debug/net7.0
+DOTNET_ENVIRONMENT=Development dotnet TestProcessWrapper.LongLived.Application.dll
 popd
 
