@@ -28,4 +28,4 @@ dotnet build --configuration Debug --no-restore
 dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml'
 
 # Build NuGet package
-dotnet pack RemoteControlledProcess/RemoteControlledProcess.csproj "/p:PackageVersion=$VERSION"
+dotnet pack TestProcessWrapper/TestProcessWrapper.csproj "/p:PackageVersion=$VERSION"
