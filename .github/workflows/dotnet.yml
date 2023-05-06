@@ -38,6 +38,7 @@ jobs:
         run: |
           dotnet tool install --global coverlet.console
           dotnet tool install --global dotnet-reportgenerator-globaltool
+          dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 
       - name: Install dependencies
         run: dotnet restore
@@ -62,6 +63,10 @@ jobs:
           "-targetdir:report" \
           "-reporttypes:Html;lcov" \
           "-title:RemoteControlledProcess"
+        
+      - name: Generate SpecFlow LivingDoc
+        run: livingdoc test-assembly RemoteControlledProcess.Acceptance.Tests.dll -t TestExecution.json
+        working-directory: RemoteControlledProcess.Acceptance.Tests/bin/Debug/net7.0
 
       - name: Attach NuGet package to build artifacts
         uses: actions/upload-artifact@v3
@@ -76,6 +81,12 @@ jobs:
         with:
           name: coverage-reports
           path: report
+
+      - name: Attach LivingDoc to build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: LivingDoc
+          path: RemoteControlledProcess.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
 
   publish-reports:
     runs-on: ubuntu-latest
