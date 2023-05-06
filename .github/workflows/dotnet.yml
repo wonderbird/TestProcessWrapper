@@ -11,7 +11,7 @@ env:
   RETENTION_DAYS: 5
   packageVersionPrefix: ${{ '5.0.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
-  packageVersionSuffixForMainBranch: ${{ '' }}
+  packageVersionSuffixForMainBranch: ${{ '-alpha' }}
 
 jobs:
   build-and-test:
