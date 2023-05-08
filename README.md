@@ -46,8 +46,6 @@ If you use `coverlet` with two or more instances of the same application, `cover
 
 ## Development and Support Standard
 
-This project is incomplete and not production ready.
-
 I am developing during my spare time and use this project for learning purposes. Please assume that I will need some
 days to answer your questions. Please keep this in mind when using this project in a production environment.
 
@@ -63,7 +61,7 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 To compile, test and run this project the latest [.NET SDK](https://dotnet.microsoft.com/download) is required on
 your machine. For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus).
 This requires [Python](https://www.python.org/). If you'd like to contribute, then please use the
-[dotnet format](https://github.com/dotnet/format#how-to-install) command as described below.
+[dotnet csharpier .](https://csharpier.com/) command as described below.
 
 To use the `TestProcessWrapper` library and to run the unit tests you need the following tools installed:
 
@@ -211,6 +209,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 ### Code Style
 
 * Bela VanderVoort: [CSharpier](https://csharpier.com/) - an opinionated code formatter
+* Microsoft: [dotnet format](https://github.com/dotnet/format) - dotnet code formatter
 
 ### Code Analysis
 

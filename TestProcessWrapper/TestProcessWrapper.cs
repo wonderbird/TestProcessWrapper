@@ -125,8 +125,7 @@ public sealed class TestProcessWrapper : IDisposable
         {
             isReady = _readinessChecks.All(check => check(RecordedOutput));
             Thread.Sleep(100);
-        }
-        while (!isReady);
+        } while (!isReady);
     }
 
     #endregion
@@ -138,9 +137,7 @@ public sealed class TestProcessWrapper : IDisposable
         TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
         _process.WaitForExit(10000);
         TestOutputHelper?.WriteLine(
-            $"Process {_appProjectName} has "
-            + (_process.HasExited ? "" : "NOT ")
-            + "completed."
+            $"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") + "completed."
         );
     }
 
