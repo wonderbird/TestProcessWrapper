@@ -141,6 +141,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release
+
+    needs: publish-nuget
     
     # Configure GITHUB_TOKEN so that it allows uploading to the release
     permissions:
