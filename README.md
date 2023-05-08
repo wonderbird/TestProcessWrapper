@@ -101,7 +101,8 @@ rm -r TestProcessWrapper.Acceptance.Tests/TestResults && \
 open TestProcessWrapper.Acceptance.Tests/TestResults/report/index.html
 ```
 
-The script `build.sh` builds the NuGet package like the build pipeline does it. This can be helpful when debugging issues popping up in the build pipeline.
+The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
+when debugging issues popping up in the build pipeline.
 
 #### Create Feature Documentation (LivingDoc)
 
