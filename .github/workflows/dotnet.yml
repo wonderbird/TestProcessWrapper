@@ -121,9 +121,8 @@ jobs:
   publish-nuget:
     runs-on: ubuntu-latest
     name: Publish NuGet package
-    if: github.ref == 'refs/heads/main'
     
-    needs: publish-reports
+    needs: build-and-test
 
     steps:
       - name: Download NuGet package
@@ -136,6 +135,7 @@ jobs:
         run: cat nuget-package/VERSION.txt >> $GITHUB_ENV
 
       - name: Publish NuGet package
+        if: github.ref == 'refs/heads/main'
         run: dotnet nuget push nuget-package/Boos.TestProcessWrapper.${{ env.packageVersion }}.nupkg --skip-duplicate --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
   
   release:
