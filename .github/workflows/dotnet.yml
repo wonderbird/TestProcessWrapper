@@ -121,9 +121,8 @@ jobs:
   publish-nuget:
     runs-on: ubuntu-latest
     name: Publish NuGet package
-    if: github.ref == 'refs/heads/main'
     
-    needs: publish-reports
+    needs: build-and-test
 
     steps:
       - name: Download NuGet package
@@ -136,5 +135,54 @@ jobs:
         run: cat nuget-package/VERSION.txt >> $GITHUB_ENV
 
       - name: Publish NuGet package
+        if: github.ref == 'refs/heads/main'
         run: dotnet nuget push nuget-package/Boos.TestProcessWrapper.${{ env.packageVersion }}.nupkg --skip-duplicate --api-key ${{ secrets.NUGET_API_ACESS_TOKEN }} --source https://api.nuget.org/v3/index.json
   
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+
+    needs: publish-nuget
+    
+    # Configure GITHUB_TOKEN so that it allows uploading to the release
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+
+      - name: Identify package version
+        run: cat nuget-package/VERSION.txt >> $GITHUB_ENV
+
+      - name: Create release folder
+        run: mkdir release
+
+      - name: Create release ZIP
+        run: |
+          mv -v nuget-package/*.nupkg ./release/  
+          mv -v coverage-reports ./release/
+          mv -v LivingDoc/LivingDoc.html ./release/features.html
+          mv -v release Boos.TestProcessWrapper.${{ env.packageVersion }}
+          zip -r9 Boos.TestProcessWrapper.${{ env.packageVersion }}.zip Boos.TestProcessWrapper.${{ env.packageVersion }}
+
+      # Adopted from https://github.com/svenstaro/upload-release-action
+      - name: Read CHANGELOG.md and use it as a body of new release
+        id: read_release
+        run: |
+          r=$(./build/extract_latest_changelog.sh)          # <--- Read CHANGELOG.md
+          r="${r//'%'/%25}"                                 # Multiline escape sequences for %
+          r="${r//$'\n'/%0A}"                               # Multiline escape sequences for '\n'
+          r="${r//$'\r'/%0D}"                               # Multiline escape sequences for '\r'
+          echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT          # <--- Set environment variable
+
+      - name: Upload applications to release
+        if: github.ref == 'refs/heads/main'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: Boos.TestProcessWrapper.${{ env.packageVersion }}.zip
+          tag: ${{ env.packageVersion }}
+          overwrite: true
+          body: ${{ steps.read_release.outputs.RELEASE_BODY }}

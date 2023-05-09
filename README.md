@@ -46,8 +46,6 @@ If you use `coverlet` with two or more instances of the same application, `cover
 
 ## Development and Support Standard
 
-This project is incomplete and not production ready.
-
 I am developing during my spare time and use this project for learning purposes. Please assume that I will need some
 days to answer your questions. Please keep this in mind when using this project in a production environment.
 
@@ -63,7 +61,7 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 To compile, test and run this project the latest [.NET SDK](https://dotnet.microsoft.com/download) is required on
 your machine. For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus).
 This requires [Python](https://www.python.org/). If you'd like to contribute, then please use the
-[dotnet format](https://github.com/dotnet/format#how-to-install) command as described below.
+[dotnet csharpier .](https://csharpier.com/) command as described below.
 
 To use the `TestProcessWrapper` library and to run the unit tests you need the following tools installed:
 
@@ -103,7 +101,8 @@ rm -r TestProcessWrapper.Acceptance.Tests/TestResults && \
 open TestProcessWrapper.Acceptance.Tests/TestResults/report/index.html
 ```
 
-The script `build.sh` builds the NuGet package like the build pipeline does it. This can be helpful when debugging issues popping up in the build pipeline.
+The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
+when debugging issues popping up in the build pipeline.
 
 #### Create Feature Documentation (LivingDoc)
 
@@ -130,66 +129,78 @@ open TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
 
 #### Before Creating a Pull Request ...
 
+##### Fix Static Code Analysis Warnings
+
 ... fix static code analysis warnings reported by [SonarLint](https://www.sonarsource.com/products/sonarlint/)
 
-... apply code formatting rules
+##### Apply Code Formatting Rules
 
 ```shell
+# Install https://csharpier.io globally, once
+dotnet tool install -g csharpier
+
+# Format code
 dotnet csharpier .
 ```
 
-... and check code metrics using [metrix++](https://github.com/metrixplusplus/metrixplusplus)
+##### Check Code Metrics
 
-```shell
-# Collect metrics
-metrix++ collect --std.code.complexity.cyclomatic --std.code.lines.code --std.code.todo.comments --std.code.maintindex.simple -- .
+... check code metrics using [metrix++](https://github.com/metrixplusplus/metrixplusplus)
 
-# Get an overview
-metrix++ view --db-file=./metrixpp.db
+- Configure the location of the cloned metrix++ scripts
+  ```shell
+  export METRIXPP=/path/to/metrixplusplus
+  ```
 
-# Apply thresholds
-metrix++ limit --db-file=./metrixpp.db --max-limit=std.code.complexity:cyclomatic:5 --max-limit=std.code.lines:code:25:function --max-limit=std.code.todo:comments:0 --max-limit=std.code.mi:simple:1
-```
+- Collect metrics
+  ```shell
+  python "$METRIXPP/metrix++.py" collect --std.code.complexity.cyclomatic --std.code.lines.code --std.code.todo.comments --std.code.maintindex.simple -- .
+  ```
+
+- Get an overview
+  ```shell
+  python "$METRIXPP/metrix++.py" view --db-file=./metrixpp.db
+  ```
+
+- Apply thresholds
+  ```shell
+  python "$METRIXPP/metrix++.py" limit --db-file=./metrixpp.db --max-limit=std.code.complexity:cyclomatic:5 --max-limit=std.code.lines:code:25:function --max-limit=std.code.todo:comments:0 --max-limit=std.code.mi:simple:1
+  ```
 
 At the time of writing, I want to stay below the following thresholds:
 
-```shell
+```text
 --max-limit=std.code.complexity:cyclomatic:5
 --max-limit=std.code.lines:code:25:function
 --max-limit=std.code.todo:comments:0
 --max-limit=std.code.mi:simple:1
 ```
 
-I allow generated files named `*.feature.cs` to exceed these thresholds.
-
 Finally, remove all code duplication. The next section describes how to detect code duplication.
 
-### Identify Code Duplication
+##### Remove Code Duplication Where Appropriate
 
-The `tools\dupfinder.bat` or `tools/dupfinder.sh` file calls
-the [JetBrains dupfinder](https://www.jetbrains.com/help/resharper/dupFinder.html) tool and creates an HTML report of
-duplicated code blocks in the solution directory.
+To detect duplicates I use the [CPD Copy Paste Detector](https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html)
+tool from the [PMD Source Code Analyzer Project](https://docs.pmd-code.org/latest/index.html).
 
-In order to use the `dupfinder` you need to globally install
-the [JetBrains ReSharper Command Line Tools](https://www.jetbrains.com/help/resharper/ReSharper_Command_Line_Tools.html)
-On Unix like operating systems you also need [xsltproc](http://xmlsoft.org/XSLT/xsltproc2.html), which is pre-installed
-on macOS.
-
-From the folder containing the `.sln` file run
+If you have installed PMD by download & unzip, replace `pmd` by `./run.sh`.
+The [homebrew pmd formula](https://formulae.brew.sh/formula/pmd) makes the `pmd` command globally available.
 
 ```sh
-tools\dupfinder.bat
+# Remove temporary and generated files
+# 1. dry run
+git clean -ndx
 ```
 
-or
-
-```sh
-tools/dupfinder.sh
+```shell
+# 2. Remove the files shown by the dry run
+git clean -fdx
 ```
 
-respectively.
-
-The report will be created as `dupfinder-report.html` in the current directory.
+```shell
+# Identify duplicated code in files to push to GitHub
+pmd cpd --minimum-tokens 50 --language cs --dir .
+```
 
 ## References
 
@@ -211,6 +222,7 @@ The report will be created as `dupfinder-report.html` in the current directory.
 ### Code Style
 
 * Bela VanderVoort: [CSharpier](https://csharpier.com/) - an opinionated code formatter
+* Microsoft: [dotnet format](https://github.com/dotnet/format) - dotnet code formatter
 
 ### Code Analysis
 

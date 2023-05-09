@@ -24,7 +24,8 @@ public partial class ValidateCoverageStepDefinitions
 
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public ValidateCoverageStepDefinitions(ITestOutputHelper testOutputHelper) => _testOutputHelper = testOutputHelper;
+    public ValidateCoverageStepDefinitions(ITestOutputHelper testOutputHelper) =>
+        _testOutputHelper = testOutputHelper;
 
     [Then(@"the reported total line coverage (is greater|equals) (.*)%")]
     public void ThenTheReportedTotalLineCoverageIsGreaterEquals(
@@ -39,7 +40,9 @@ public partial class ValidateCoverageStepDefinitions
         );
         foreach (var client in clientsWithCoverlet)
         {
-            var actualLineCoveragePercent = GetLineCoverageFromCoverletOutput(client.RecordedOutput);
+            var actualLineCoveragePercent = GetLineCoverageFromCoverletOutput(
+                client.RecordedOutput
+            );
             Assert.True(
                 comparison(actualLineCoveragePercent, expectedLineCoveragePercent),
                 $"Mismatch: line coverage of {actualLineCoveragePercent}% {comparisonString} {expectedLineCoveragePercent}%"
@@ -58,6 +61,7 @@ public partial class ValidateCoverageStepDefinitions
         var comparison = comparisonMap[comparisonString];
         return comparison;
     }
+
     private double GetLineCoverageFromCoverletOutput(string coverletOutput)
     {
         var lineCoverageMatch = LineCoverageRegex().Match(coverletOutput);

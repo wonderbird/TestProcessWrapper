@@ -48,7 +48,10 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
 
         [Given(@"(.*) long lived application is running with coverlet '(enabled|disabled)'")]
         [Given(@"(.*) long lived applications are running with coverlet '(enabled|disabled)'")]
-        public void GivenLongLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isCoverletEnabled)
+        public void GivenLongLivedApplicationsAreRunningWithCoverlet(
+            int numberOfClients,
+            bool isCoverletEnabled
+        )
         {
             const string appProjectName = "TestProcessWrapper.LongLived.Application";
 
@@ -59,14 +62,21 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
 
         [Given(@"(.*) short lived application is running with coverlet '(enabled|disabled)'")]
         [Given(@"(.*) short lived applications are running with coverlet '(enabled|disabled)'")]
-        public void GivenShortLivedApplicationsAreRunningWithCoverlet(int numberOfClients, bool isCoverletEnabled)
+        public void GivenShortLivedApplicationsAreRunningWithCoverlet(
+            int numberOfClients,
+            bool isCoverletEnabled
+        )
         {
             const string appProjectName = "TestProcessWrapper.ShortLived.Application";
 
             CreateAndStartAllApplications(numberOfClients, isCoverletEnabled, appProjectName);
         }
 
-        private void CreateAndStartAllApplications(int numberOfClients, bool isCoverletEnabled, string appProjectName)
+        private void CreateAndStartAllApplications(
+            int numberOfClients,
+            bool isCoverletEnabled,
+            string appProjectName
+        )
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {

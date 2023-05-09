@@ -12,7 +12,11 @@ public static class ValidateNoExceptionsStepDefinitions
     {
         foreach (var client in MultiProcessControlStepDefinitions.Clients)
         {
-            Assert.DoesNotContain("exception", client.RecordedOutput, StringComparison.CurrentCultureIgnoreCase);
+            Assert.DoesNotContain(
+                "exception",
+                client.RecordedOutput,
+                StringComparison.CurrentCultureIgnoreCase
+            );
         }
     }
 }
