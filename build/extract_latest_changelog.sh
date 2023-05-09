@@ -18,4 +18,4 @@ EOF
 # 1. extract only the intro + latest release from CHANGELOG.md (= the awk program)
 # 2. remove empty lines from end of output (= the sed command)
 #    (see https://stackoverflow.com/questions/7359527/removing-trailing-starting-newlines-with-sed-awk-tr-and-friends)
-awk "$extract_intro_and_latest_release" ../CHANGELOG.md | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba'
+awk "$extract_intro_and_latest_release" ./CHANGELOG.md | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba'
