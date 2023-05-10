@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using Xunit.Abstractions;
@@ -72,6 +73,13 @@ public sealed class TestProcessWrapper : IDisposable
     public void AddEnvironmentVariable(string name, string value)
     {
         _environmentVariables[name] = value;
+    }
+
+    // TODO: Implement TestProcessWrapper.AddCommandLineArgument and remove static analysis suppression
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+    [SuppressMessage("Performance", "CA1822:Member als statisch markieren")]
+    public void AddCommandLineArgument(string commandLineArgument)
+    {
     }
 
     public void AddReadinessCheck(ReadinessCheck readinessCheck)
