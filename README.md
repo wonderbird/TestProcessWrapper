@@ -10,6 +10,23 @@
 [![CodeScene Code Health](https://codescene.io/projects/12257/status-badges/code-health)](https://codescene.io/projects/12257/jobs/latest-successful/results)
 [![CodeScene System Mastery](https://codescene.io/projects/12257/status-badges/system-mastery)](https://codescene.io/projects/12257/jobs/latest-successful/results)
 
+<!-- doctoc --github --maxlevel 2 README.md -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Overview](#overview)
+- [Attention](#attention)
+- [Development and Support Standard](#development-and-support-standard)
+- [Thanks](#thanks)
+- [Development](#development)
+- [Make a Release](#make-a-release)
+- [References](#references)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Overview
+
 Launch and control `dotnet` processes wrapped into the [coverlet](https://github.com/coverlet-coverage/coverlet) code
 coverage analyzer.
 
@@ -201,6 +218,18 @@ git clean -fdx
 # Identify duplicated code in files to push to GitHub
 pmd cpd --minimum-tokens 50 --language cs --dir .
 ```
+
+## Make a Release
+
+In order to create a release:
+
+1. Create a branch to prepare the release
+2. Update the [CHANGELOG.md](./CHANGELOG.md). The last number in the version is the build number. Assume that it will be
+   the current build number + 2, because there will be one build to validate the pull request
+3. Create a pull request and wait for the validations to complete
+4. If there are validation errors, then fix them and update the release build number in the
+   [CHANGELOG.md](./CHANGELOG.md)
+5. The release will be published automatically from the main branch after the PR has been merged
 
 ## References
 
