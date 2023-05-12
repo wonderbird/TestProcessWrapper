@@ -16,6 +16,8 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly Dictionary<string, string> _environmentVariables = new();
 
+    private readonly Dictionary<string, string> _arguments = new();
+
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
     private readonly IProcessFactory _processFactory = new DotnetProcessFactory();
@@ -75,11 +77,9 @@ public sealed class TestProcessWrapper : IDisposable
         _environmentVariables[name] = value;
     }
 
-    // TODO: Implement TestProcessWrapper.AddCommandLineArgument and remove static analysis suppression
-    // ReSharper disable once MemberCanBeMadeStatic.Global
-    [SuppressMessage("Performance", "CA1822:Member als statisch markieren")]
     public void AddCommandLineArgument(string argument, string value)
     {
+        _arguments[argument] = value;
     }
 
     public void AddReadinessCheck(ReadinessCheck readinessCheck)
@@ -94,6 +94,7 @@ public sealed class TestProcessWrapper : IDisposable
     public void Start()
     {
         _process = _processFactory.Create(_appProjectName, IsCoverletEnabled);
+        AddCommandLineArgumentsToProcess();
         AddEnvironmentVariablesToProcess();
 
         TestOutputHelper?.WriteLine(
@@ -105,6 +106,14 @@ public sealed class TestProcessWrapper : IDisposable
         _processOutputRecorder.StartRecording(_process);
 
         WaitForProcessIdAndReadinessChecks();
+    }
+
+    private void AddCommandLineArgumentsToProcess()
+    {
+        foreach (var (argument, value) in _arguments)
+        {
+            _process.AddCommandLineArgument(argument, value);
+        }
     }
 
     private void AddEnvironmentVariablesToProcess()

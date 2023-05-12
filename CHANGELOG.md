@@ -11,7 +11,7 @@ Every release is published as nuget package [Boos.TestProcessWrapper](https://ww
 
 ### Added
 
-- A single boolean option can be passed to the application under test as command line argument
+- A "--key=value" pair can be passed to the application under test as command line argument
 
 ## [5.0.300-alpha] - 2023-05-10
 

@@ -16,6 +16,9 @@ internal sealed class DotnetProcess : IProcess
         set => _process.StartInfo = value;
     }
 
+    public void AddCommandLineArgument(string argument, string value) =>
+        _process.StartInfo.Arguments += $" {argument}={value}";
+
     public void AddEnvironmentVariable(string name, string value) =>
         _process.StartInfo.EnvironmentVariables.Add(name, value);
 
