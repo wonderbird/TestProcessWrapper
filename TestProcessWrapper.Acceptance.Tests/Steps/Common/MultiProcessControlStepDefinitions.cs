@@ -25,27 +25,6 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             GC.SuppressFinalize(this);
         }
 
-        [When(@"all applications are shut down gracefully")]
-        public static void WhenAllApplicationsAreShutDownGracefully()
-        {
-            ShutdownProcessesGracefully();
-        }
-
-        [When(@"all applications had enough time to finish")]
-        public static void WhenAllApplicationsHadEnoughTimeToFinish()
-        {
-            foreach (var client in Clients)
-            {
-                client.WaitForProcessExit();
-            }
-        }
-
-        [Then]
-        public static void ThenAllApplicationsShutDown()
-        {
-            Assert.True(Clients.All(c => c.HasExited));
-        }
-
         [Given(@"(.*) long lived application is running with coverlet '(enabled|disabled)'")]
         [Given(@"(.*) long lived applications are running with coverlet '(enabled|disabled)'")]
         public void GivenLongLivedApplicationsAreRunningWithCoverlet(
@@ -60,7 +39,6 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             Assert.True(Clients.All(c => c.IsRunning));
         }
 
-        // TODO: Sort the Given, When, Then steps in MultiProcessControlStepDefinitions
         [Given(@"(.*) short lived application is running with coverlet '(enabled|disabled)'")]
         [Given(@"(.*) short lived applications are running with coverlet '(enabled|disabled)'")]
         public void GivenShortLivedApplicationsAreRunningWithCoverlet(
@@ -71,6 +49,27 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             const string appProjectName = "TestProcessWrapper.ShortLived.Application";
 
             CreateAndStartAllApplications(numberOfClients, isCoverletEnabled, appProjectName);
+        }
+
+        [When(@"all applications had enough time to finish")]
+        public static void WhenAllApplicationsHadEnoughTimeToFinish()
+        {
+            foreach (var client in Clients)
+            {
+                client.WaitForProcessExit();
+            }
+        }
+
+        [When(@"all applications are shut down gracefully")]
+        public static void WhenAllApplicationsAreShutDownGracefully()
+        {
+            ShutdownProcessesGracefully();
+        }
+
+        [Then]
+        public static void ThenAllApplicationsShutDown()
+        {
+            Assert.True(Clients.All(c => c.HasExited));
         }
 
         private void CreateAndStartAllApplications(
