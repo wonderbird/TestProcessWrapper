@@ -16,8 +16,12 @@ namespace TestProcessWrapper.LongLived.Application
         public SimpleService(ILogger<SimpleService> logger, IConfiguration configuration)
         {
             Logger = logger;
-            Logger.CommandLineArgument("--help", configuration.GetValue<bool>("help").ToString().ToLowerInvariant());
+
+            const string testArgumentName = "test-argument";
+            var testArgumentValue = configuration.GetValue<string>(testArgumentName);
+            Logger.CommandLineArgument($"--{testArgumentName}", testArgumentValue);
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try

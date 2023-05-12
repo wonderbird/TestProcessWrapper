@@ -21,9 +21,9 @@ public class StepDefinitions
         });
     }
 
-    [Then(@"the application has received the command line argument")]
-    public void ThenTheApplicationHasReceivedTheCommandLineArgument()
+    [Then(@"the application has received the command line argument '(.*)' with value '(.*)'")]
+    public void ThenTheApplicationHasReceivedTheCommandLineArgumentWithValue(string argument, string value)
     {
-        Assert.Contains("Received the command line argument '--help=true'", _outputWhenReady);
+        Assert.Contains($"Received the command line argument '{argument}={value}'", _outputWhenReady);
     }
 }
