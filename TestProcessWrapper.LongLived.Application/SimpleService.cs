@@ -26,7 +26,7 @@ namespace TestProcessWrapper.LongLived.Application
 
                 while (true)
                 {
-                    await ExecuteSensorLoopBody(stoppingToken);
+                    await PerformSampleWorkerTask(stoppingToken);
                 }
             }
             catch (OperationCanceledException)
@@ -51,7 +51,7 @@ namespace TestProcessWrapper.LongLived.Application
             stoppingToken.ThrowIfCancellationRequested();
         }
 
-        private async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
+        private async Task PerformSampleWorkerTask(CancellationToken stoppingToken)
         {
             await Task.Delay(DelayAfterEachLoop, stoppingToken);
         }
