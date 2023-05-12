@@ -17,7 +17,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         public MultiProcessControlStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
-        public static List<global::TestProcessWrapper.TestProcessWrapper> Clients { get; } = new();
+        public static List<TestProcessWrapper> Clients { get; } = new();
 
         public void Dispose()
         {
@@ -60,6 +60,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             Assert.True(Clients.All(c => c.IsRunning));
         }
 
+        // TODO: Sort the Given, When, Then steps in MultiProcessControlStepDefinitions
         [Given(@"(.*) short lived application is running with coverlet '(enabled|disabled)'")]
         [Given(@"(.*) short lived applications are running with coverlet '(enabled|disabled)'")]
         public void GivenShortLivedApplicationsAreRunningWithCoverlet(
@@ -80,7 +81,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new global::TestProcessWrapper.TestProcessWrapper(
+                var client = new TestProcessWrapper(
                     appProjectName,
                     isCoverletEnabled
                 );
