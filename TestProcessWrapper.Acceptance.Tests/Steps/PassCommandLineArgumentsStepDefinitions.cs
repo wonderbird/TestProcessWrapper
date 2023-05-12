@@ -9,11 +9,11 @@ public class StepDefinitions
 {
     private string _outputWhenReady;
 
-    [Given(@"the command line argument '(.*)' has been configured")]
-    public void GivenTheCommandLineArgumentHasBeenConfigured(string commandLineArgument)
+    [Given(@"the command line argument '(.*)=(.*)' has been configured")]
+    public void GivenTheCommandLineArgumentHasBeenConfigured(string argument, string value)
     {
         var client = SingleProcessControlStepDefinitions.Client;
-        client.AddCommandLineArgument(commandLineArgument);
+        client.AddCommandLineArgument(argument, value);
         client.AddReadinessCheck(output =>
         {
             _outputWhenReady = output;
@@ -24,6 +24,6 @@ public class StepDefinitions
     [Then(@"the application has received the command line argument")]
     public void ThenTheApplicationHasReceivedTheCommandLineArgument()
     {
-        Assert.Contains("Received the command line argument '--help'", _outputWhenReady);
+        Assert.Contains("Received the command line argument '--help=true'", _outputWhenReady);
     }
 }

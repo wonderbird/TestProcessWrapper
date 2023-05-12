@@ -10,7 +10,8 @@ report
 # Code Duplication - dupfinder
 dupfinder-report.*
 
-#SpecFlow Stuff
+# SpecFlow Stuff
+LivingDoc.html
 *.feature.cs
 SpecFlow/
 

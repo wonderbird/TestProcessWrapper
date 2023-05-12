@@ -9,10 +9,10 @@ namespace TestProcessWrapper.LongLived.Application
         public static IHostBuilder Create<
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
                 THostedService
-        >()
+        >(string[] args)
             where THostedService : class, IHostedService
         {
-            return Host.CreateDefaultBuilder()
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureServices(
                     (_, services) =>
                         services

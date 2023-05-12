@@ -72,4 +72,14 @@ internal static class LoggerExtensions
 
     public static void ConfiguredEnvironmentVariable(this ILogger logger, string value) =>
         ConfiguredEnvironmentVariableAction(logger, value, null);
+
+    private static readonly Action<ILogger, string, string, Exception> CommandLineArgumentAction =
+        LoggerMessage.Define<string, string>(
+            LogLevel.Information,
+            new EventId(8, nameof(CommandLineArgument)),
+            "Received the command line argument '{Argument}={Value}'"
+        );
+
+    public static void CommandLineArgument(this ILogger logger, string argument, string value) =>
+        CommandLineArgumentAction(logger, argument, value, null);
 }

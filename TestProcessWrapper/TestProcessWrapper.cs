@@ -78,7 +78,7 @@ public sealed class TestProcessWrapper : IDisposable
     // TODO: Implement TestProcessWrapper.AddCommandLineArgument and remove static analysis suppression
     // ReSharper disable once MemberCanBeMadeStatic.Global
     [SuppressMessage("Performance", "CA1822:Member als statisch markieren")]
-    public void AddCommandLineArgument(string commandLineArgument)
+    public void AddCommandLineArgument(string argument, string value)
     {
     }
 
