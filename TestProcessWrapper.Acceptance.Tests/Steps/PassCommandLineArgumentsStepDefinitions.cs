@@ -15,11 +15,7 @@ public class StepDefinitions
     {
         var client = SingleProcessControlStepDefinitions.Client;
         client.AddCommandLineArgument(argument, value);
-        client.AddReadinessCheck(output =>
-        {
-            _outputWhenReady = output;
-            return true;
-        });
+        client.AddReadinessCheck(CaptureOutput);
     }
 
     [Given($"the command line argument '({AllowedCharactersForArgument})' has been configured")]
@@ -27,11 +23,7 @@ public class StepDefinitions
     {
         var client = SingleProcessControlStepDefinitions.Client;
         client.AddCommandLineArgument(argument);
-        client.AddReadinessCheck(output =>
-        {
-            _outputWhenReady = output;
-            return true;
-        });
+        client.AddReadinessCheck(CaptureOutput);
     }
 
     [Then($"the application has received the command line argument '({AllowedCharactersForArgument})' with value '({AllowedCharactersForArgument})'")]
@@ -44,5 +36,11 @@ public class StepDefinitions
     public void ThenTheApplicationHasReceivedTheCommandLineArgument(string argument)
     {
         Assert.Contains($"Received the command line argument '{argument}'", _outputWhenReady);
+    }
+
+    private bool CaptureOutput(string output)
+    {
+        _outputWhenReady = output;
+        return true;
     }
 }
