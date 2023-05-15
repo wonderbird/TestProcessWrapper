@@ -5,11 +5,11 @@ namespace TestProcessWrapper.LongLived.Application
 {
     public static class Program
     {
-        public static void Main()
+        public static void Main(string[] args)
         {
             try
             {
-                SimpleHostBuilder.Create<SimpleService>().Build().Run();
+                SimpleHostBuilder.Create<SimpleService>(args).Build().Run();
             }
             catch (Exception e)
             {

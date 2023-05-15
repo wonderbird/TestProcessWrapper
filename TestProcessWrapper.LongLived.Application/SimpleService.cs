@@ -1,18 +1,26 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace TestProcessWrapper.LongLived.Application
 {
-    public class SimpleService : BackgroundService
+    public sealed class SimpleService : BackgroundService
     {
-        public SimpleService(ILogger<SimpleService> logger) => Logger = logger;
-
         private ILogger<SimpleService> Logger { get; }
 
         private TimeSpan DelayAfterEachLoop { get; } = TimeSpan.FromMilliseconds(50.0);
+
+        public SimpleService(ILogger<SimpleService> logger, IConfiguration configuration)
+        {
+            Logger = logger;
+
+            const string testArgumentName = "test-argument";
+            var testArgumentValue = configuration.GetValue<string>(testArgumentName);
+            Logger.CommandLineArgument($"--{testArgumentName}", testArgumentValue);
+        }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -22,7 +30,7 @@ namespace TestProcessWrapper.LongLived.Application
 
                 while (true)
                 {
-                    await ExecuteSensorLoopBody(stoppingToken);
+                    await PerformSampleWorkerTask(stoppingToken);
                 }
             }
             catch (OperationCanceledException)
@@ -47,7 +55,7 @@ namespace TestProcessWrapper.LongLived.Application
             stoppingToken.ThrowIfCancellationRequested();
         }
 
-        protected virtual async Task ExecuteSensorLoopBody(CancellationToken stoppingToken)
+        private async Task PerformSampleWorkerTask(CancellationToken stoppingToken)
         {
             await Task.Delay(DelayAfterEachLoop, stoppingToken);
         }

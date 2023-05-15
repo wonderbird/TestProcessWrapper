@@ -9,6 +9,8 @@ namespace TestProcessWrapper
 
         ProcessStartInfo StartInfo { get; }
 
+        void AddCommandLineArgument(string argument, string value);
+
         void AddEnvironmentVariable(string name, string value);
 
         void Start();

@@ -5,7 +5,7 @@ Feature: Custom Readiness Check
   I want the startup to be delayed until my custom readiness check is ready.
   
   Scenario: Custom readiness check
-    Given An application was wrapped into TestProcessWrapper
+    Given A long lived application was wrapped into TestProcessWrapper
     And a custom readiness check was configured 
     When the application is ready
     Then the custom readiness check was executed successfully

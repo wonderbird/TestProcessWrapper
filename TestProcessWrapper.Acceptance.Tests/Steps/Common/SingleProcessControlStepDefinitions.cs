@@ -43,10 +43,17 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             _isDisposed = true;
         }
 
-        [Given(@"An application was wrapped into TestProcessWrapper")]
-        public void GivenAnApplicationWasWrappedIntoTestProcessWrapper()
+        [Given(@"A long lived application was wrapped into TestProcessWrapper")]
+        public void GivenALongLivedApplicationWasWrappedIntoTestProcessWrapper()
         {
             Client = new TestProcessWrapper("TestProcessWrapper.LongLived.Application", false);
+            Client.TestOutputHelper = _testOutputHelper;
+        }
+
+        [Given(@"A short lived application was wrapped into TestProcessWrapper")]
+        public void GivenAShortLivedApplicationWasWrappedIntoTestProcessWrapper()
+        {
+            Client = new TestProcessWrapper("TestProcessWrapper.ShortLived.Application", false);
             Client.TestOutputHelper = _testOutputHelper;
         }
 

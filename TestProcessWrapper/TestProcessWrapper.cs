@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using Xunit.Abstractions;
@@ -14,6 +15,8 @@ public sealed class TestProcessWrapper : IDisposable
     private readonly string _appProjectName;
 
     private readonly Dictionary<string, string> _environmentVariables = new();
+
+    private readonly Dictionary<string, string> _arguments = new();
 
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
@@ -74,6 +77,11 @@ public sealed class TestProcessWrapper : IDisposable
         _environmentVariables[name] = value;
     }
 
+    public void AddCommandLineArgument(string argument, string value = "")
+    {
+        _arguments[argument] = value;
+    }
+
     public void AddReadinessCheck(ReadinessCheck readinessCheck)
     {
         _readinessChecks.Add(readinessCheck);
@@ -86,6 +94,7 @@ public sealed class TestProcessWrapper : IDisposable
     public void Start()
     {
         _process = _processFactory.Create(_appProjectName, IsCoverletEnabled);
+        AddCommandLineArgumentsToProcess();
         AddEnvironmentVariablesToProcess();
 
         TestOutputHelper?.WriteLine(
@@ -97,6 +106,14 @@ public sealed class TestProcessWrapper : IDisposable
         _processOutputRecorder.StartRecording(_process);
 
         WaitForProcessIdAndReadinessChecks();
+    }
+
+    private void AddCommandLineArgumentsToProcess()
+    {
+        foreach (var (argument, value) in _arguments)
+        {
+            _process.AddCommandLineArgument(argument, value);
+        }
     }
 
     private void AddEnvironmentVariablesToProcess()

@@ -17,33 +17,12 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         public MultiProcessControlStepDefinitions(ITestOutputHelper testOutputHelper) =>
             _testOutputHelper = testOutputHelper;
 
-        public static List<global::TestProcessWrapper.TestProcessWrapper> Clients { get; } = new();
+        public static List<TestProcessWrapper> Clients { get; } = new();
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        [When(@"all applications are shut down gracefully")]
-        public static void WhenAllApplicationsAreShutDownGracefully()
-        {
-            ShutdownProcessesGracefully();
-        }
-
-        [When(@"all applications had enough time to finish")]
-        public static void WhenAllApplicationsHadEnoughTimeToFinish()
-        {
-            foreach (var client in Clients)
-            {
-                client.WaitForProcessExit();
-            }
-        }
-
-        [Then]
-        public static void ThenAllApplicationsShutDown()
-        {
-            Assert.True(Clients.All(c => c.HasExited));
         }
 
         [Given(@"(.*) long lived application is running with coverlet '(enabled|disabled)'")]
@@ -72,6 +51,27 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             CreateAndStartAllApplications(numberOfClients, isCoverletEnabled, appProjectName);
         }
 
+        [When(@"all applications had enough time to finish")]
+        public static void WhenAllApplicationsHadEnoughTimeToFinish()
+        {
+            foreach (var client in Clients)
+            {
+                client.WaitForProcessExit();
+            }
+        }
+
+        [When(@"all applications are shut down gracefully")]
+        public static void WhenAllApplicationsAreShutDownGracefully()
+        {
+            ShutdownProcessesGracefully();
+        }
+
+        [Then]
+        public static void ThenAllApplicationsShutDown()
+        {
+            Assert.True(Clients.All(c => c.HasExited));
+        }
+
         private void CreateAndStartAllApplications(
             int numberOfClients,
             bool isCoverletEnabled,
@@ -80,10 +80,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new global::TestProcessWrapper.TestProcessWrapper(
-                    appProjectName,
-                    isCoverletEnabled
-                );
+                var client = new TestProcessWrapper(appProjectName, isCoverletEnabled);
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 

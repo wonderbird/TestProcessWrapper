@@ -1,7 +1,8 @@
+@ShortLivedApplication
 Feature: Short Lived Application
 	In order to test command line interface applications (CLI)
   As a test developer
-  I want to test an applications terminating on its own after its task is complete.
+  I want to test an application terminating on its own after its task is complete.
 
 Scenario: Application shuts down after printing its process id
 	Given 1 short lived application is running with coverlet 'enabled'
