@@ -50,6 +50,13 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             Client.TestOutputHelper = _testOutputHelper;
         }
 
+        [Given(@"A short lived application was wrapped into TestProcessWrapper")]
+        public void GivenAShortLivedApplicationWasWrappedIntoTestProcessWrapper()
+        {
+            Client = new TestProcessWrapper("TestProcessWrapper.ShortLived.Application", false);
+            Client.TestOutputHelper = _testOutputHelper;
+        }
+
         [When]
         public static void WhenTheApplicationIsReady()
         {
