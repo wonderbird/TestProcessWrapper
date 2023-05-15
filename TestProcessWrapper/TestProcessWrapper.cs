@@ -77,12 +77,7 @@ public sealed class TestProcessWrapper : IDisposable
         _environmentVariables[name] = value;
     }
 
-    public void AddCommandLineArgument(string argument)
-    {
-        _arguments.Add(argument, "");
-    }
-
-    public void AddCommandLineArgument(string argument, string value)
+    public void AddCommandLineArgument(string argument, string value = "")
     {
         _arguments[argument] = value;
     }
