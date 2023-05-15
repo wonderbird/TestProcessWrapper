@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
-## [Unreleased]
+## [5.0.304-alpha] - 2023-05-15
 
 ### Added
 
+- A boolean option "--option" can be passed to the application under test as command line argument
 - A "--key=value" pair can be passed to the application under test as command line argument
 
 ## [5.0.300-alpha] - 2023-05-10
