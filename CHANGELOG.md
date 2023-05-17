@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
-## [6.0.314-alpha] - 2023-05-17
+## [6.0.317-alpha] - 2023-05-17
 
 ### Added (Breaking Change)
 
 - The build configuration of the process under test can be selected (Debug or Release). This is a **breaking change**, because the `TestProcessWrapper` constructor forces you to specify a `BuildConfiguration`. This shall ensure that the selected build configuration matches your CI/CD pipeline configuration.
+
+### Changed
+
+- Upgrade dependencies: Microsoft.NET.Test.Sdk 17.6.0
 
 ## [5.0.306-alpha] - 2023-05-15
 
