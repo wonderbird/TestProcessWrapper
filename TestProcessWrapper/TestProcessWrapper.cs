@@ -24,6 +24,8 @@ public sealed class TestProcessWrapper : IDisposable
 
     private IProcess _process;
 
+    private BuildConfiguration _buildConfiguration = BuildConfiguration.Release;
+
     /// <summary>
     /// Id of the process under test.
     /// </summary>
@@ -87,13 +89,18 @@ public sealed class TestProcessWrapper : IDisposable
         _readinessChecks.Add(readinessCheck);
     }
 
+    public void SelectBuildConfiguration(BuildConfiguration buildConfiguration)
+    {
+        _buildConfiguration = buildConfiguration;
+    }
+
     #endregion
 
     #region Start wrapped process
 
     public void Start()
     {
-        _process = _processFactory.Create(_appProjectName, IsCoverletEnabled);
+        _process = _processFactory.Create(_appProjectName, _buildConfiguration, IsCoverletEnabled);
         AddCommandLineArgumentsToProcess();
         AddEnvironmentVariablesToProcess();
 

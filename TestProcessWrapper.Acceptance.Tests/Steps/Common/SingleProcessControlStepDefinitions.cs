@@ -62,7 +62,10 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         public static void WhenTheApplicationIsReady()
         {
             Client.Start();
-            Assert.True(Client.IsRunning, "test process must be in 'running' state right after starting it");
+            Assert.True(
+                Client.IsRunning,
+                "test process must be in 'running' state right after starting it"
+            );
         }
 
         [AfterScenario]
