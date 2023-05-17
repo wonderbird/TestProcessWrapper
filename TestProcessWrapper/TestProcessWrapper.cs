@@ -24,6 +24,8 @@ public sealed class TestProcessWrapper : IDisposable
 
     private IProcess _process;
 
+    private BuildConfiguration _buildConfiguration;
+
     /// <summary>
     /// Id of the process under test.
     /// </summary>
@@ -56,9 +58,14 @@ public sealed class TestProcessWrapper : IDisposable
     /// </summary>
     public ITestOutputHelper TestOutputHelper { get; set; }
 
-    public TestProcessWrapper(string appProjectName, bool isCoverletEnabled)
+    public TestProcessWrapper(
+        string appProjectName,
+        bool isCoverletEnabled,
+        BuildConfiguration buildConfiguration
+    )
     {
         _appProjectName = appProjectName;
+        _buildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
     }
 
@@ -66,7 +73,7 @@ public sealed class TestProcessWrapper : IDisposable
         IProcessFactory processFactory,
         IProcessOutputRecorderFactory outputRecorderFactory
     )
-        : this("fakeProjectName", false)
+        : this("fakeProjectName", false, BuildConfiguration.Debug)
     {
         _processFactory = processFactory;
         _processOutputRecorderFactory = outputRecorderFactory;
@@ -87,13 +94,18 @@ public sealed class TestProcessWrapper : IDisposable
         _readinessChecks.Add(readinessCheck);
     }
 
+    public void SelectBuildConfiguration(BuildConfiguration buildConfiguration)
+    {
+        _buildConfiguration = buildConfiguration;
+    }
+
     #endregion
 
     #region Start wrapped process
 
     public void Start()
     {
-        _process = _processFactory.Create(_appProjectName, IsCoverletEnabled);
+        _process = _processFactory.Create(_appProjectName, _buildConfiguration, IsCoverletEnabled);
         AddCommandLineArgumentsToProcess();
         AddEnvironmentVariablesToProcess();
 

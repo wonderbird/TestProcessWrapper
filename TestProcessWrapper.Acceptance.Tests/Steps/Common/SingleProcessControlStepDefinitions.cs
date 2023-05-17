@@ -9,6 +9,12 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private bool _isDisposed;
+        private const BuildConfiguration DefaultBuildConfiguration =
+#if DEBUG
+        BuildConfiguration.Debug;
+#else
+        BuildConfiguration.Release;
+#endif
 
         public SingleProcessControlStepDefinitions(
             ScenarioContext scenarioContext,
@@ -46,14 +52,22 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         [Given(@"A long lived application was wrapped into TestProcessWrapper")]
         public void GivenALongLivedApplicationWasWrappedIntoTestProcessWrapper()
         {
-            Client = new TestProcessWrapper("TestProcessWrapper.LongLived.Application", false);
+            Client = new TestProcessWrapper(
+                "TestProcessWrapper.LongLived.Application",
+                false,
+                DefaultBuildConfiguration
+            );
             Client.TestOutputHelper = _testOutputHelper;
         }
 
         [Given(@"A short lived application was wrapped into TestProcessWrapper")]
         public void GivenAShortLivedApplicationWasWrappedIntoTestProcessWrapper()
         {
-            Client = new TestProcessWrapper("TestProcessWrapper.ShortLived.Application", false);
+            Client = new TestProcessWrapper(
+                "TestProcessWrapper.ShortLived.Application",
+                false,
+                DefaultBuildConfiguration
+            );
             Client.TestOutputHelper = _testOutputHelper;
         }
 

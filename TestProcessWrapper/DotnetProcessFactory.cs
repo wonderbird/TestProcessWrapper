@@ -7,22 +7,17 @@ namespace TestProcessWrapper
     {
         private bool _isCoverletEnabled;
         private TestProjectInfo _testProjectInfo;
+        private BuildConfiguration _buildConfiguration;
 
-        private static string BinFolder
-        {
-            get
-            {
-#if DEBUG
-                var binFolder = Path.Combine("bin", "Debug", "net7.0");
-#else
-                var binFolder = Path.Combine("bin", "Release", "net7.0");
-#endif
-                return binFolder;
-            }
-        }
+        private string BinFolder => Path.Combine("bin", _buildConfiguration.ToString(), "net7.0");
 
-        public IProcess Create(string appProjectName, bool isCoverletEnabled)
+        public IProcess Create(
+            string appProjectName,
+            BuildConfiguration buildConfiguration,
+            bool isCoverletEnabled
+        )
         {
+            _buildConfiguration = buildConfiguration;
             _testProjectInfo = new TestProjectInfo(appProjectName);
             _isCoverletEnabled = isCoverletEnabled;
 

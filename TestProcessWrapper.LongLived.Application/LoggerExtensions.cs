@@ -82,4 +82,19 @@ internal static class LoggerExtensions
 
     public static void CommandLineArgument(this ILogger logger, string argument, string value) =>
         CommandLineArgumentAction(logger, argument, value, null);
+
+    private static readonly Action<ILogger, Exception> BuildConfigurationAction =
+        LoggerMessage.Define(
+            LogLevel.Information,
+            new EventId(9, nameof(BuildConfiguration)),
+            "Build configuration: " +
+#if DEBUG
+            "'Debug'"
+#elif RELEASE
+            "'Release'"
+#endif
+        );
+
+    public static void BuildConfiguration(this ILogger logger) =>
+        BuildConfigurationAction(logger, null);
 }

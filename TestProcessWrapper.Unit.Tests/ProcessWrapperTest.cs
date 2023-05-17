@@ -15,7 +15,14 @@ namespace TestProcessWrapper.Unit.Tests
 
             _processFactory = new Mock<IProcessFactory>();
             _processFactory
-                .Setup(x => x.Create(It.IsAny<string>(), It.IsAny<bool>()))
+                .Setup(
+                    x =>
+                        x.Create(
+                            It.IsAny<string>(),
+                            It.IsAny<BuildConfiguration>(),
+                            It.IsAny<bool>()
+                        )
+                )
                 .Returns(_process.Object);
 
             var processOutputRecorder = new Mock<IProcessOutputRecorder>();
