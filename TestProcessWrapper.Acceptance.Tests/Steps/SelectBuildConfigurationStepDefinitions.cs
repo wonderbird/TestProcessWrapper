@@ -5,11 +5,11 @@ using Xunit;
 namespace TestProcessWrapper.Acceptance.Tests.Steps;
 
 [Binding]
-public sealed class MatchBuildConfigurationStepDefinitions
+public sealed class SelectBuildConfigurationStepDefinitions
 {
     private string _outputWhenReady;
 
-    [Given(@"the build configuration '(.*)' has been configured")]
+    [Given(@"the build configuration '(.*)' has been selected")]
     public void GivenTheBuildConfigurationHasBeenConfigured(string configuration)
     {
         var client = SingleProcessControlStepDefinitions.Client;
