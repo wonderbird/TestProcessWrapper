@@ -9,12 +9,7 @@ namespace TestProcessWrapper
         private TestProjectInfo _testProjectInfo;
         private BuildConfiguration _buildConfiguration;
 
-        private string BinFolder =>
-            Path.Combine(
-                "bin",
-                _buildConfiguration == BuildConfiguration.Debug ? "Debug" : "Release",
-                "net7.0"
-            );
+        private string BinFolder => Path.Combine("bin", _buildConfiguration.ToString(), "net7.0");
 
         public IProcess Create(
             string appProjectName,
