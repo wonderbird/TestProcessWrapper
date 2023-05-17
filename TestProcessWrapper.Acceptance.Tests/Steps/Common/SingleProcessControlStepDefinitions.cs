@@ -1,6 +1,5 @@
 using System;
 using TechTalk.SpecFlow;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
@@ -10,18 +9,17 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private bool _isDisposed;
-        private readonly BuildConfiguration DefaultBuildConfiguration =
+        private const BuildConfiguration DefaultBuildConfiguration =
 #if DEBUG
-            BuildConfiguration.Debug;
+        BuildConfiguration.Debug;
 #else
-            BuildConfiguration.Release;
+        BuildConfiguration.Release;
 #endif
 
         public SingleProcessControlStepDefinitions(
             ScenarioContext scenarioContext,
             ITestOutputHelper testOutputHelper
-        ) =>
-            _testOutputHelper = testOutputHelper;
+        ) => _testOutputHelper = testOutputHelper;
 
         public static TestProcessWrapper Client { get; private set; }
 
@@ -54,16 +52,22 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         [Given(@"A long lived application was wrapped into TestProcessWrapper")]
         public void GivenALongLivedApplicationWasWrappedIntoTestProcessWrapper()
         {
-            Client = new TestProcessWrapper("TestProcessWrapper.LongLived.Application", false);
-            Client.SelectBuildConfiguration(DefaultBuildConfiguration);
+            Client = new TestProcessWrapper(
+                "TestProcessWrapper.LongLived.Application",
+                false,
+                DefaultBuildConfiguration
+            );
             Client.TestOutputHelper = _testOutputHelper;
         }
 
         [Given(@"A short lived application was wrapped into TestProcessWrapper")]
         public void GivenAShortLivedApplicationWasWrappedIntoTestProcessWrapper()
         {
-            Client = new TestProcessWrapper("TestProcessWrapper.ShortLived.Application", false);
-            Client.SelectBuildConfiguration(DefaultBuildConfiguration);
+            Client = new TestProcessWrapper(
+                "TestProcessWrapper.ShortLived.Application",
+                false,
+                DefaultBuildConfiguration
+            );
             Client.TestOutputHelper = _testOutputHelper;
         }
 
