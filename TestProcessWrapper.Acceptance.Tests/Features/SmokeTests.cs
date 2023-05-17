@@ -18,6 +18,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Features
                 "TestProcessWrapper.LongLived.Application",
                 false
             );
+            processWrapper.SelectBuildConfiguration(BuildConfiguration.Debug);
             processWrapper.Start();
             processWrapper.ShutdownGracefully();
             processWrapper.ForceTermination();
