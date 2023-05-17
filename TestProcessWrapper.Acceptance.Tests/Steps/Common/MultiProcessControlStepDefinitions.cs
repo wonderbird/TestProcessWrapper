@@ -81,6 +81,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
                 var client = new TestProcessWrapper(appProjectName, isCoverletEnabled);
+                client.SelectBuildConfiguration(BuildConfiguration.Debug);
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 

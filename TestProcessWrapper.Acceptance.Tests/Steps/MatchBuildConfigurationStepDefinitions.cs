@@ -13,7 +13,9 @@ public sealed class MatchBuildConfigurationStepDefinitions
     public void GivenTheBuildConfigurationHasBeenConfigured(string configuration)
     {
         var client = SingleProcessControlStepDefinitions.Client;
-        client.SelectBuildConfiguration(configuration == "Debug" ? BuildConfiguration.Debug : BuildConfiguration.Release);
+        client.SelectBuildConfiguration(
+            configuration == "Debug" ? BuildConfiguration.Debug : BuildConfiguration.Release
+        );
         client.AddReadinessCheck(CaptureOutput);
     }
 
