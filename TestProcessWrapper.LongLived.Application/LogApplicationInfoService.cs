@@ -15,6 +15,8 @@ namespace TestProcessWrapper.LongLived.Application
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.BuildConfiguration();
+
             LogEnvironmentVariable("CONFIGURED_ENVIRONMENT_VARIABLE_1");
             LogEnvironmentVariable("CONFIGURED_ENVIRONMENT_VARIABLE_2");
 
