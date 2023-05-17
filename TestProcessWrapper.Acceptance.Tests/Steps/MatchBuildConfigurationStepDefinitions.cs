@@ -1,23 +1,30 @@
 using TechTalk.SpecFlow;
+using TestProcessWrapper.Acceptance.Tests.Steps.Common;
+using Xunit;
 
 namespace TestProcessWrapper.Acceptance.Tests.Steps;
 
 [Binding]
 public sealed class MatchBuildConfigurationStepDefinitions
 {
+    private string _outputWhenReady;
+
     [Given(@"the build configuration '(.*)' has been configured")]
-#pragma warning disable CA1822
     public void GivenTheBuildConfigurationHasBeenConfigured(string release)
-#pragma warning restore CA1822
     {
-        ScenarioContext.StepIsPending();
+        var client = SingleProcessControlStepDefinitions.Client;
+        client.AddReadinessCheck(CaptureOutput);
     }
 
     [Then(@"the application was launched from the '(.*)' folder")]
-#pragma warning disable CA1822
-    public void ThenTheApplicationWasLaunchedFromTheFolder(string release)
-#pragma warning restore CA1822
+    public void ThenTheApplicationWasLaunchedFromTheFolder(string configuration)
     {
-        ScenarioContext.StepIsPending();
+        Assert.Contains($"Build configuration: '{configuration}'", _outputWhenReady);
+    }
+
+    private bool CaptureOutput(string output)
+    {
+        _outputWhenReady = output;
+        return true;
     }
 }
