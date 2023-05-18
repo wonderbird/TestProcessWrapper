@@ -21,7 +21,7 @@ namespace TestProcessWrapper
             _testProjectInfo = new TestProjectInfo(appProjectName);
             _isCoverletEnabled = isCoverletEnabled;
 
-            var process = new DotnetProcess();
+            var process = new TestProcess();
 
             process.StartInfo = CreateProcessStartInfo();
 

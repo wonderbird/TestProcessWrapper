@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace TestProcessWrapper;
 
-internal sealed class DotnetProcess : ITestProcess
+internal sealed class TestProcess : ITestProcess
 {
     private readonly Process _process = new();
     private bool _isDisposed;
@@ -44,7 +44,7 @@ internal sealed class DotnetProcess : ITestProcess
         GC.SuppressFinalize(this);
     }
 
-    ~DotnetProcess()
+    ~TestProcess()
     {
         Dispose(false);
     }
