@@ -7,11 +7,10 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps;
 [Binding]
 public class StepDefinitions
 {
-    private const string AllowedCharactersForArgument = "[-a-zA-Z0-9]*";
     private string _outputWhenReady;
 
     [Given(
-        $"the command line argument '({AllowedCharactersForArgument})=({AllowedCharactersForArgument})' has been configured"
+        $"the command line argument '({"[-a-zA-Z0-9]*"})=({"[-a-zA-Z0-9]*"})' has been configured"
     )]
     public void GivenTheCommandLineArgumentHasBeenConfigured(string argument, string value)
     {
@@ -20,7 +19,7 @@ public class StepDefinitions
         client.AddReadinessCheck(CaptureOutput);
     }
 
-    [Given($"the command line argument '({AllowedCharactersForArgument})' has been configured")]
+    [Given($"the command line argument '({"[-a-zA-Z0-9]*"})' has been configured")]
     public void GivenTheCommandLineArgumentHasBeenConfigured(string argument)
     {
         var client = SingleProcessControlStepDefinitions.Client;
@@ -29,7 +28,7 @@ public class StepDefinitions
     }
 
     [Then(
-        $"the application has received the command line argument '({AllowedCharactersForArgument})' with value '({AllowedCharactersForArgument})'"
+        $"the application has received the command line argument '({"[-a-zA-Z0-9]*"})' with value '({"[-a-zA-Z0-9]*"})'"
     )]
     public void ThenTheApplicationHasReceivedTheCommandLineArgumentWithValue(
         string argument,
@@ -43,7 +42,7 @@ public class StepDefinitions
     }
 
     [Then(
-        $"the application has received the command line argument '({AllowedCharactersForArgument})'"
+        $"the application has received the command line argument '({"[-a-zA-Z0-9]*"})'"
     )]
     public void ThenTheApplicationHasReceivedTheCommandLineArgument(string argument)
     {
