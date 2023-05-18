@@ -6,6 +6,6 @@ namespace TestProcessWrapper
     {
         string Output { get; }
 
-        void StartRecording(IProcess process);
+        void StartRecording(ITestProcess process);
     }
 }

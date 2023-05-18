@@ -11,7 +11,7 @@ namespace TestProcessWrapper
 
         private string BinFolder => Path.Combine("bin", _buildConfiguration.ToString(), "net7.0");
 
-        public IProcess Create(
+        public ITestProcess Create(
             string appProjectName,
             BuildConfiguration buildConfiguration,
             bool isCoverletEnabled

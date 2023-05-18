@@ -21,7 +21,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly IProcessFactory _processFactory = new DotnetProcessFactory();
 
-    private IProcess _process;
+    private ITestProcess _process;
 
     private BuildConfiguration _buildConfiguration;
 

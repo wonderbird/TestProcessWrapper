@@ -2,7 +2,7 @@ namespace TestProcessWrapper
 {
     internal interface IProcessFactory
     {
-        IProcess Create(
+        ITestProcess Create(
             string appProjectName,
             BuildConfiguration buildConfiguration,
             bool isCoverletEnabled

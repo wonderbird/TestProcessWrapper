@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace TestProcessWrapper;
 
-internal sealed class DotnetProcess : IProcess
+internal sealed class DotnetProcess : ITestProcess
 {
     private readonly Process _process = new();
     private bool _isDisposed;

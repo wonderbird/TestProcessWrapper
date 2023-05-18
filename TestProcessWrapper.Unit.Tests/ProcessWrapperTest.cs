@@ -5,13 +5,13 @@ namespace TestProcessWrapper.Unit.Tests
 {
     public class ProcessWrapperTest
     {
-        private readonly Mock<IProcess> _process;
+        private readonly Mock<ITestProcess> _process;
         private readonly Mock<IProcessFactory> _processFactory;
         private readonly Mock<IProcessOutputRecorderFactory> _processOutputRecorderFactory;
 
         public ProcessWrapperTest()
         {
-            _process = new Mock<IProcess>();
+            _process = new Mock<ITestProcess>();
 
             _processFactory = new Mock<IProcessFactory>();
             _processFactory

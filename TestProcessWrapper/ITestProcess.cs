@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace TestProcessWrapper
 {
-    internal interface IProcess : IDisposable
+    internal interface ITestProcess : IDisposable
     {
         bool HasExited { get; }
 

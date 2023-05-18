@@ -42,7 +42,7 @@ namespace TestProcessWrapper
             GC.SuppressFinalize(this);
         }
 
-        public void StartRecording(IProcess process)
+        public void StartRecording(ITestProcess process)
         {
             _unsubscribeFromDataReceivedEvent = handler => process.OutputDataReceived -= handler;
             _waitHandle = new AutoResetEvent(false);
