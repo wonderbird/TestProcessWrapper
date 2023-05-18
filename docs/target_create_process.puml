@@ -1,0 +1,60 @@
+@startuml
+allowmixing
+
+actor "Library User" as user
+
+class "TestProcessWrapper" as wrapper  << facade, director >> {
+  - IProcessBuilderFactory _builderFactory
+  - ProcessBuilder _builder
+  - ITestProcess _process
+  
+  + constructor(appProjectName, isCoverletEnabled, buildConfiguration)
+  + AddCommandLineArgument(...)
+  + AddEnvironmentVariable(...)
+  + Start()
+}
+
+user -- wrapper : interact\nonly with >
+
+interface "IProcessBuilderFactory" as factory_if << factory >> {
+  + CreateBuilder(isCoverletEnabled, buildConfiguration)
+}
+
+class "ProcessBuilderFactory" as factory << factory >>
+factory_if <|-- factory
+
+factory_if -* wrapper : _processStrategyFactory
+
+abstract class "ProcessBuilder" as builder {
+  - string _appProjectName
+  - Dictionary<string, string> _arguments
+  - Dictionary<string, string> _environment
+  + constructor(appProjectName)
+  + AddCommandLineArgument(...)
+  + AddEnvironmentVariable(...)
+  + Build()
+}
+
+wrapper *- builder : _builder
+
+class "UnwrappedProcessBuilder" as process_builder
+builder <|-- process_builder
+factory --> process_builder : create >
+
+class "CoverletWrappedProcessBuilder" as coverlet_builder
+builder <|--- coverlet_builder
+factory ---> coverlet_builder : create >
+
+interface "ITestProcess" as process_if {
+  + Start()
+}
+
+wrapper *- process_if : _process
+
+class "TestProcess" as process
+process_if <|-- process
+
+builder -> process : create >
+
+'factory_if ---- process_if
+@enduml

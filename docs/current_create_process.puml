@@ -1,0 +1,43 @@
+@startuml
+class "TestProcessWrapper" as wrapper {
+  + AddCommandLineArgument(...)
+  + AddEnvironmentVariable(...)
+  + EnableCoverlet()
+  + SelectBuildConfiguration(...)
+  + Start()
+}
+
+interface "IProcessFactory" as factory_if
+factory_if : Create()
+
+class "DotnetProcessFactory" as factory
+
+interface "IProcess" as process_if {
+  + AddCommandLineArgument(...)
+  + AddEnvironmentVariable(...)
+  + Start()
+}
+
+class "DotnetProcess" as process
+
+factory_if <|-- factory
+process_if <|-- process
+
+factory_if -> process_if :  create >
+factory -> process : create >
+
+wrapper *- factory_if
+
+wrapper::Start --> factory_if::Create
+
+note bottom of factory
+if (!_isCoverletEnabled)
+{
+    processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
+}
+else
+{
+    processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
+}
+end note
+@enduml

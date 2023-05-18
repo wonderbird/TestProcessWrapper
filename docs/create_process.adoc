@@ -1,0 +1,11 @@
+// To always get the latest diagrams, update the
+// commit hash from the version merged into main
+:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/fix/coverlet_with_arguments/docs/plantuml
+
+:icons: font
+
+== Create the Test Process
+
+image::current_create_process.puml[Current design of creating the test process]
+
+image::target_create_process.puml[Future design of creating the test process]
