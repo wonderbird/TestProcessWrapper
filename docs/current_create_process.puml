@@ -1,5 +1,10 @@
 @startuml
+allowmixing
+
+actor "Library User" as user
+
 class "TestProcessWrapper" as wrapper {
+  - IProcessFactory _testProcessBuilder
   + AddCommandLineArgument(...)
   + AddEnvironmentVariable(...)
   + EnableCoverlet()
@@ -7,10 +12,12 @@ class "TestProcessWrapper" as wrapper {
   + Start()
 }
 
-interface "IProcessFactory" as factory_if
-factory_if : Create()
+user -- wrapper : interact\nonly with >
 
-class "DotnetProcessFactory" as factory
+interface "IProcessFactory" as builder_if
+builder_if : Create()
+
+class "TestProcessBuilder" as builder
 
 interface "ITestProcess" as process_if {
   + AddCommandLineArgument(...)
@@ -20,17 +27,17 @@ interface "ITestProcess" as process_if {
 
 class "TestProcess" as process
 
-factory_if <|-- factory
+builder_if <|-- builder
 process_if <|-- process
 
-factory_if -> process_if :  create >
-factory -> process : create >
+builder_if -> process_if :  create >
+builder -> process : create >
 
-wrapper *- factory_if
+wrapper *- builder_if
 
-wrapper::Start --> factory_if::Create
+wrapper::Start --> builder_if::Create
 
-note bottom of factory
+note bottom of builder
 if (!_isCoverletEnabled)
 {
     processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);

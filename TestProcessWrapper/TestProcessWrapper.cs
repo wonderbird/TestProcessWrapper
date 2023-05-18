@@ -19,7 +19,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
-    private readonly IProcessFactory _processFactory = new DotnetProcessFactory();
+    private readonly IProcessFactory _testProcessBuilder = new TestProcessBuilder();
 
     private ITestProcess _process;
 
@@ -69,12 +69,12 @@ public sealed class TestProcessWrapper : IDisposable
     }
 
     internal TestProcessWrapper(
-        IProcessFactory processFactory,
+        IProcessFactory testProcessBuilder,
         IProcessOutputRecorderFactory outputRecorderFactory
     )
         : this("fakeProjectName", false, BuildConfiguration.Debug)
     {
-        _processFactory = processFactory;
+        _testProcessBuilder = testProcessBuilder;
         _processOutputRecorderFactory = outputRecorderFactory;
     }
 
@@ -106,7 +106,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     public void Start()
     {
-        _process = _processFactory.Create(_appProjectName, _buildConfiguration, IsCoverletEnabled);
+        _process = _testProcessBuilder.Create(_appProjectName, _buildConfiguration, IsCoverletEnabled);
         AddCommandLineArgumentsToProcess();
         AddEnvironmentVariablesToProcess();
 

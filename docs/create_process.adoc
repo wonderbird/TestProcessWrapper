@@ -1,6 +1,6 @@
 // To always get the latest diagrams, update the
 // commit hash from the version merged into main
-:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/fix/coverlet_with_arguments/docs
+:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/8c0f3e59553e5e9a3e80c2f4a0490d6ec5ec4172/docs
 
 :icons: font
 
@@ -14,7 +14,7 @@ The `TestProcessWrapper` stores the configuration for the target process in priv
 
 === Problem of the Design: Command Line Arguments
 
-The `DotnetProcessFactory` creates similar `processStartInfo` objects for the unwrapped process and for the process wrapped into `coverlet`.
+The `TestProcessBuilder` creates similar `processStartInfo` objects for the unwrapped process and for the process wrapped into `coverlet`.
 
 It assumes that command line arguments are just appended to the `Arguments` property (string) of the processStartInfo for either the unwrapped process or the wrapped process.
 
@@ -24,12 +24,12 @@ As a consequence, the entire command line argument handling is different for an 
 
 === Future Design
 
-The `DotnetProcessFactory` is replaced by individual `ProcessBuilder` s for an unwrapped process and for a wrapped process. The specialized builders know how to handle the command line arguments.
+The `TestProcessBuilder` is subclassed by individual `TestProcessBuilder` s for an unwrapped process and for a wrapped process. The specialized builders know how to handle the command line arguments.
 
 image::{gitplant}/target_create_process.puml[Future design of creating the test process]
 
-The constructor of `TestProcessWrapper` uses the `ProcessBuilderFactory` to get the builder matching the `isCoverletEnabled` flag.
+The constructor of `TestProcessWrapper` uses the `TestProcessBuilderFactory` to get the builder matching the `isCoverletEnabled` flag.
 
-`TestProcessWrapper` forwards the calls to `AddCommandLineArgument` and `AddEnvironmentVariable` to the `ProcessBuilder`.
+`TestProcessWrapper` forwards the calls to `AddCommandLineArgument` and `AddEnvironmentVariable` to the `TestProcessBuilder`.
 
-When the user calls `Start()`, `TestProcessWrapper` receives the process from `ProcessBuilder.Build()` - it is either an unwrapped process or a process wrapped into coverlet. The implementation of `Build()` in the derived classes can handle the command line arguments correctly for their specific case.
+When the user calls `Start()`, `TestProcessWrapper` receives the process from `TestProcessBuilder.Build()` - it is either an unwrapped process or a process wrapped into coverlet. The implementation of `Build()` in the derived classes can handle the command line arguments correctly for their specific case.

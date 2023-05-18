@@ -5,7 +5,7 @@ actor "Library User" as user
 
 class "TestProcessWrapper" as wrapper  << facade, director >> {
   - IProcessBuilderFactory _builderFactory
-  - ProcessBuilder _builder
+  - TestProcessBuilder _testProcessBuilder
   - ITestProcess _process
   
   + constructor(appProjectName, isCoverletEnabled, buildConfiguration)
@@ -20,12 +20,12 @@ interface "IProcessBuilderFactory" as factory_if << factory >> {
   + CreateBuilder(isCoverletEnabled, buildConfiguration)
 }
 
-class "ProcessBuilderFactory" as factory << factory >>
+class "TestProcessBuilderFactory" as factory << factory >>
 factory_if <|-- factory
 
 factory_if -* wrapper : _processStrategyFactory
 
-abstract class "ProcessBuilder" as builder {
+abstract class "TestProcessBuilder" as builder {
   - string _appProjectName
   - Dictionary<string, string> _arguments
   - Dictionary<string, string> _environment
@@ -35,7 +35,7 @@ abstract class "ProcessBuilder" as builder {
   + Build()
 }
 
-wrapper *- builder : _builder
+wrapper *- builder : _testProcessBuilder
 
 class "UnwrappedProcessBuilder" as process_builder
 builder <|-- process_builder

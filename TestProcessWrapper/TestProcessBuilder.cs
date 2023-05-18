@@ -3,7 +3,7 @@ using System.IO;
 
 namespace TestProcessWrapper
 {
-    internal class DotnetProcessFactory : IProcessFactory
+    internal class TestProcessBuilder : IProcessFactory
     {
         private bool _isCoverletEnabled;
         private TestProjectInfo _testProjectInfo;
