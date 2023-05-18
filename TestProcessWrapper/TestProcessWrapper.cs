@@ -43,7 +43,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     public string RecordedOutput => _processOutputRecorder.Output;
 
-    public bool IsCoverletEnabled { get; }
+    public bool IsCoverletEnabled { get; private set;  }
 
     public bool HasExited => _process == null || _process.HasExited;
 
@@ -93,6 +93,8 @@ public sealed class TestProcessWrapper : IDisposable
     {
         _readinessChecks.Add(readinessCheck);
     }
+
+    public void EnableCoverlet() => IsCoverletEnabled = true;
 
     public void SelectBuildConfiguration(BuildConfiguration buildConfiguration)
     {

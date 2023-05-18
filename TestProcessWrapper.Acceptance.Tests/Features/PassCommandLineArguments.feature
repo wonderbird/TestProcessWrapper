@@ -15,3 +15,11 @@ Scenario: Specify boolean command line option (flag)
   And the command line argument '--test-argument' has been configured
   When the application is ready
   Then the application has received the command line argument '--test-argument'
+
+Scenario: Coverlet and command line option (issue #85)
+  Given A short lived application was wrapped into TestProcessWrapper
+  And coverlet has been enabled
+  And the command line argument '--test-argument' has been configured
+  When the application is ready
+  Then the application has received the command line argument '--test-argument'
+  
