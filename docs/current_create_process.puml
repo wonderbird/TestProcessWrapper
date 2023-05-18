@@ -12,13 +12,13 @@ factory_if : Create()
 
 class "DotnetProcessFactory" as factory
 
-interface "IProcess" as process_if {
+interface "ITestProcess" as process_if {
   + AddCommandLineArgument(...)
   + AddEnvironmentVariable(...)
   + Start()
 }
 
-class "DotnetProcess" as process
+class "TestProcess" as process
 
 factory_if <|-- factory
 process_if <|-- process
