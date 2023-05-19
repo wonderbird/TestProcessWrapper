@@ -6,14 +6,14 @@ namespace TestProcessWrapper.Unit.Tests
     public class ProcessWrapperTest
     {
         private readonly Mock<ITestProcess> _process;
-        private readonly Mock<IProcessFactory> _processFactory;
+        private readonly Mock<TestProcessBuilder> _processFactory;
         private readonly Mock<IProcessOutputRecorderFactory> _processOutputRecorderFactory;
 
         public ProcessWrapperTest()
         {
             _process = new Mock<ITestProcess>();
 
-            _processFactory = new Mock<IProcessFactory>();
+            _processFactory = new Mock<TestProcessBuilder>();
             _processFactory.Setup(x => x.Build()).Returns(_process.Object);
 
             var processOutputRecorder = new Mock<IProcessOutputRecorder>();
@@ -28,7 +28,7 @@ namespace TestProcessWrapper.Unit.Tests
         [Fact]
         public void Start_NoEnvironmentVariablesConfigured_NoVariablePassedToProcess()
         {
-            var processWrapper = new global::TestProcessWrapper.TestProcessWrapper(
+            var processWrapper = new TestProcessWrapper(
                 _processFactory.Object,
                 _processOutputRecorderFactory.Object
             );
@@ -44,7 +44,7 @@ namespace TestProcessWrapper.Unit.Tests
         [Fact]
         public void Start_CustomReadinessCheckReturnsFalse_RepeatsReadinessCheck()
         {
-            var processWrapper = new global::TestProcessWrapper.TestProcessWrapper(
+            var processWrapper = new TestProcessWrapper(
                 _processFactory.Object,
                 _processOutputRecorderFactory.Object
             );

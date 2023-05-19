@@ -26,7 +26,7 @@ factory_if <|-- factory
 factory_if -* wrapper : _processStrategyFactory
 
 abstract class "TestProcessBuilder" as builder {
-  - string _appProjectName
+  - string AppProjectName
   - Dictionary<string, string> _arguments
   - Dictionary<string, string> _environment
   + constructor(appProjectName)

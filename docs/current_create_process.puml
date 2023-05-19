@@ -4,7 +4,8 @@ allowmixing
 actor "Library User" as user
 
 class "TestProcessWrapper" as wrapper {
-  - IProcessFactory _testProcessBuilder
+  - TestProcessBuilder _testProcessBuilder
+  - ITestProcess _process
   + AddCommandLineArgument(...)
   + AddEnvironmentVariable(...)
   + EnableCoverlet()
@@ -14,11 +15,11 @@ class "TestProcessWrapper" as wrapper {
 
 user -- wrapper : interact\nonly with >
 
-interface "IProcessFactory" as builder_if {
+class "TestProcessBuilder" as builder {
   + Build()
 }
 
-class "TestProcessBuilder" as builder
+wrapper *-- builder : _testProcessBuilder
 
 interface "ITestProcess" as process_if {
   + AddCommandLineArgument(...)
@@ -26,17 +27,12 @@ interface "ITestProcess" as process_if {
   + Start()
 }
 
-class "TestProcess" as process
+wrapper *- process_if : _process
 
-builder_if <|-- builder
+class "TestProcess" as process
 process_if <|-- process
 
-builder_if -> process_if :  create >
 builder -> process : create >
-
-wrapper *- builder_if
-
-wrapper::Start --> builder_if::Build
 
 note bottom of builder
 if (!_isCoverletEnabled)

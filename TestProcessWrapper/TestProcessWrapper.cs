@@ -17,7 +17,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
-    private readonly IProcessFactory _testProcessBuilder;
+    private readonly TestProcessBuilder _testProcessBuilder;
 
     private ITestProcess _process;
 
@@ -76,7 +76,7 @@ public sealed class TestProcessWrapper : IDisposable
     }
 
     internal TestProcessWrapper(
-        IProcessFactory testProcessBuilder,
+        TestProcessBuilder testProcessBuilder,
         IProcessOutputRecorderFactory outputRecorderFactory
     )
         : this("fakeProjectName", false, BuildConfiguration.Debug)
@@ -173,7 +173,9 @@ public sealed class TestProcessWrapper : IDisposable
         TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
         _process.WaitForExit(10000);
         TestOutputHelper?.WriteLine(
-            $"Process {_testProcessBuilder.AppProjectName} has " + (_process.HasExited ? "" : "NOT ") + "completed."
+            $"Process {_testProcessBuilder.AppProjectName} has "
+                + (_process.HasExited ? "" : "NOT ")
+                + "completed."
         );
     }
 

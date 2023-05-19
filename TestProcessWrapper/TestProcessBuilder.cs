@@ -3,7 +3,7 @@ using System.IO;
 
 namespace TestProcessWrapper
 {
-    internal class TestProcessBuilder : IProcessFactory
+    internal class TestProcessBuilder
     {
         public string AppProjectName { get; }
 
@@ -14,6 +14,8 @@ namespace TestProcessWrapper
         private TestProjectInfo _testProjectInfo;
 
         private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
+
+        public TestProcessBuilder() { }
 
         public TestProcessBuilder(
             string appProjectName,
@@ -26,7 +28,7 @@ namespace TestProcessWrapper
             IsCoverletEnabled = isCoverletEnabled;
         }
 
-        public ITestProcess Build()
+        public virtual ITestProcess Build()
         {
             _testProjectInfo = new TestProjectInfo(AppProjectName);
 
