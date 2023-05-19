@@ -25,13 +25,7 @@ abstract class "TestProcessBuilder" as new_builder {
   + Build()
 }
 
-class "UnwrappedProcessBuilder" as builder {
-  + constructor(appProjectName)
-  + AddCommandLineArguments(...)
-  + AddEnvironmentVariables(...)
-  + Build()
-}
-
+class "UnwrappedProcessBuilder" as builder
 new_builder <|-- builder
 
 wrapper *-- builder : _testProcessBuilder

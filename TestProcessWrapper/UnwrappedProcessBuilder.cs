@@ -6,51 +6,38 @@ namespace TestProcessWrapper;
 
 internal class UnwrappedProcessBuilder : TestProcessBuilder
 {
-    public string AppProjectName => _testProjectInfo.AppProjectName;
-
     public BuildConfiguration BuildConfiguration { get; set; }
 
     public bool IsCoverletEnabled { get; set; }
 
-    private readonly TestProjectInfo _testProjectInfo;
-
-    private ProcessStartInfo _processStartInfo;
-
     private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
 
-    public UnwrappedProcessBuilder() => _testProjectInfo = new TestProjectInfo("");
+    public UnwrappedProcessBuilder() {}
 
     public UnwrappedProcessBuilder(
         string appProjectName,
         BuildConfiguration buildConfiguration,
         bool isCoverletEnabled
-    )
+    ) : base(appProjectName)
     {
-        _testProjectInfo = new TestProjectInfo(appProjectName);
         BuildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
     }
 
-    public virtual ITestProcess Build()
-    {
-        var process = new TestProcess();
-        process.StartInfo = _processStartInfo;
-        return process;
-    }
-
-    public void CreateProcessStartInfo()
+    public override void CreateStartInfo()
     {
         if (!IsCoverletEnabled)
         {
-            _processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
+            ProcessStartInfo = CreateStartInfo("dotnet", TestProjectInfo.AppDllName);
         }
         else
         {
-            _processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
+            ProcessStartInfo = CreateProcessStartInfoWithCoverletWrapper();
         }
     }
 
-    private ProcessStartInfo CreateProcessStartInfo(string processName, string processArguments)
+
+    private ProcessStartInfo CreateStartInfo(string processName, string processArguments)
     {
         var processStartInfo = new ProcessStartInfo(processName)
         {
@@ -60,8 +47,8 @@ internal class UnwrappedProcessBuilder : TestProcessBuilder
             RedirectStandardError = true,
             Arguments = processArguments,
             WorkingDirectory = Path.Combine(
-                _testProjectInfo.ProjectDir,
-                _testProjectInfo.AppProjectName,
+                TestProjectInfo.ProjectDir,
+                TestProjectInfo.AppProjectName,
                 BinFolder
             )
         };
@@ -72,26 +59,33 @@ internal class UnwrappedProcessBuilder : TestProcessBuilder
     private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
     {
         var arguments =
-            $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {_testProjectInfo.CoverageReportPath} --format cobertura";
+            $"\".\" --target \"dotnet\" --targetargs \"{TestProjectInfo.AppDllName}\" --output {TestProjectInfo.CoverageReportPath} --format cobertura";
 
-        return CreateProcessStartInfo("coverlet", arguments);
+        return CreateStartInfo("coverlet", arguments);
     }
 
-    public void AddCommandLineArguments(Dictionary<string, string> arguments)
+    public override void AddCommandLineArguments(Dictionary<string, string> arguments)
     {
         foreach (var (argument, value) in arguments)
         {
-            _processStartInfo.Arguments += string.IsNullOrEmpty(value)
+            ProcessStartInfo.Arguments += string.IsNullOrEmpty(value)
                 ? $" {argument}"
                 : $" {argument}={value}";
         }
     }
 
-    public void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
+    public override void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
     {
         foreach (var item in environmentVariables)
         {
-            _processStartInfo.Environment.Add(item);
+            ProcessStartInfo.Environment.Add(item);
         }
+    }
+
+    public override ITestProcess Build()
+    {
+        var process = new TestProcess();
+        process.StartInfo = ProcessStartInfo;
+        return process;
     }
 }

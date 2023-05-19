@@ -99,7 +99,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     public void Start()
     {
-        _testProcessBuilder.CreateProcessStartInfo();
+        _testProcessBuilder.CreateStartInfo();
         _testProcessBuilder.AddCommandLineArguments(_arguments);
         _testProcessBuilder.AddEnvironmentVariables(_environmentVariables);
         _process = _testProcessBuilder.Build();
