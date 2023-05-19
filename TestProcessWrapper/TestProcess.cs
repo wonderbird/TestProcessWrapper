@@ -21,9 +21,6 @@ internal sealed class TestProcess : ITestProcess
             ? $" {argument}"
             : $" {argument}={value}";
 
-    public void AddEnvironmentVariable(string name, string value) =>
-        _process.StartInfo.EnvironmentVariables.Add(name, value);
-
     public void Start() => _process.Start();
 
     public void BeginOutputReadLine() => _process.BeginOutputReadLine();

@@ -26,22 +26,6 @@ namespace TestProcessWrapper.Unit.Tests
         }
 
         [Fact]
-        public void Start_NoEnvironmentVariablesConfigured_NoVariablePassedToProcess()
-        {
-            var processWrapper = new TestProcessWrapper(
-                _processFactory.Object,
-                _processOutputRecorderFactory.Object
-            );
-
-            processWrapper.Start();
-
-            _process.Verify(
-                p => p.AddEnvironmentVariable(It.IsAny<string>(), It.IsAny<string>()),
-                Times.Exactly(0)
-            );
-        }
-
-        [Fact]
         public void Start_CustomReadinessCheckReturnsFalse_RepeatsReadinessCheck()
         {
             var processWrapper = new TestProcessWrapper(

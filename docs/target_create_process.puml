@@ -28,7 +28,7 @@ factory_if -* wrapper : _processStrategyFactory
 abstract class "TestProcessBuilder" as builder {
   - string AppProjectName
   - Dictionary<string, string> _arguments
-  - Dictionary<string, string> _environment
+  - Dictionary<string, string> _environmentVariables
   + constructor(appProjectName)
   + AddCommandLineArgument(...)
   + AddEnvironmentVariable(...)
