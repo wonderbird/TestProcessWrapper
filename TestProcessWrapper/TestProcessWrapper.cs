@@ -13,6 +13,10 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
+    private readonly Dictionary<string, string> _arguments = new();
+
+    private readonly Dictionary<string, string> _environmentVariables = new();
+
     private readonly TestProcessBuilder _testProcessBuilder;
 
     private ITestProcess _process;
@@ -81,10 +85,10 @@ public sealed class TestProcessWrapper : IDisposable
     }
 
     public void AddEnvironmentVariable(string name, string value) =>
-        _testProcessBuilder.AddEnvironmentVariable(name, value);
+        _environmentVariables.Add(name, value);
 
     public void AddCommandLineArgument(string argument, string value = "") =>
-        _testProcessBuilder.AddCommandLineArgument(argument, value);
+        _arguments.Add(argument, value);
 
     public void AddReadinessCheck(ReadinessCheck readinessCheck) =>
         _readinessChecks.Add(readinessCheck);
@@ -96,6 +100,8 @@ public sealed class TestProcessWrapper : IDisposable
     public void Start()
     {
         _testProcessBuilder.CreateProcessStartInfo();
+        _testProcessBuilder.AddCommandLineArguments(_arguments);
+        _testProcessBuilder.AddEnvironmentVariables(_environmentVariables);
         _process = _testProcessBuilder.Build();
 
         TestOutputHelper?.WriteLine(

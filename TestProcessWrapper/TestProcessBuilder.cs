@@ -12,10 +12,6 @@ internal class TestProcessBuilder
 
     public bool IsCoverletEnabled { get; set; }
 
-    private readonly Dictionary<string, string> _arguments = new();
-
-    private readonly Dictionary<string, string> _environmentVariables = new();
-
     private readonly TestProjectInfo _testProjectInfo;
 
     private ProcessStartInfo _processStartInfo;
@@ -35,20 +31,10 @@ internal class TestProcessBuilder
         IsCoverletEnabled = isCoverletEnabled;
     }
 
-    public void AddCommandLineArgument(string argument, string value = "") =>
-        _arguments[argument] = value;
-
-    public void AddEnvironmentVariable(string name, string value) =>
-        _environmentVariables[name] = value;
-
     public virtual ITestProcess Build()
     {
-        AddCommandLineArguments(_arguments);
-        AddEnvironmentVariables(_environmentVariables);
-
         var process = new TestProcess();
         process.StartInfo = _processStartInfo;
-
         return process;
     }
 
@@ -91,7 +77,7 @@ internal class TestProcessBuilder
         return CreateProcessStartInfo("coverlet", arguments);
     }
 
-    private void AddCommandLineArguments(Dictionary<string, string> arguments)
+    public void AddCommandLineArguments(Dictionary<string, string> arguments)
     {
         foreach (var (argument, value) in arguments)
         {
@@ -101,7 +87,7 @@ internal class TestProcessBuilder
         }
     }
 
-    private void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
+    public void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
     {
         foreach (var item in environmentVariables)
         {
