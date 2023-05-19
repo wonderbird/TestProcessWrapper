@@ -4,7 +4,7 @@ using System.IO;
 
 namespace TestProcessWrapper;
 
-internal class TestProcessBuilder
+internal class UnwrappedProcessBuilder
 {
     public string AppProjectName => _testProjectInfo.AppProjectName;
 
@@ -18,9 +18,9 @@ internal class TestProcessBuilder
 
     private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
 
-    public TestProcessBuilder() => _testProjectInfo = new TestProjectInfo("");
+    public UnwrappedProcessBuilder() => _testProjectInfo = new TestProjectInfo("");
 
-    public TestProcessBuilder(
+    public UnwrappedProcessBuilder(
         string appProjectName,
         BuildConfiguration buildConfiguration,
         bool isCoverletEnabled

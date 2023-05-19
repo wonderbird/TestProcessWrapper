@@ -6,14 +6,14 @@ namespace TestProcessWrapper.Unit.Tests
     public class ProcessWrapperTest
     {
         private readonly Mock<ITestProcess> _process;
-        private readonly Mock<TestProcessBuilder> _processFactory;
+        private readonly Mock<UnwrappedProcessBuilder> _processFactory;
         private readonly Mock<IProcessOutputRecorderFactory> _processOutputRecorderFactory;
 
         public ProcessWrapperTest()
         {
             _process = new Mock<ITestProcess>();
 
-            _processFactory = new Mock<TestProcessBuilder>();
+            _processFactory = new Mock<UnwrappedProcessBuilder>();
             _processFactory.Setup(x => x.Build()).Returns(_process.Object);
 
             var processOutputRecorder = new Mock<IProcessOutputRecorder>();

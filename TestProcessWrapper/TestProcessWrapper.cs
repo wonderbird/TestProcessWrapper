@@ -17,7 +17,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly Dictionary<string, string> _environmentVariables = new();
 
-    private readonly TestProcessBuilder _testProcessBuilder;
+    private readonly UnwrappedProcessBuilder _testProcessBuilder;
 
     private ITestProcess _process;
 
@@ -68,14 +68,14 @@ public sealed class TestProcessWrapper : IDisposable
         bool isCoverletEnabled,
         BuildConfiguration buildConfiguration
     ) =>
-        _testProcessBuilder = new TestProcessBuilder(
+        _testProcessBuilder = new UnwrappedProcessBuilder(
             appProjectName,
             buildConfiguration,
             isCoverletEnabled
         );
 
     internal TestProcessWrapper(
-        TestProcessBuilder testProcessBuilder,
+        UnwrappedProcessBuilder testProcessBuilder,
         IProcessOutputRecorderFactory outputRecorderFactory
     )
         : this("fakeProjectName", false, BuildConfiguration.Debug)
