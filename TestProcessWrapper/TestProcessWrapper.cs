@@ -17,8 +17,6 @@ public sealed class TestProcessWrapper : IDisposable
 
     private ITestProcess _process;
 
-    private BuildConfiguration _buildConfiguration;
-
     /// <summary>
     /// Id of the process under test.
     /// </summary>
@@ -41,6 +39,8 @@ public sealed class TestProcessWrapper : IDisposable
         get => _testProcessBuilder.IsCoverletEnabled;
         set => _testProcessBuilder.IsCoverletEnabled = value;
     }
+
+    public BuildConfiguration BuildConfiguration { get; set; }
 
     public bool HasExited => _process == null || _process.HasExited;
 
@@ -67,7 +67,7 @@ public sealed class TestProcessWrapper : IDisposable
             isCoverletEnabled
         );
 
-        _buildConfiguration = buildConfiguration;
+        BuildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
     }
 
@@ -92,18 +92,13 @@ public sealed class TestProcessWrapper : IDisposable
         _readinessChecks.Add(readinessCheck);
     }
 
-    public void SelectBuildConfiguration(BuildConfiguration buildConfiguration)
-    {
-        _buildConfiguration = buildConfiguration;
-    }
-
     #endregion
 
     #region Start wrapped process
 
     public void Start()
     {
-        _testProcessBuilder.BuildConfiguration = _buildConfiguration;
+        _testProcessBuilder.BuildConfiguration = BuildConfiguration;
         _process = _testProcessBuilder.Build();
 
         TestOutputHelper?.WriteLine(
