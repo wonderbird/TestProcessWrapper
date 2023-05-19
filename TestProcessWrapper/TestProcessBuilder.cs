@@ -6,7 +6,7 @@ namespace TestProcessWrapper;
 
 internal class TestProcessBuilder
 {
-    public string AppProjectName { get; }
+    public string AppProjectName => _testProjectInfo.AppProjectName;
 
     public BuildConfiguration BuildConfiguration { get; set; }
 
@@ -16,7 +16,9 @@ internal class TestProcessBuilder
 
     private readonly Dictionary<string, string> _environmentVariables = new();
 
-    private TestProjectInfo _testProjectInfo;
+    private readonly TestProjectInfo _testProjectInfo;
+
+    private ProcessStartInfo _processStartInfo;
 
     private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
 
@@ -28,7 +30,7 @@ internal class TestProcessBuilder
         bool isCoverletEnabled
     )
     {
-        AppProjectName = appProjectName;
+        _testProjectInfo = new TestProjectInfo(appProjectName);
         BuildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
     }
@@ -41,49 +43,29 @@ internal class TestProcessBuilder
 
     public virtual ITestProcess Build()
     {
-        var process = CreateProcess();
+        CreateProcessStartInfo();
 
-        return process;
-    }
-
-    private TestProcess CreateProcess()
-    {
-        _testProjectInfo = new TestProjectInfo(AppProjectName);
+        AddCommandLineArguments(_arguments);
+        AddEnvironmentVariables(_environmentVariables);
 
         var process = new TestProcess();
-
-        process.StartInfo = CreateProcessStartInfo();
-
-        foreach (var (argument, value) in _arguments)
-        {
-            process.StartInfo.Arguments += string.IsNullOrEmpty(value)
-                ? $" {argument}"
-                : $" {argument}={value}";
-        }
-
-        foreach (var item in _environmentVariables)
-        {
-            process.StartInfo.Environment.Add(item);
-        }
+        process.StartInfo = _processStartInfo;
 
         return process;
     }
 
-    private ProcessStartInfo CreateProcessStartInfo()
+    private void CreateProcessStartInfo()
     {
-        ProcessStartInfo processStartInfo;
-
         if (!IsCoverletEnabled)
         {
-            processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
+            _processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
         }
         else
         {
-            processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
+            _processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
         }
-
-        return processStartInfo;
     }
+
 
     private ProcessStartInfo CreateProcessStartInfo(string processName, string processArguments)
     {
@@ -110,5 +92,23 @@ internal class TestProcessBuilder
             $"\".\" --target \"dotnet\" --targetargs \"{_testProjectInfo.AppDllName}\" --output {_testProjectInfo.CoverageReportPath} --format cobertura";
 
         return CreateProcessStartInfo("coverlet", arguments);
+    }
+
+    private void AddCommandLineArguments(Dictionary<string, string> arguments)
+    {
+        foreach (var (argument, value) in arguments)
+        {
+            _processStartInfo.Arguments += string.IsNullOrEmpty(value)
+                ? $" {argument}"
+                : $" {argument}={value}";
+        }
+    }
+
+    private void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
+    {
+        foreach (var item in environmentVariables)
+        {
+            _processStartInfo.Environment.Add(item);
+        }
     }
 }
