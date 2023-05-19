@@ -11,8 +11,6 @@ public sealed class TestProcessWrapper : IDisposable
 {
     #region Private members
 
-    private readonly Dictionary<string, string> _arguments = new();
-
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
     private readonly TestProcessBuilder _testProcessBuilder;
@@ -86,10 +84,8 @@ public sealed class TestProcessWrapper : IDisposable
     public void AddEnvironmentVariable(string name, string value) =>
         _testProcessBuilder.AddEnvironmentVariable(name, value);
 
-    public void AddCommandLineArgument(string argument, string value = "")
-    {
-        _arguments[argument] = value;
-    }
+    public void AddCommandLineArgument(string argument, string value = "") =>
+        _testProcessBuilder.AddCommandLineArgument(argument, value);
 
     public void AddReadinessCheck(ReadinessCheck readinessCheck)
     {
@@ -109,7 +105,6 @@ public sealed class TestProcessWrapper : IDisposable
     {
         _testProcessBuilder.BuildConfiguration = _buildConfiguration;
         _process = _testProcessBuilder.Build();
-        AddCommandLineArgumentsToProcess();
 
         TestOutputHelper?.WriteLine(
             $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ..."
@@ -120,14 +115,6 @@ public sealed class TestProcessWrapper : IDisposable
         _processOutputRecorder.StartRecording(_process);
 
         WaitForProcessIdAndReadinessChecks();
-    }
-
-    private void AddCommandLineArgumentsToProcess()
-    {
-        foreach (var (argument, value) in _arguments)
-        {
-            _process.AddCommandLineArgument(argument, value);
-        }
     }
 
     private void WaitForProcessIdAndReadinessChecks()

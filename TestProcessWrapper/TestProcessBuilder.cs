@@ -12,6 +12,8 @@ internal class TestProcessBuilder
 
     public bool IsCoverletEnabled { get; set; }
 
+    private readonly Dictionary<string, string> _arguments = new();
+
     private readonly Dictionary<string, string> _environmentVariables = new();
 
     private TestProjectInfo _testProjectInfo;
@@ -30,6 +32,9 @@ internal class TestProcessBuilder
         BuildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
     }
+
+    public void AddCommandLineArgument(string argument, string value = "") =>
+        _arguments[argument] = value;
 
     public void AddEnvironmentVariable(string name, string value) =>
         _environmentVariables[name] = value;
@@ -76,6 +81,13 @@ internal class TestProcessBuilder
                 BinFolder
             )
         };
+
+        foreach (var (argument, value) in _arguments)
+        {
+            processStartInfo.Arguments += string.IsNullOrEmpty(value)
+                ? $" {argument}"
+                : $" {argument}={value}";
+        }
 
         foreach (var item in _environmentVariables)
         {

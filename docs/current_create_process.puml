@@ -15,8 +15,10 @@ class "TestProcessWrapper" as wrapper {
 user -- wrapper : interact\nonly with >
 
 class "TestProcessBuilder" as builder {
+  - Dictionary<string, string> _arguments
   - Dictionary<string, string> _environmentVariables
   + constructor(appProjectName)
+  + AddCommandLineArgument(...)
   + AddEnvironmentVariable(...)
   + Build()
 }

@@ -16,11 +16,6 @@ internal sealed class TestProcess : ITestProcess
         set => _process.StartInfo = value;
     }
 
-    public void AddCommandLineArgument(string argument, string value) =>
-        _process.StartInfo.Arguments += string.IsNullOrEmpty(value)
-            ? $" {argument}"
-            : $" {argument}={value}";
-
     public void Start() => _process.Start();
 
     public void BeginOutputReadLine() => _process.BeginOutputReadLine();
