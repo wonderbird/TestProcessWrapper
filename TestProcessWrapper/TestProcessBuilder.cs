@@ -36,19 +36,6 @@ namespace TestProcessWrapper
             return process;
         }
 
-        public ITestProcess Create(
-            string appProjectName,
-            BuildConfiguration buildConfiguration,
-            bool isCoverletEnabled
-        )
-        {
-            _appProjectName = appProjectName;
-            BuildConfiguration = buildConfiguration;
-            IsCoverletEnabled = isCoverletEnabled;
-
-            return Build();
-        }
-
         private ProcessStartInfo CreateProcessStartInfo()
         {
             ProcessStartInfo processStartInfo;
