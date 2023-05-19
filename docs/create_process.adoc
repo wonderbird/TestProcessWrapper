@@ -1,6 +1,6 @@
 // To always get the latest diagrams, update the
 // commit hash from the version merged into main
-:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/8c0f3e59553e5e9a3e80c2f4a0490d6ec5ec4172/docs
+:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/604bed9eed3ca647c3732010bdf472e33040df76/docs
 
 :icons: font
 
@@ -10,7 +10,7 @@
 
 image::{gitplant}/current_create_process.puml[Current design of creating the test process]
 
-The `TestProcessWrapper` stores the configuration for the target process in private members. The `Start()` method uses the `IProcessFactory` to create the process, passes all the configuration and finally starts it.
+The `TestProcessWrapper` stores the configuration for the target process in private members. The `Start()` method uses the `TestProcessBuilder` to create the process, passes all the configuration and finally starts it.
 
 === Problem of the Design: Command Line Arguments
 
