@@ -56,5 +56,4 @@ process_if <|-- process
 
 builder -> process : create >
 
-'factory_if ---- process_if
 @enduml

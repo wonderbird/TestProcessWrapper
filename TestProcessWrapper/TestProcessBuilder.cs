@@ -16,6 +16,7 @@ internal abstract class TestProcessBuilder
         TestProjectInfo = new TestProjectInfo(appProjectName);
 
     public abstract void CreateStartInfo();
+
     public abstract void AddCommandLineArguments(Dictionary<string, string> arguments);
 
     public void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)

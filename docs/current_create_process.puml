@@ -30,6 +30,9 @@ new_builder <|-- builder
 
 wrapper *-- builder : _testProcessBuilder
 
+class "CoverletWrappedProcessBuilder" as coverlet_builder
+new_builder <|--- coverlet_builder
+
 interface "ITestProcess" as process_if {
   + Start()
 }
@@ -39,7 +42,7 @@ wrapper *- process_if : _process
 class "TestProcess" as process
 process_if <|-- process
 
-builder -> process : create >
+new_builder -> process : create >
 
 note bottom of builder
 if (!_isCoverletEnabled)
