@@ -41,6 +41,13 @@ internal class TestProcessBuilder
 
     public virtual ITestProcess Build()
     {
+        var process = CreateProcess();
+
+        return process;
+    }
+
+    private TestProcess CreateProcess()
+    {
         _testProjectInfo = new TestProjectInfo(AppProjectName);
 
         var process = new TestProcess();
