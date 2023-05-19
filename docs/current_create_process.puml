@@ -18,12 +18,21 @@ class "TestProcessWrapper" as wrapper {
 
 user -- wrapper : interact\nonly with >
 
+abstract class "TestProcessBuilder" as new_builder {
+  + constructor(appProjectName)
+  + AddCommandLineArguments(...)
+  + AddEnvironmentVariables(...)
+  + Build()
+}
+
 class "UnwrappedProcessBuilder" as builder {
   + constructor(appProjectName)
   + AddCommandLineArguments(...)
   + AddEnvironmentVariables(...)
   + Build()
 }
+
+new_builder <|-- builder
 
 wrapper *-- builder : _testProcessBuilder
 

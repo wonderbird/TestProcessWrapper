@@ -4,7 +4,7 @@ using System.IO;
 
 namespace TestProcessWrapper;
 
-internal class UnwrappedProcessBuilder
+internal class UnwrappedProcessBuilder : TestProcessBuilder
 {
     public string AppProjectName => _testProjectInfo.AppProjectName;
 
