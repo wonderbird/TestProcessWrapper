@@ -7,6 +7,9 @@ class "TestProcessWrapper" as wrapper  << facade, director >> {
   - IProcessBuilderFactory _builderFactory
   - TestProcessBuilder _testProcessBuilder
   - ITestProcess _process
+  - string AppProjectName
+  - Dictionary<string, string> _arguments
+  - Dictionary<string, string> _environmentVariables
   
   + constructor(appProjectName, isCoverletEnabled, buildConfiguration)
   + AddCommandLineArgument(...)
@@ -26,12 +29,9 @@ factory_if <|-- factory
 factory_if -* wrapper : _processStrategyFactory
 
 abstract class "TestProcessBuilder" as builder {
-  - string AppProjectName
-  - Dictionary<string, string> _arguments
-  - Dictionary<string, string> _environmentVariables
   + constructor(appProjectName)
-  + AddCommandLineArgument(...)
-  + AddEnvironmentVariable(...)
+  + AddCommandLineArguments(...)
+  + AddEnvironmentVariables(...)
   + Build()
 }
 
