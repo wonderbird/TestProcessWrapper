@@ -17,11 +17,7 @@ namespace TestProcessWrapper.Unit.Tests
             _processFactory
                 .Setup(
                     x =>
-                        x.Create(
-                            It.IsAny<string>(),
-                            It.IsAny<BuildConfiguration>(),
-                            It.IsAny<bool>()
-                        )
+                        x.Create()
                 )
                 .Returns(_process.Object);
 

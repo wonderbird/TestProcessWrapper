@@ -19,7 +19,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
-    private readonly IProcessFactory _testProcessBuilder = new TestProcessBuilder();
+    private readonly IProcessFactory _testProcessBuilder;
 
     private ITestProcess _process;
 
@@ -66,6 +66,7 @@ public sealed class TestProcessWrapper : IDisposable
         _appProjectName = appProjectName;
         _buildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
+        _testProcessBuilder = new TestProcessBuilder(_appProjectName, _buildConfiguration, IsCoverletEnabled);
     }
 
     internal TestProcessWrapper(
@@ -106,7 +107,9 @@ public sealed class TestProcessWrapper : IDisposable
 
     public void Start()
     {
-        _process = _testProcessBuilder.Create(_appProjectName, _buildConfiguration, IsCoverletEnabled);
+        _testProcessBuilder.IsCoverletEnabled = IsCoverletEnabled;
+        _testProcessBuilder.BuildConfiguration = _buildConfiguration;
+        _process = _testProcessBuilder.Create();
         AddCommandLineArgumentsToProcess();
         AddEnvironmentVariablesToProcess();
 

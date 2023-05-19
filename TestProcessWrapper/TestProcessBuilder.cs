@@ -1,25 +1,29 @@
 using System.Diagnostics;
 using System.IO;
+using Xunit.Abstractions;
 
 namespace TestProcessWrapper
 {
     internal class TestProcessBuilder : IProcessFactory
     {
-        private bool _isCoverletEnabled;
+        public bool IsCoverletEnabled { get; set; }
+        public BuildConfiguration BuildConfiguration { get; set; }
+
+        private string _appProjectName;
         private TestProjectInfo _testProjectInfo;
-        private BuildConfiguration _buildConfiguration;
 
-        private string BinFolder => Path.Combine("bin", _buildConfiguration.ToString(), "net7.0");
+        private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
 
-        public ITestProcess Create(
-            string appProjectName,
-            BuildConfiguration buildConfiguration,
-            bool isCoverletEnabled
-        )
+        public TestProcessBuilder(string appProjectName, BuildConfiguration buildConfiguration, bool isCoverletEnabled)
         {
-            _buildConfiguration = buildConfiguration;
-            _testProjectInfo = new TestProjectInfo(appProjectName);
-            _isCoverletEnabled = isCoverletEnabled;
+            _appProjectName = appProjectName;
+            BuildConfiguration = buildConfiguration;
+            IsCoverletEnabled = isCoverletEnabled;
+        }
+
+        public ITestProcess Create()
+        {
+            _testProjectInfo = new TestProjectInfo(_appProjectName);
 
             var process = new TestProcess();
 
@@ -28,11 +32,24 @@ namespace TestProcessWrapper
             return process;
         }
 
+        public ITestProcess Create(
+            string appProjectName,
+            BuildConfiguration buildConfiguration,
+            bool isCoverletEnabled
+        )
+        {
+            _appProjectName = appProjectName;
+            BuildConfiguration = buildConfiguration;
+            IsCoverletEnabled = isCoverletEnabled;
+
+            return Create();
+        }
+
         private ProcessStartInfo CreateProcessStartInfo()
         {
             ProcessStartInfo processStartInfo;
 
-            if (!_isCoverletEnabled)
+            if (!IsCoverletEnabled)
             {
                 processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
             }
