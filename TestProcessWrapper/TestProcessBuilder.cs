@@ -54,6 +54,18 @@ internal class TestProcessBuilder
 
         process.StartInfo = CreateProcessStartInfo();
 
+        foreach (var (argument, value) in _arguments)
+        {
+            process.StartInfo.Arguments += string.IsNullOrEmpty(value)
+                ? $" {argument}"
+                : $" {argument}={value}";
+        }
+
+        foreach (var item in _environmentVariables)
+        {
+            process.StartInfo.Environment.Add(item);
+        }
+
         return process;
     }
 
@@ -88,18 +100,6 @@ internal class TestProcessBuilder
                 BinFolder
             )
         };
-
-        foreach (var (argument, value) in _arguments)
-        {
-            processStartInfo.Arguments += string.IsNullOrEmpty(value)
-                ? $" {argument}"
-                : $" {argument}={value}";
-        }
-
-        foreach (var item in _environmentVariables)
-        {
-            processStartInfo.Environment.Add(item);
-        }
 
         return processStartInfo;
     }
