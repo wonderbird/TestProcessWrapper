@@ -11,13 +11,15 @@ public sealed class TestProcessWrapper : IDisposable
 {
     #region Private members
 
+    private readonly string _appProjectName;
+
     private readonly List<ReadinessCheck> _readinessChecks = new();
 
     private readonly Dictionary<string, string> _arguments = new();
 
     private readonly Dictionary<string, string> _environmentVariables = new();
 
-    private readonly UnwrappedProcessBuilder _testProcessBuilder;
+    private readonly ITestProcessBuilderFactory _testProcessBuilderFactory;
 
     private ITestProcess _process;
 
@@ -61,22 +63,19 @@ public sealed class TestProcessWrapper : IDisposable
         BuildConfiguration buildConfiguration
     )
     {
+        _appProjectName = appProjectName;
         IsCoverletEnabled = isCoverletEnabled;
         BuildConfiguration = buildConfiguration;
-        _testProcessBuilder = new UnwrappedProcessBuilder(
-            appProjectName,
-            buildConfiguration,
-            isCoverletEnabled
-        );
+        _testProcessBuilderFactory = new TestProcessBuilderFactory();
     }
 
     internal TestProcessWrapper(
-        UnwrappedProcessBuilder testProcessBuilder,
+        ITestProcessBuilderFactory testProcessBuilderFactory,
         IProcessOutputRecorderFactory outputRecorderFactory
     )
         : this("fakeProjectName", false, BuildConfiguration.Debug)
     {
-        _testProcessBuilder = testProcessBuilder;
+        _testProcessBuilderFactory = testProcessBuilderFactory;
         _processOutputRecorderFactory = outputRecorderFactory;
     }
 
@@ -95,12 +94,17 @@ public sealed class TestProcessWrapper : IDisposable
 
     public void Start()
     {
-        _testProcessBuilder.IsCoverletEnabled = IsCoverletEnabled;
-        _testProcessBuilder.BuildConfiguration = BuildConfiguration;
-        _testProcessBuilder.CreateStartInfo();
-        _testProcessBuilder.AddCommandLineArguments(_arguments);
-        _testProcessBuilder.AddEnvironmentVariables(_environmentVariables);
-        _process = _testProcessBuilder.Build();
+        var testProcessBuilder = _testProcessBuilderFactory.CreateBuilder(
+            _appProjectName,
+            BuildConfiguration,
+            IsCoverletEnabled
+        );
+        testProcessBuilder.IsCoverletEnabled = IsCoverletEnabled;
+        testProcessBuilder.BuildConfiguration = BuildConfiguration;
+        testProcessBuilder.CreateStartInfo();
+        testProcessBuilder.AddCommandLineArguments(_arguments);
+        testProcessBuilder.AddEnvironmentVariables(_environmentVariables);
+        _process = testProcessBuilder.Build();
 
         TestOutputHelper?.WriteLine(
             $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ..."
@@ -143,9 +147,7 @@ public sealed class TestProcessWrapper : IDisposable
         TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
         _process.WaitForExit(10000);
         TestOutputHelper?.WriteLine(
-            $"Process {_testProcessBuilder.AppProjectName} has "
-                + (_process.HasExited ? "" : "NOT ")
-                + "completed."
+            $"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") + "completed."
         );
     }
 

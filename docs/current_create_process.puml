@@ -6,7 +6,7 @@ actor "Library User" as user
 class "TestProcessWrapper" as wrapper {
   - Dictionary<string, string> _arguments
   - Dictionary<string, string> _environmentVariables
-  - UnwrappedProcessBuilder _testProcessBuilder
+  - ITestProcessBuilderFactory _testProcessBuilderFactory
   - ITestProcess _process
   + BuildConfiguration BuildConfiguration
   + bool IsCoverletEnabled
@@ -18,6 +18,15 @@ class "TestProcessWrapper" as wrapper {
 
 user -- wrapper : interact\nonly with >
 
+interface "ITestProcessBuilderFactory" as factory_if << factory >> {
+  + CreateBuilder(isCoverletEnabled, buildConfiguration)
+}
+
+class "TestProcessBuilderFactory" as factory << factory >>
+factory_if <|-- factory
+
+factory_if -* wrapper : _testProcessBuilderFactory
+
 abstract class "TestProcessBuilder" as new_builder {
   + constructor(appProjectName)
   + AddCommandLineArguments(...)
@@ -27,6 +36,7 @@ abstract class "TestProcessBuilder" as new_builder {
 
 class "UnwrappedProcessBuilder" as builder
 new_builder <|-- builder
+factory --> builder : create >
 
 wrapper *-- builder : _testProcessBuilder
 

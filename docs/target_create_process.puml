@@ -4,7 +4,7 @@ allowmixing
 actor "Library User" as user
 
 class "TestProcessWrapper" as wrapper  << facade, director >> {
-  - IProcessBuilderFactory _builderFactory
+  - ITestProcessBuilderFactory _testProcessBuilderFactory
   - TestProcessBuilder _testProcessBuilder
   - ITestProcess _process
   - string AppProjectName
@@ -19,14 +19,14 @@ class "TestProcessWrapper" as wrapper  << facade, director >> {
 
 user -- wrapper : interact\nonly with >
 
-interface "IProcessBuilderFactory" as factory_if << factory >> {
+interface "ITestProcessBuilderFactory" as factory_if << factory >> {
   + CreateBuilder(isCoverletEnabled, buildConfiguration)
 }
 
 class "TestProcessBuilderFactory" as factory << factory >>
 factory_if <|-- factory
 
-factory_if -* wrapper : _processStrategyFactory
+factory_if -* wrapper : _testProcessBuilderFactory
 
 abstract class "TestProcessBuilder" as builder {
   + constructor(appProjectName)
