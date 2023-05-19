@@ -95,6 +95,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     public void Start()
     {
+        _testProcessBuilder.CreateProcessStartInfo();
         _process = _testProcessBuilder.Build();
 
         TestOutputHelper?.WriteLine(

@@ -22,7 +22,7 @@ internal class TestProcessBuilder
 
     private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
 
-    public TestProcessBuilder() { }
+    public TestProcessBuilder() => _testProjectInfo = new TestProjectInfo("");
 
     public TestProcessBuilder(
         string appProjectName,
@@ -43,8 +43,6 @@ internal class TestProcessBuilder
 
     public virtual ITestProcess Build()
     {
-        CreateProcessStartInfo();
-
         AddCommandLineArguments(_arguments);
         AddEnvironmentVariables(_environmentVariables);
 
@@ -54,7 +52,7 @@ internal class TestProcessBuilder
         return process;
     }
 
-    private void CreateProcessStartInfo()
+    public void CreateProcessStartInfo()
     {
         if (!IsCoverletEnabled)
         {
@@ -65,7 +63,6 @@ internal class TestProcessBuilder
             _processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
         }
     }
-
 
     private ProcessStartInfo CreateProcessStartInfo(string processName, string processArguments)
     {
