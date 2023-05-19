@@ -14,12 +14,7 @@ namespace TestProcessWrapper.Unit.Tests
             _process = new Mock<ITestProcess>();
 
             _processFactory = new Mock<IProcessFactory>();
-            _processFactory
-                .Setup(
-                    x =>
-                        x.Create()
-                )
-                .Returns(_process.Object);
+            _processFactory.Setup(x => x.Build()).Returns(_process.Object);
 
             var processOutputRecorder = new Mock<IProcessOutputRecorder>();
             processOutputRecorder.Setup(x => x.Output).Returns("Process ID 999\n");

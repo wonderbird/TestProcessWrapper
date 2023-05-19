@@ -41,9 +41,7 @@ public class StepDefinitions
         );
     }
 
-    [Then(
-        $"the application has received the command line argument '({"[-a-zA-Z0-9]*"})'"
-    )]
+    [Then($"the application has received the command line argument '({"[-a-zA-Z0-9]*"})'")]
     public void ThenTheApplicationHasReceivedTheCommandLineArgument(string argument)
     {
         Assert.Contains($"Received the command line argument '{argument}'", _outputWhenReady);

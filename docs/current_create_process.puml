@@ -14,8 +14,9 @@ class "TestProcessWrapper" as wrapper {
 
 user -- wrapper : interact\nonly with >
 
-interface "IProcessFactory" as builder_if
-builder_if : Create()
+interface "IProcessFactory" as builder_if {
+  + Build()
+}
 
 class "TestProcessBuilder" as builder
 
@@ -35,7 +36,7 @@ builder -> process : create >
 
 wrapper *- builder_if
 
-wrapper::Start --> builder_if::Create
+wrapper::Start --> builder_if::Build
 
 note bottom of builder
 if (!_isCoverletEnabled)
