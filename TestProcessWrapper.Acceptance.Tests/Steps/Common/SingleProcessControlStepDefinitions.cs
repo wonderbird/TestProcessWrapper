@@ -74,7 +74,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
         [Given(@"coverlet has been enabled")]
         public static void GivenCoverletHasBeenEnabled()
         {
-            Client.EnableCoverlet();
+            Client.IsCoverletEnabled = true;
         }
 
         [When]
