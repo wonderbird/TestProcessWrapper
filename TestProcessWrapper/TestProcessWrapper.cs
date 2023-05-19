@@ -40,7 +40,11 @@ public sealed class TestProcessWrapper : IDisposable
         set => _testProcessBuilder.IsCoverletEnabled = value;
     }
 
-    public BuildConfiguration BuildConfiguration { get; set; }
+    public BuildConfiguration BuildConfiguration
+    {
+        get => _testProcessBuilder.BuildConfiguration;
+        set => _testProcessBuilder.BuildConfiguration = value;
+    }
 
     public bool HasExited => _process == null || _process.HasExited;
 
@@ -59,17 +63,12 @@ public sealed class TestProcessWrapper : IDisposable
         string appProjectName,
         bool isCoverletEnabled,
         BuildConfiguration buildConfiguration
-    )
-    {
+    ) =>
         _testProcessBuilder = new TestProcessBuilder(
             appProjectName,
             buildConfiguration,
             isCoverletEnabled
         );
-
-        BuildConfiguration = buildConfiguration;
-        IsCoverletEnabled = isCoverletEnabled;
-    }
 
     internal TestProcessWrapper(
         TestProcessBuilder testProcessBuilder,
@@ -87,10 +86,8 @@ public sealed class TestProcessWrapper : IDisposable
     public void AddCommandLineArgument(string argument, string value = "") =>
         _testProcessBuilder.AddCommandLineArgument(argument, value);
 
-    public void AddReadinessCheck(ReadinessCheck readinessCheck)
-    {
+    public void AddReadinessCheck(ReadinessCheck readinessCheck) =>
         _readinessChecks.Add(readinessCheck);
-    }
 
     #endregion
 
@@ -98,7 +95,6 @@ public sealed class TestProcessWrapper : IDisposable
 
     public void Start()
     {
-        _testProcessBuilder.BuildConfiguration = BuildConfiguration;
         _process = _testProcessBuilder.Build();
 
         TestOutputHelper?.WriteLine(
