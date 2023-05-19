@@ -11,8 +11,6 @@ public sealed class TestProcessWrapper : IDisposable
 {
     #region Private members
 
-    private readonly string _appProjectName;
-
     private readonly Dictionary<string, string> _environmentVariables = new();
 
     private readonly Dictionary<string, string> _arguments = new();
@@ -73,7 +71,6 @@ public sealed class TestProcessWrapper : IDisposable
             isCoverletEnabled
         );
 
-        _appProjectName = appProjectName;
         _buildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
     }
@@ -176,7 +173,7 @@ public sealed class TestProcessWrapper : IDisposable
         TestOutputHelper?.WriteLine("Waiting for process to shutdown ...");
         _process.WaitForExit(10000);
         TestOutputHelper?.WriteLine(
-            $"Process {_appProjectName} has " + (_process.HasExited ? "" : "NOT ") + "completed."
+            $"Process {_testProcessBuilder.AppProjectName} has " + (_process.HasExited ? "" : "NOT ") + "completed."
         );
     }
 

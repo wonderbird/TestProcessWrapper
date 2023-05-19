@@ -1,15 +1,16 @@
 using System.Diagnostics;
 using System.IO;
-using Xunit.Abstractions;
 
 namespace TestProcessWrapper
 {
     internal class TestProcessBuilder : IProcessFactory
     {
-        public bool IsCoverletEnabled { get; set; }
+        public string AppProjectName { get; }
+
         public BuildConfiguration BuildConfiguration { get; set; }
 
-        private string _appProjectName;
+        public bool IsCoverletEnabled { get; set; }
+
         private TestProjectInfo _testProjectInfo;
 
         private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
@@ -20,14 +21,14 @@ namespace TestProcessWrapper
             bool isCoverletEnabled
         )
         {
-            _appProjectName = appProjectName;
+            AppProjectName = appProjectName;
             BuildConfiguration = buildConfiguration;
             IsCoverletEnabled = isCoverletEnabled;
         }
 
         public ITestProcess Build()
         {
-            _testProjectInfo = new TestProjectInfo(_appProjectName);
+            _testProjectInfo = new TestProjectInfo(AppProjectName);
 
             var process = new TestProcess();
 
