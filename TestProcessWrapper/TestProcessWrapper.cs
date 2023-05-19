@@ -40,11 +40,7 @@ public sealed class TestProcessWrapper : IDisposable
 
     public bool IsCoverletEnabled { get; set; }
 
-    public BuildConfiguration BuildConfiguration
-    {
-        get => _testProcessBuilder.BuildConfiguration;
-        set => _testProcessBuilder.BuildConfiguration = value;
-    }
+    public BuildConfiguration BuildConfiguration { get; set; }
 
     public bool HasExited => _process == null || _process.HasExited;
 
@@ -66,6 +62,7 @@ public sealed class TestProcessWrapper : IDisposable
     )
     {
         IsCoverletEnabled = isCoverletEnabled;
+        BuildConfiguration = buildConfiguration;
         _testProcessBuilder = new UnwrappedProcessBuilder(
             appProjectName,
             buildConfiguration,
@@ -99,6 +96,7 @@ public sealed class TestProcessWrapper : IDisposable
     public void Start()
     {
         _testProcessBuilder.IsCoverletEnabled = IsCoverletEnabled;
+        _testProcessBuilder.BuildConfiguration = BuildConfiguration;
         _testProcessBuilder.CreateStartInfo();
         _testProcessBuilder.AddCommandLineArguments(_arguments);
         _testProcessBuilder.AddEnvironmentVariables(_environmentVariables);
