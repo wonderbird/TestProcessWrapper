@@ -12,13 +12,14 @@ internal class UnwrappedProcessBuilder : TestProcessBuilder
 
     private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
 
-    public UnwrappedProcessBuilder() {}
+    public UnwrappedProcessBuilder() { }
 
     public UnwrappedProcessBuilder(
         string appProjectName,
         BuildConfiguration buildConfiguration,
         bool isCoverletEnabled
-    ) : base(appProjectName)
+    )
+        : base(appProjectName)
     {
         BuildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
@@ -35,7 +36,6 @@ internal class UnwrappedProcessBuilder : TestProcessBuilder
             ProcessStartInfo = CreateProcessStartInfoWithCoverletWrapper();
         }
     }
-
 
     private ProcessStartInfo CreateStartInfo(string processName, string processArguments)
     {
@@ -72,20 +72,5 @@ internal class UnwrappedProcessBuilder : TestProcessBuilder
                 ? $" {argument}"
                 : $" {argument}={value}";
         }
-    }
-
-    public override void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
-    {
-        foreach (var item in environmentVariables)
-        {
-            ProcessStartInfo.Environment.Add(item);
-        }
-    }
-
-    public override ITestProcess Build()
-    {
-        var process = new TestProcess();
-        process.StartInfo = ProcessStartInfo;
-        return process;
     }
 }

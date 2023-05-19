@@ -10,15 +10,26 @@ internal abstract class TestProcessBuilder
     protected readonly TestProjectInfo TestProjectInfo;
     protected ProcessStartInfo ProcessStartInfo;
 
-    protected TestProcessBuilder() =>
-        TestProjectInfo = new TestProjectInfo("");
+    protected TestProcessBuilder() => TestProjectInfo = new TestProjectInfo("");
 
     protected TestProcessBuilder(string appProjectName) =>
         TestProjectInfo = new TestProjectInfo(appProjectName);
 
     public abstract void CreateStartInfo();
     public abstract void AddCommandLineArguments(Dictionary<string, string> arguments);
-    public abstract void AddEnvironmentVariables(Dictionary<string, string> environmentVariables);
-    public abstract ITestProcess Build();
+
+    public void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
+    {
+        foreach (var item in environmentVariables)
+        {
+            ProcessStartInfo.Environment.Add(item);
+        }
+    }
+
+    public virtual ITestProcess Build()
+    {
+        var process = new TestProcess();
+        process.StartInfo = ProcessStartInfo;
+        return process;
+    }
 }
-    
