@@ -25,11 +25,18 @@ internal class CoverletWrappedProcessBuilder : TestProcessBuilder
 
     public override void AddCommandLineArguments(Dictionary<string, string> arguments)
     {
+        var applicationArguments = "";
         foreach (var (argument, value) in arguments)
         {
-            ProcessStartInfo.Arguments += string.IsNullOrEmpty(value)
+            applicationArguments += string.IsNullOrEmpty(value)
                 ? $" {argument}"
                 : $" {argument}={value}";
         }
+
+        ProcessStartInfo.Arguments =
+            $"\".\" --target \"dotnet\" "
+            + $"--targetargs \"{TestProjectInfo.AppDllName}{applicationArguments}\" "
+            + $"--output {TestProjectInfo.CoverageReportPath} "
+            + $"--format cobertura";
     }
 }
