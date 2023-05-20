@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
+## [6.1.320-alpha] - 2023-05-20
+
+### Fixed
+
+- Command line arguments can be used with a test process wrapped in `coverlet` - see issue #85
+
 ## [6.0.317-alpha] - 2023-05-17
 
 ### Added (Breaking Change)
