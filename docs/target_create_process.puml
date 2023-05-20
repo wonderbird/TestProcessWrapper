@@ -30,6 +30,7 @@ factory_if -* wrapper : _testProcessBuilderFactory
 
 abstract class "TestProcessBuilder" as builder {
   + constructor(appProjectName)
+  + CreateProcessStartInfo()
   + AddCommandLineArguments(...)
   + AddEnvironmentVariables(...)
   + Build()
