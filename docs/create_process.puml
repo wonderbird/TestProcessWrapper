@@ -3,14 +3,14 @@ allowmixing
 
 actor "Library User" as user
 
-class "TestProcessWrapper" as wrapper  << facade, director >> {
-  - ITestProcessBuilderFactory _testProcessBuilderFactory
-  - TestProcessBuilder _testProcessBuilder
-  - ITestProcess _process
-  - string AppProjectName
+class "TestProcessWrapper" as wrapper {
   - Dictionary<string, string> _arguments
   - Dictionary<string, string> _environmentVariables
-  
+  - ITestProcessBuilderFactory _testProcessBuilderFactory
+  - ITestProcess _process
+  + BuildConfiguration BuildConfiguration
+  + bool IsCoverletEnabled
+
   + constructor(appProjectName, isCoverletEnabled, buildConfiguration)
   + AddCommandLineArgument(...)
   + AddEnvironmentVariable(...)
@@ -20,7 +20,7 @@ class "TestProcessWrapper" as wrapper  << facade, director >> {
 user -- wrapper : interact\nonly with >
 
 interface "ITestProcessBuilderFactory" as factory_if << factory >> {
-  + CreateBuilder(isCoverletEnabled, buildConfiguration)
+  + CreateBuilder(appProjectName, isCoverletEnabled, buildConfiguration)
 }
 
 class "TestProcessBuilderFactory" as factory << factory >>
@@ -36,7 +36,7 @@ abstract class "TestProcessBuilder" as builder {
   + Build()
 }
 
-wrapper *- builder : _testProcessBuilder
+wrapper::Start --> builder : use >
 
 class "UnwrappedProcessBuilder" as unwrapped_builder
 builder <|-- unwrapped_builder
@@ -56,5 +56,4 @@ class "TestProcess" as process
 process_if <|-- process
 
 builder -> process : create >
-
 @enduml

@@ -4,32 +4,19 @@
 
 :icons: font
 
-== Create the Test Process
+== Creating the Test Process
 
-=== Current Design
+image::{gitplant}/create_process.puml[Create the test process]
 
-image::{gitplant}/current_create_process.puml[Current design of creating the test process]
+The user configures the test process by passing constructor arguments to `TestProcessWrapper`. S/he can add command line arguments and environment variables using `TestProcessWrapper.AddCommandLineArgument(...)` and `TestProcessWrapper.AddEnvironmentVariable(...)` as often as needed.
 
-The `TestProcessWrapper` stores the configuration for the target process in private members. The `Start()` method uses the `TestProcessBuilder` to create the process, passes all the configuration and finally starts it.
+After the `TestProcessWrapper` has been configured, `TestProcessWrapper.Start()` is called to create and run the test process. This method asks `_testProcessBuilderFactory` for an appropriate `TestProcessBuilder`:
 
-=== Problem of the Design: Command Line Arguments
+- an `UnwrappedProcessBuilder` creates and runs a plain `dotnet my_application.dll --test-argument` process,
+- a `CoverletWrappedProcessBuilder` wraps the process into `coverlet`, so that the command line is similar to `coverlet "." --target "dotnet" --targetargs "my_application.dll --test-argument"`.
 
-The `TestProcessBuilder` creates similar `processStartInfo` objects for the unwrapped process and for the process wrapped into `coverlet`.
+The major difference between these two builders is how arguments for the process under test are handled. `coverlet` expects arguments to be passed in via the `--targetargs` parameter. An "unwrapped process" can simply pass command line arguments via the `ProcessStartInfo.Arguments` property.
 
-It assumes that command line arguments are just appended to the `Arguments` property (string) of the processStartInfo for either the unwrapped process or the wrapped process.
+`TestProcessWrapper.Start()` passes the command line arguments and the environment variables to the `TestProcessBuilder`, which adds them to the `ProcessStartInfo` as needed.
 
-IMPORTANT: This assumption is wrong. `coverlet` expects command line arguments to be appended to the test process in the `--targetargs` argument.
-
-As a consequence, the entire command line argument handling is different for an unwrapped process and a process wrapped into `coverlet`. If we keep the current design, many `if(isCoverletEnabled) { ... } else { ... }` constructs must be used to pass arguments correctly.
-
-=== Future Design
-
-The `TestProcessBuilder` is subclassed by individual `TestProcessBuilder` s for an unwrapped process and for a wrapped process. The specialized builders know how to handle the command line arguments.
-
-image::{gitplant}/target_create_process.puml[Future design of creating the test process]
-
-The constructor of `TestProcessWrapper` uses the `TestProcessBuilderFactory` to get the builder matching the `isCoverletEnabled` flag.
-
-`TestProcessWrapper` forwards the calls to `AddCommandLineArgument` and `AddEnvironmentVariable` to the `TestProcessBuilder`.
-
-When the user calls `Start()`, `TestProcessWrapper` receives the process from `TestProcessBuilder.Build()` - it is either an unwrapped process or a process wrapped into coverlet. The implementation of `Build()` in the derived classes can handle the command line arguments correctly for their specific case.
+Finally, `TestProcessWrapper.Start()` receives the `TestProcessBuilder.Build()` result - the process under test - and starts it.
