@@ -33,11 +33,7 @@ internal class ProcessIdReader
             processIdStartIndex + 10,
             processIdNumberOfDigits
         );
-        ProcessId = int.Parse(
-            processIdString,
-            NumberStyles.Integer,
-            CultureInfo.InvariantCulture
-        );
+        ProcessId = int.Parse(processIdString, NumberStyles.Integer, CultureInfo.InvariantCulture);
 
         return true;
     }

@@ -8,7 +8,7 @@ public static class SimpleHostBuilder
 {
     public static IHostBuilder Create<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-        THostedService
+            THostedService
     >(string[] args)
         where THostedService : class, IHostedService
     {

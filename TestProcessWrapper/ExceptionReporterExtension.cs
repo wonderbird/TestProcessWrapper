@@ -7,16 +7,12 @@ namespace TestProcessWrapper;
 
 public static class ExceptionReporterExtension
 {
-    private static readonly Action<
-        ILogger,
-        string,
-        int?,
-        Exception
-    > LogUnhandledExceptionAction = LoggerMessage.Define<string, int?>(
-        LogLevel.Critical,
-        new EventId(1, nameof(Log)),
-        "Unhandled exception in {FileName}:{@LineNumber}"
-    );
+    private static readonly Action<ILogger, string, int?, Exception> LogUnhandledExceptionAction =
+        LoggerMessage.Define<string, int?>(
+            LogLevel.Critical,
+            new EventId(1, nameof(Log)),
+            "Unhandled exception in {FileName}:{@LineNumber}"
+        );
 
     public static void Write(this Exception exception, TextWriter writer)
     {

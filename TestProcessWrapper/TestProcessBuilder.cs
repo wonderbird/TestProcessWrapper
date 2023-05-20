@@ -14,8 +14,7 @@ internal abstract class TestProcessBuilder
     /// <summary>
     /// A default constructor is required when a class shall be mocked with Moq.
     /// </summary>
-    protected TestProcessBuilder() =>
-        TestProjectInfo = new TestProjectInfo("fakeAppProjectName");
+    protected TestProcessBuilder() => TestProjectInfo = new TestProjectInfo("fakeAppProjectName");
 
     protected TestProcessBuilder(string appProjectName) =>
         TestProjectInfo = new TestProjectInfo(appProjectName);
