@@ -15,10 +15,10 @@ internal class CoverletWrappedProcessBuilder : TestProcessBuilder
     public override void CreateProcessStartInfo()
     {
         var arguments =
-            $"\".\" --target \"dotnet\" " +
-            $"--targetargs \"{TestProjectInfo.AppDllName}\" " +
-            $"--output {TestProjectInfo.CoverageReportPath} " +
-            $"--format cobertura";
+            $"\".\" --target \"dotnet\" "
+            + $"--targetargs \"{TestProjectInfo.AppDllName}\" "
+            + $"--output {TestProjectInfo.CoverageReportPath} "
+            + $"--format cobertura";
 
         ProcessStartInfo = CreateProcessStartInfo("coverlet", arguments, _buildConfiguration);
     }

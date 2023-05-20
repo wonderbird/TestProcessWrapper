@@ -48,14 +48,14 @@ public sealed class TestProcessWrapper : IDisposable
 
     public bool IsRunning => _process is { HasExited: false };
 
-    #endregion
-
-    #region Create and configure TestProcessWrapper
-
     /// <summary>
     /// Log execution details to the SpecFlow TestOutputHelper.
     /// </summary>
     public ITestOutputHelper TestOutputHelper { get; set; }
+
+    #endregion
+
+    #region Create and configure TestProcessWrapper
 
     public TestProcessWrapper(
         string appProjectName,
@@ -73,7 +73,7 @@ public sealed class TestProcessWrapper : IDisposable
         ITestProcessBuilderFactory testProcessBuilderFactory,
         IProcessOutputRecorderFactory outputRecorderFactory
     )
-        : this("fakeProjectName", false, BuildConfiguration.Debug)
+        : this("fakeAppProjectName", false, BuildConfiguration.Debug)
     {
         _testProcessBuilderFactory = testProcessBuilderFactory;
         _processOutputRecorderFactory = outputRecorderFactory;
