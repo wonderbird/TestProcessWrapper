@@ -6,5 +6,15 @@ internal class TestProcessBuilderFactory : ITestProcessBuilderFactory
         string appProjectName,
         BuildConfiguration buildConfiguration,
         bool isCoverletEnabled
-    ) => new UnwrappedProcessBuilder(appProjectName, buildConfiguration, isCoverletEnabled);
+    )
+    {
+        if (isCoverletEnabled)
+        {
+            return new CoverletWrappedProcessBuilder(appProjectName, buildConfiguration, true);
+        }
+        else
+        {
+            return new UnwrappedProcessBuilder(appProjectName, buildConfiguration, false);
+        }
+    }
 }
