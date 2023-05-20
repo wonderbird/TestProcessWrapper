@@ -54,15 +54,4 @@ class "TestProcess" as process
 process_if <|-- process
 
 builder -> process : create >
-
-note bottom of coverlet_builder
-if (!_isCoverletEnabled)
-{
-    processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
-}
-else
-{
-    processStartInfo = CreateProcessStartInfoWithCoverletWrapper();
-}
-end note
 @enduml

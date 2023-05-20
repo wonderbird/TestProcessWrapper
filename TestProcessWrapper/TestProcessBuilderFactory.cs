@@ -10,7 +10,7 @@ internal class TestProcessBuilderFactory : ITestProcessBuilderFactory
     {
         if (isCoverletEnabled)
         {
-            return new CoverletWrappedProcessBuilder(appProjectName, buildConfiguration, true);
+            return new CoverletWrappedProcessBuilder(appProjectName, buildConfiguration);
         }
         else
         {
