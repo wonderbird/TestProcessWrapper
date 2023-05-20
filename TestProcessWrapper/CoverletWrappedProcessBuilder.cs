@@ -14,12 +14,7 @@ internal class CoverletWrappedProcessBuilder : TestProcessBuilder
 
     public override void CreateProcessStartInfo()
     {
-        var arguments =
-            $"\".\" --target \"dotnet\" "
-            + $"--targetargs \"{TestProjectInfo.AppDllName}\" "
-            + $"--output {TestProjectInfo.CoverageReportPath} "
-            + $"--format cobertura";
-
+        var arguments = WrapApplicationArgumentsIntoCoverletProcessArguments("");
         ProcessStartInfo = CreateProcessStartInfo("coverlet", arguments, _buildConfiguration);
     }
 
@@ -33,10 +28,12 @@ internal class CoverletWrappedProcessBuilder : TestProcessBuilder
                 : $" {argument}={value}";
         }
 
-        ProcessStartInfo.Arguments =
-            $"\".\" --target \"dotnet\" "
-            + $"--targetargs \"{TestProjectInfo.AppDllName}{applicationArguments}\" "
-            + $"--output {TestProjectInfo.CoverageReportPath} "
-            + $"--format cobertura";
+        ProcessStartInfo.Arguments = WrapApplicationArgumentsIntoCoverletProcessArguments(applicationArguments);
     }
+
+    private string WrapApplicationArgumentsIntoCoverletProcessArguments(string applicationArguments) =>
+        $"\".\" --target \"dotnet\" "
+        + $"--targetargs \"{TestProjectInfo.AppDllName}{applicationArguments}\" "
+        + $"--output {TestProjectInfo.CoverageReportPath} "
+        + $"--format cobertura";
 }
