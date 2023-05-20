@@ -1,10 +1,9 @@
 using System;
 
-namespace TestProcessWrapper.Unit.Tests
+namespace TestProcessWrapper.Unit.Tests;
+
+public class UnitTestException : Exception
 {
-    public class UnitTestException : Exception
-    {
-        public UnitTestException(string message)
-            : base(message) { }
-    }
+    public UnitTestException(string message)
+        : base(message) { }
 }

@@ -1,22 +1,21 @@
 using System;
 using System.Diagnostics;
 
-namespace TestProcessWrapper
+namespace TestProcessWrapper;
+
+internal interface ITestProcess : IDisposable
 {
-    internal interface ITestProcess : IDisposable
-    {
-        bool HasExited { get; }
+    bool HasExited { get; }
 
-        ProcessStartInfo StartInfo { get; }
+    ProcessStartInfo StartInfo { get; }
 
-        void Start();
+    void Start();
 
-        void BeginOutputReadLine();
+    void BeginOutputReadLine();
 
-        event DataReceivedEventHandler OutputDataReceived;
+    event DataReceivedEventHandler OutputDataReceived;
 
-        void WaitForExit(int milliseconds);
+    void WaitForExit(int milliseconds);
 
-        void Kill();
-    }
+    void Kill();
 }
