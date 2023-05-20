@@ -10,7 +10,7 @@ internal abstract class TestProcessBuilder
     protected readonly TestProjectInfo TestProjectInfo;
     protected ProcessStartInfo ProcessStartInfo;
 
-    protected TestProcessBuilder() => TestProjectInfo = new TestProjectInfo("");
+    protected TestProcessBuilder() => TestProjectInfo = new TestProjectInfo("fakeApplicationProject");
 
     protected TestProcessBuilder(string appProjectName) =>
         TestProjectInfo = new TestProjectInfo(appProjectName);

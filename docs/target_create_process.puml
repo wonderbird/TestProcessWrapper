@@ -37,9 +37,9 @@ abstract class "TestProcessBuilder" as builder {
 
 wrapper *- builder : _testProcessBuilder
 
-class "UnwrappedProcessBuilder" as process_builder
-builder <|-- process_builder
-factory --> process_builder : create >
+class "UnwrappedProcessBuilder" as unwrapped_builder
+builder <|-- unwrapped_builder
+factory --> unwrapped_builder : create >
 
 class "CoverletWrappedProcessBuilder" as coverlet_builder
 builder <|--- coverlet_builder

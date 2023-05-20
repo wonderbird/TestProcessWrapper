@@ -14,7 +14,7 @@ internal class TestProcessBuilderFactory : ITestProcessBuilderFactory
         }
         else
         {
-            return new UnwrappedProcessBuilder(appProjectName, buildConfiguration, false);
+            return new UnwrappedProcessBuilder(appProjectName, buildConfiguration);
         }
     }
 }

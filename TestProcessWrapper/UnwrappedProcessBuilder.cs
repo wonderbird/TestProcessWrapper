@@ -6,62 +6,34 @@ namespace TestProcessWrapper;
 
 internal class UnwrappedProcessBuilder : TestProcessBuilder
 {
-    public BuildConfiguration BuildConfiguration { get; set; }
-
-    public bool IsCoverletEnabled { get; set; }
-
-    private string BinFolder => Path.Combine("bin", BuildConfiguration.ToString(), "net7.0");
-
-    public UnwrappedProcessBuilder() { }
+    private readonly BuildConfiguration _buildConfiguration;
 
     public UnwrappedProcessBuilder(
         string appProjectName,
-        BuildConfiguration buildConfiguration,
-        bool isCoverletEnabled
+        BuildConfiguration buildConfiguration
     )
-        : base(appProjectName)
-    {
-        BuildConfiguration = buildConfiguration;
-        IsCoverletEnabled = isCoverletEnabled;
-    }
+        : base(appProjectName) =>
+        _buildConfiguration = buildConfiguration;
 
     public override void CreateStartInfo()
     {
-        if (!IsCoverletEnabled)
-        {
-            ProcessStartInfo = CreateStartInfo("dotnet", TestProjectInfo.AppDllName);
-        }
-        else
-        {
-            ProcessStartInfo = CreateProcessStartInfoWithCoverletWrapper();
-        }
-    }
+        var binFolder = Path.Combine("bin", _buildConfiguration.ToString(), "net7.0");
 
-    private ProcessStartInfo CreateStartInfo(string processName, string processArguments)
-    {
-        var processStartInfo = new ProcessStartInfo(processName)
+        var processStartInfo = new ProcessStartInfo("dotnet")
         {
             UseShellExecute = false,
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            Arguments = processArguments,
+            Arguments = TestProjectInfo.AppDllName,
             WorkingDirectory = Path.Combine(
                 TestProjectInfo.ProjectDir,
                 TestProjectInfo.AppProjectName,
-                BinFolder
+                binFolder
             )
         };
 
-        return processStartInfo;
-    }
-
-    private ProcessStartInfo CreateProcessStartInfoWithCoverletWrapper()
-    {
-        var arguments =
-            $"\".\" --target \"dotnet\" --targetargs \"{TestProjectInfo.AppDllName}\" --output {TestProjectInfo.CoverageReportPath} --format cobertura";
-
-        return CreateStartInfo("coverlet", arguments);
+        ProcessStartInfo = processStartInfo;
     }
 
     public override void AddCommandLineArguments(Dictionary<string, string> arguments)
