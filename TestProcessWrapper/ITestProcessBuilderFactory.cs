@@ -2,7 +2,7 @@ namespace TestProcessWrapper;
 
 internal interface ITestProcessBuilderFactory
 {
-    UnwrappedProcessBuilder CreateBuilder(
+    TestProcessBuilder CreateBuilder(
         string appProjectName,
         BuildConfiguration buildConfiguration,
         bool isCoverletEnabled

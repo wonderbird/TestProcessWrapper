@@ -12,7 +12,7 @@ public class TestProcessWrapperTest
     {
         var process = new Mock<ITestProcess>();
 
-        var testProcessBuilder = new Mock<UnwrappedProcessBuilder>();
+        var testProcessBuilder = new Mock<TestProcessBuilder>();
         testProcessBuilder.Setup(x => x.Build()).Returns(process.Object);
 
         _testProcessBuilderFactory = new Mock<ITestProcessBuilderFactory>();

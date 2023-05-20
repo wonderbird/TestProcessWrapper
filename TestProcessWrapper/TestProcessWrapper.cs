@@ -99,8 +99,6 @@ public sealed class TestProcessWrapper : IDisposable
             BuildConfiguration,
             IsCoverletEnabled
         );
-        testProcessBuilder.IsCoverletEnabled = IsCoverletEnabled;
-        testProcessBuilder.BuildConfiguration = BuildConfiguration;
         testProcessBuilder.CreateStartInfo();
         testProcessBuilder.AddCommandLineArguments(_arguments);
         testProcessBuilder.AddEnvironmentVariables(_environmentVariables);

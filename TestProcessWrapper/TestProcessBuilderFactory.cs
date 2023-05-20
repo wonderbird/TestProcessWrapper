@@ -2,9 +2,9 @@ namespace TestProcessWrapper;
 
 internal class TestProcessBuilderFactory : ITestProcessBuilderFactory
 {
-    public UnwrappedProcessBuilder CreateBuilder(
+    public TestProcessBuilder CreateBuilder(
         string appProjectName,
         BuildConfiguration buildConfiguration,
         bool isCoverletEnabled
-    ) => new(appProjectName, buildConfiguration, isCoverletEnabled);
+    ) => new UnwrappedProcessBuilder(appProjectName, buildConfiguration, isCoverletEnabled);
 }

@@ -27,21 +27,21 @@ factory_if <|-- factory
 
 factory_if -* wrapper : _testProcessBuilderFactory
 
-abstract class "TestProcessBuilder" as new_builder {
+abstract class "TestProcessBuilder" as builder {
   + constructor(appProjectName)
   + AddCommandLineArguments(...)
   + AddEnvironmentVariables(...)
   + Build()
 }
 
-class "UnwrappedProcessBuilder" as builder
-new_builder <|-- builder
-factory --> builder : create >
-
 wrapper *-- builder : _testProcessBuilder
 
+class "UnwrappedProcessBuilder" as unwrapped_builder
+builder <|-- unwrapped_builder
+factory --> unwrapped_builder : create >
+
 class "CoverletWrappedProcessBuilder" as coverlet_builder
-new_builder <|--- coverlet_builder
+builder <|--- coverlet_builder
 
 interface "ITestProcess" as process_if {
   + Start()
@@ -52,9 +52,9 @@ wrapper *- process_if : _process
 class "TestProcess" as process
 process_if <|-- process
 
-new_builder -> process : create >
+builder -> process : create >
 
-note bottom of builder
+note bottom of unwrapped_builder
 if (!_isCoverletEnabled)
 {
     processStartInfo = CreateProcessStartInfo("dotnet", _testProjectInfo.AppDllName);
