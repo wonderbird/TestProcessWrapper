@@ -1,6 +1,6 @@
 // To always get the latest diagrams, update the
 // commit hash from the version merged into main
-:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/604bed9eed3ca647c3732010bdf472e33040df76/docs
+:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/e671fa3564d137857ed03f1f186d2f5c4af5c954/docs
 
 :icons: font
 
