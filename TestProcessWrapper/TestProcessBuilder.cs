@@ -6,8 +6,6 @@ namespace TestProcessWrapper;
 
 internal abstract class TestProcessBuilder
 {
-    public string AppProjectName => TestProjectInfo.AppProjectName;
-
     protected readonly TestProjectInfo TestProjectInfo;
     protected ProcessStartInfo ProcessStartInfo;
 
