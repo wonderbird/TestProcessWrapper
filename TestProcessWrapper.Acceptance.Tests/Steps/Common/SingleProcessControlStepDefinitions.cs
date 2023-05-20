@@ -71,6 +71,12 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
             Client.TestOutputHelper = _testOutputHelper;
         }
 
+        [Given(@"coverlet has been enabled")]
+        public static void GivenCoverletHasBeenEnabled()
+        {
+            Client.IsCoverletEnabled = true;
+        }
+
         [When]
         public static void WhenTheApplicationIsReady()
         {

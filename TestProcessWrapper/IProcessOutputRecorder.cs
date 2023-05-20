@@ -1,11 +1,10 @@
 using System;
 
-namespace TestProcessWrapper
-{
-    internal interface IProcessOutputRecorder : IDisposable
-    {
-        string Output { get; }
+namespace TestProcessWrapper;
 
-        void StartRecording(IProcess process);
-    }
+internal interface IProcessOutputRecorder : IDisposable
+{
+    string Output { get; }
+
+    void StartRecording(ITestProcess process);
 }

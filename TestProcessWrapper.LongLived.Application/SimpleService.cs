@@ -5,65 +5,64 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace TestProcessWrapper.LongLived.Application
+namespace TestProcessWrapper.LongLived.Application;
+
+public sealed class SimpleService : BackgroundService
 {
-    public sealed class SimpleService : BackgroundService
+    private ILogger<SimpleService> Logger { get; }
+
+    private TimeSpan DelayAfterEachLoop { get; } = TimeSpan.FromMilliseconds(50.0);
+
+    public SimpleService(ILogger<SimpleService> logger, IConfiguration configuration)
     {
-        private ILogger<SimpleService> Logger { get; }
+        Logger = logger;
 
-        private TimeSpan DelayAfterEachLoop { get; } = TimeSpan.FromMilliseconds(50.0);
+        const string testArgumentName = "test-argument";
+        var testArgumentValue = configuration.GetValue<string>(testArgumentName);
+        Logger.CommandLineArgument($"--{testArgumentName}", testArgumentValue);
+    }
 
-        public SimpleService(ILogger<SimpleService> logger, IConfiguration configuration)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        try
         {
-            Logger = logger;
+            RegisterCancellationRequest(stoppingToken);
 
-            const string testArgumentName = "test-argument";
-            var testArgumentValue = configuration.GetValue<string>(testArgumentName);
-            Logger.CommandLineArgument($"--{testArgumentName}", testArgumentValue);
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            try
+            while (true)
             {
-                RegisterCancellationRequest(stoppingToken);
-
-                while (true)
-                {
-                    await PerformSampleWorkerTask(stoppingToken);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // This exception is desired, when shutdown is requested. No action is necessary.
-                Logger.OperationCancelled();
-            }
-            catch (Exception e)
-            {
-                e.Log(Logger);
-            }
-            finally
-            {
-                ShutdownService();
+                await PerformSampleWorkerTask(stoppingToken);
             }
         }
-
-        private void RegisterCancellationRequest(CancellationToken stoppingToken)
+        catch (OperationCanceledException)
         {
-            Logger.WaitingForCancellationRequest();
-            stoppingToken.Register(() => Logger.StopRequestReceived());
-            stoppingToken.ThrowIfCancellationRequested();
+            // This exception is desired, when shutdown is requested. No action is necessary.
+            Logger.OperationCancelled();
         }
-
-        private async Task PerformSampleWorkerTask(CancellationToken stoppingToken)
+        catch (Exception e)
         {
-            await Task.Delay(DelayAfterEachLoop, stoppingToken);
+            e.Log(Logger);
         }
-
-        private void ShutdownService()
+        finally
         {
-            Logger.ShuttingDown();
-            Logger.ShutDownComplete();
+            ShutdownService();
         }
+    }
+
+    private void RegisterCancellationRequest(CancellationToken stoppingToken)
+    {
+        Logger.WaitingForCancellationRequest();
+        stoppingToken.Register(() => Logger.StopRequestReceived());
+        stoppingToken.ThrowIfCancellationRequested();
+    }
+
+    private async Task PerformSampleWorkerTask(CancellationToken stoppingToken)
+    {
+        await Task.Delay(DelayAfterEachLoop, stoppingToken);
+    }
+
+    private void ShutdownService()
+    {
+        Logger.ShuttingDown();
+        Logger.ShutDownComplete();
     }
 }

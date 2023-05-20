@@ -1,0 +1,22 @@
+// To always get the latest diagrams, update the
+// commit hash from the version merged into main
+:gitplant: http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wonderbird/TestProcessWrapper/e671fa3564d137857ed03f1f186d2f5c4af5c954/docs
+
+:icons: font
+
+== Creating the Test Process
+
+image::{gitplant}/create_process.puml[Create the test process]
+
+The user configures the test process by passing constructor arguments to `TestProcessWrapper`. S/he can add command line arguments and environment variables using `TestProcessWrapper.AddCommandLineArgument(...)` and `TestProcessWrapper.AddEnvironmentVariable(...)` as often as needed.
+
+After the `TestProcessWrapper` has been configured, `TestProcessWrapper.Start()` is called to create and run the test process. This method asks `_testProcessBuilderFactory` for an appropriate `TestProcessBuilder`:
+
+- an `UnwrappedProcessBuilder` creates and runs a plain `dotnet my_application.dll --test-argument` process,
+- a `CoverletWrappedProcessBuilder` wraps the process into `coverlet`, so that the command line is similar to `coverlet "." --target "dotnet" --targetargs "my_application.dll --test-argument"`.
+
+The major difference between these two builders is how arguments for the process under test are handled. `coverlet` expects arguments to be passed in via the `--targetargs` parameter. An "unwrapped process" can simply pass command line arguments via the `ProcessStartInfo.Arguments` property.
+
+`TestProcessWrapper.Start()` passes the command line arguments and the environment variables to the `TestProcessBuilder`, which adds them to the `ProcessStartInfo` as needed.
+
+Finally, `TestProcessWrapper.Start()` receives the `TestProcessBuilder.Build()` result - the process under test - and starts it.

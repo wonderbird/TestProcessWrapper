@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using Xunit.Abstractions;
@@ -14,17 +13,15 @@ public sealed class TestProcessWrapper : IDisposable
 
     private readonly string _appProjectName;
 
-    private readonly Dictionary<string, string> _environmentVariables = new();
+    private readonly List<ReadinessCheck> _readinessChecks = new();
 
     private readonly Dictionary<string, string> _arguments = new();
 
-    private readonly List<ReadinessCheck> _readinessChecks = new();
+    private readonly Dictionary<string, string> _environmentVariables = new();
 
-    private readonly IProcessFactory _processFactory = new DotnetProcessFactory();
+    private readonly ITestProcessBuilderFactory _testProcessBuilderFactory;
 
-    private IProcess _process;
-
-    private BuildConfiguration _buildConfiguration;
+    private ITestProcess _process;
 
     /// <summary>
     /// Id of the process under test.
@@ -43,20 +40,22 @@ public sealed class TestProcessWrapper : IDisposable
 
     public string RecordedOutput => _processOutputRecorder.Output;
 
-    public bool IsCoverletEnabled { get; }
+    public bool IsCoverletEnabled { get; set; }
+
+    public BuildConfiguration BuildConfiguration { get; set; }
 
     public bool HasExited => _process == null || _process.HasExited;
 
     public bool IsRunning => _process is { HasExited: false };
 
-    #endregion
-
-    #region Create and configure TestProcessWrapper
-
     /// <summary>
     /// Log execution details to the SpecFlow TestOutputHelper.
     /// </summary>
     public ITestOutputHelper TestOutputHelper { get; set; }
+
+    #endregion
+
+    #region Create and configure TestProcessWrapper
 
     public TestProcessWrapper(
         string appProjectName,
@@ -65,39 +64,29 @@ public sealed class TestProcessWrapper : IDisposable
     )
     {
         _appProjectName = appProjectName;
-        _buildConfiguration = buildConfiguration;
         IsCoverletEnabled = isCoverletEnabled;
+        BuildConfiguration = buildConfiguration;
+        _testProcessBuilderFactory = new TestProcessBuilderFactory();
     }
 
     internal TestProcessWrapper(
-        IProcessFactory processFactory,
+        ITestProcessBuilderFactory testProcessBuilderFactory,
         IProcessOutputRecorderFactory outputRecorderFactory
     )
-        : this("fakeProjectName", false, BuildConfiguration.Debug)
+        : this("fakeAppProjectName", false, BuildConfiguration.Debug)
     {
-        _processFactory = processFactory;
+        _testProcessBuilderFactory = testProcessBuilderFactory;
         _processOutputRecorderFactory = outputRecorderFactory;
     }
 
-    public void AddEnvironmentVariable(string name, string value)
-    {
-        _environmentVariables[name] = value;
-    }
+    public void AddEnvironmentVariable(string name, string value) =>
+        _environmentVariables.Add(name, value);
 
-    public void AddCommandLineArgument(string argument, string value = "")
-    {
-        _arguments[argument] = value;
-    }
+    public void AddCommandLineArgument(string argument, string value = "") =>
+        _arguments.Add(argument, value);
 
-    public void AddReadinessCheck(ReadinessCheck readinessCheck)
-    {
+    public void AddReadinessCheck(ReadinessCheck readinessCheck) =>
         _readinessChecks.Add(readinessCheck);
-    }
-
-    public void SelectBuildConfiguration(BuildConfiguration buildConfiguration)
-    {
-        _buildConfiguration = buildConfiguration;
-    }
 
     #endregion
 
@@ -105,9 +94,15 @@ public sealed class TestProcessWrapper : IDisposable
 
     public void Start()
     {
-        _process = _processFactory.Create(_appProjectName, _buildConfiguration, IsCoverletEnabled);
-        AddCommandLineArgumentsToProcess();
-        AddEnvironmentVariablesToProcess();
+        var testProcessBuilder = _testProcessBuilderFactory.CreateBuilder(
+            _appProjectName,
+            BuildConfiguration,
+            IsCoverletEnabled
+        );
+        testProcessBuilder.CreateProcessStartInfo();
+        testProcessBuilder.AddCommandLineArguments(_arguments);
+        testProcessBuilder.AddEnvironmentVariables(_environmentVariables);
+        _process = testProcessBuilder.Build();
 
         TestOutputHelper?.WriteLine(
             $"Starting process: {_process.StartInfo.FileName} {_process.StartInfo.Arguments} in directory {_process.StartInfo.WorkingDirectory} ..."
@@ -118,22 +113,6 @@ public sealed class TestProcessWrapper : IDisposable
         _processOutputRecorder.StartRecording(_process);
 
         WaitForProcessIdAndReadinessChecks();
-    }
-
-    private void AddCommandLineArgumentsToProcess()
-    {
-        foreach (var (argument, value) in _arguments)
-        {
-            _process.AddCommandLineArgument(argument, value);
-        }
-    }
-
-    private void AddEnvironmentVariablesToProcess()
-    {
-        foreach (var (name, value) in _environmentVariables)
-        {
-            _process.AddEnvironmentVariable(name, value);
-        }
     }
 
     private void WaitForProcessIdAndReadinessChecks()

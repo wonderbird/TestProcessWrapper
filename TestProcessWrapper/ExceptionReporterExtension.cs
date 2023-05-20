@@ -3,56 +3,51 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.Extensions.Logging;
 
-namespace TestProcessWrapper
+namespace TestProcessWrapper;
+
+public static class ExceptionReporterExtension
 {
-    public static class ExceptionReporterExtension
-    {
-        private static readonly Action<
-            ILogger,
-            string,
-            int?,
-            Exception
-        > LogUnhandledExceptionAction = LoggerMessage.Define<string, int?>(
+    private static readonly Action<ILogger, string, int?, Exception> LogUnhandledExceptionAction =
+        LoggerMessage.Define<string, int?>(
             LogLevel.Critical,
             new EventId(1, nameof(Log)),
             "Unhandled exception in {FileName}:{@LineNumber}"
         );
 
-        public static void Write(this Exception exception, TextWriter writer)
-        {
-            var exceptionOrigin = GetExceptionOriginFromStackTrace();
-            writer.WriteLine($"Unhandled exception in {exceptionOrigin}");
-            writer.WriteLine(exception.ToString());
-        }
+    public static void Write(this Exception exception, TextWriter writer)
+    {
+        var exceptionOrigin = GetExceptionOriginFromStackTrace();
+        writer.WriteLine($"Unhandled exception in {exceptionOrigin}");
+        writer.WriteLine(exception.ToString());
+    }
 
-        public static void Log(this Exception exception, ILogger logger)
-        {
-            var exceptionOrigin = GetExceptionOriginFromStackTrace();
-            LogUnhandledExceptionAction(
-                logger,
-                exceptionOrigin.FileName,
-                exceptionOrigin.LineNumber,
-                exception
-            );
-        }
+    public static void Log(this Exception exception, ILogger logger)
+    {
+        var exceptionOrigin = GetExceptionOriginFromStackTrace();
+        LogUnhandledExceptionAction(
+            logger,
+            exceptionOrigin.FileName,
+            exceptionOrigin.LineNumber,
+            exception
+        );
+    }
 
-        private static ExceptionOrigin GetExceptionOriginFromStackTrace()
+    private static ExceptionOrigin GetExceptionOriginFromStackTrace()
+    {
+        var stackFrame = new StackTrace(true).GetFrame(2);
+        var exceptionOrigin = new ExceptionOrigin
         {
-            var stackFrame = new StackTrace(true).GetFrame(2);
-            var exceptionOrigin = new ExceptionOrigin
-            {
-                FileName = stackFrame?.GetFileName(),
-                LineNumber = stackFrame?.GetFileLineNumber()
-            };
-            return exceptionOrigin;
-        }
+            FileName = stackFrame?.GetFileName(),
+            LineNumber = stackFrame?.GetFileLineNumber()
+        };
+        return exceptionOrigin;
+    }
 
-        private sealed class ExceptionOrigin
-        {
-            public string FileName { get; init; }
-            public int? LineNumber { get; init; }
+    private sealed class ExceptionOrigin
+    {
+        public string FileName { get; init; }
+        public int? LineNumber { get; init; }
 
-            public override string ToString() => $"{FileName}:{LineNumber}";
-        }
+        public override string ToString() => $"{FileName}:{LineNumber}";
     }
 }

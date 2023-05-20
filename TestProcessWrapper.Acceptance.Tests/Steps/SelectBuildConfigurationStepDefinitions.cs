@@ -13,7 +13,7 @@ public sealed class SelectBuildConfigurationStepDefinitions
     public void GivenTheBuildConfigurationHasBeenSelected(BuildConfiguration buildConfiguration)
     {
         var client = SingleProcessControlStepDefinitions.Client;
-        client.SelectBuildConfiguration(buildConfiguration);
+        client.BuildConfiguration = buildConfiguration;
         client.AddReadinessCheck(CaptureOutput);
     }
 

@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace TestProcessWrapper;
 
-internal sealed class DotnetProcess : IProcess
+internal sealed class TestProcess : ITestProcess
 {
     private readonly Process _process = new();
     private bool _isDisposed;
@@ -15,14 +15,6 @@ internal sealed class DotnetProcess : IProcess
         get => _process.StartInfo;
         set => _process.StartInfo = value;
     }
-
-    public void AddCommandLineArgument(string argument, string value) =>
-        _process.StartInfo.Arguments += string.IsNullOrEmpty(value)
-            ? $" {argument}"
-            : $" {argument}={value}";
-
-    public void AddEnvironmentVariable(string name, string value) =>
-        _process.StartInfo.EnvironmentVariables.Add(name, value);
 
     public void Start() => _process.Start();
 
@@ -44,7 +36,7 @@ internal sealed class DotnetProcess : IProcess
         GC.SuppressFinalize(this);
     }
 
-    ~DotnetProcess()
+    ~TestProcess()
     {
         Dispose(false);
     }

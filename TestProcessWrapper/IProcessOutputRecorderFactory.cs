@@ -1,7 +1,6 @@
-namespace TestProcessWrapper
+namespace TestProcessWrapper;
+
+internal interface IProcessOutputRecorderFactory
 {
-    internal interface IProcessOutputRecorderFactory
-    {
-        IProcessOutputRecorder Create();
-    }
+    IProcessOutputRecorder Create();
 }

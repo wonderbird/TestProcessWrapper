@@ -1,30 +1,29 @@
 using System;
 using System.IO;
 
-namespace TestProcessWrapper
+namespace TestProcessWrapper;
+
+internal class TestProjectInfo
 {
-    internal class TestProjectInfo
+    public TestProjectInfo(string appProjectName)
     {
-        public TestProjectInfo(string appProjectName)
-        {
-            var projectRelativeDir = Path.Combine("..", "..", "..", "..");
-            ProjectDir = Path.GetFullPath(projectRelativeDir);
-            AppProjectName = appProjectName;
-        }
+        var projectRelativeDir = Path.Combine("..", "..", "..", "..");
+        ProjectDir = Path.GetFullPath(projectRelativeDir);
+        AppProjectName = appProjectName;
+    }
 
-        public string ProjectDir { get; }
-        public string AppProjectName { get; }
-        public string AppDllName => AppProjectName + ".dll";
+    public string ProjectDir { get; }
+    public string AppProjectName { get; }
+    public string AppDllName => AppProjectName + ".dll";
 
-        public string CoverageReportPath
+    public string CoverageReportPath
+    {
+        get
         {
-            get
-            {
-                var coverageReportFileName = $"{AppProjectName}.{Guid.NewGuid().ToString()}.xml";
-                var coverageReportRelativeDir = Path.Join("..", "..", "..", "TestResults");
-                var coverageReportDir = Path.GetFullPath(coverageReportRelativeDir);
-                return Path.Combine(coverageReportDir, coverageReportFileName);
-            }
+            var coverageReportFileName = $"{AppProjectName}.{Guid.NewGuid().ToString()}.xml";
+            var coverageReportRelativeDir = Path.Join("..", "..", "..", "TestResults");
+            var coverageReportDir = Path.GetFullPath(coverageReportRelativeDir);
+            return Path.Combine(coverageReportDir, coverageReportFileName);
         }
     }
 }

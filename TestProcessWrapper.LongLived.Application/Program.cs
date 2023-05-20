@@ -1,20 +1,19 @@
 using System;
 using Microsoft.Extensions.Hosting;
 
-namespace TestProcessWrapper.LongLived.Application
+namespace TestProcessWrapper.LongLived.Application;
+
+public static class Program
 {
-    public static class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        try
         {
-            try
-            {
-                SimpleHostBuilder.Create<SimpleService>(args).Build().Run();
-            }
-            catch (Exception e)
-            {
-                e.Write(Console.Error);
-            }
+            SimpleHostBuilder.Create<SimpleService>(args).Build().Run();
+        }
+        catch (Exception e)
+        {
+            e.Write(Console.Error);
         }
     }
 }
