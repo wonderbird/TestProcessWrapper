@@ -17,10 +17,26 @@ internal abstract class TestProcessBuilder
     protected TestProcessBuilder(string appProjectName) =>
         TestProjectInfo = new TestProjectInfo(appProjectName);
 
+    /// <summary>
+    /// Initialize the <see cref="ProcessStartInfo"/> property.
+    /// </summary>
     public abstract void CreateProcessStartInfo();
 
+    /// <summary>
+    /// Add command line arguments and values to <see cref="ProcessStartInfo"/>.
+    /// </summary>
+    /// <param name="arguments">
+    ///     Dictionary of argument name and corresponding value.
+    ///     If an argument represents a boolean option, then value is an empty string.
+    /// </param>
     public abstract void AddCommandLineArguments(Dictionary<string, string> arguments);
 
+    /// <summary>
+    /// Add environment variables to <see cref="ProcessStartInfo"/>.
+    /// </summary>
+    /// <param name="environmentVariables">
+    ///     Dictionary of environment variable name and corresponding value.
+    /// </param>
     public void AddEnvironmentVariables(Dictionary<string, string> environmentVariables)
     {
         foreach (var item in environmentVariables)
@@ -29,6 +45,13 @@ internal abstract class TestProcessBuilder
         }
     }
 
+    /// <summary>
+    /// Create the <see cref="ITestProcess"/> from <see cref="ProcessStartInfo"/>.
+    /// </summary>
+    /// <remarks>
+    /// This method must be virtual so that Moq allows mocking it in unit tests.
+    /// </remarks>
+    /// <returns>Created <see cref="ITestProcess"/> instance</returns>
     public virtual ITestProcess Build()
     {
         var process = new TestProcess();
