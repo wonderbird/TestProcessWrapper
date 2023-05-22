@@ -28,10 +28,14 @@ internal class CoverletWrappedProcessBuilder : TestProcessBuilder
                 : $" {argument}={value}";
         }
 
-        ProcessStartInfo.Arguments = WrapApplicationArgumentsIntoCoverletProcessArguments(applicationArguments);
+        ProcessStartInfo.Arguments = WrapApplicationArgumentsIntoCoverletProcessArguments(
+            applicationArguments
+        );
     }
 
-    private string WrapApplicationArgumentsIntoCoverletProcessArguments(string applicationArguments) =>
+    private string WrapApplicationArgumentsIntoCoverletProcessArguments(
+        string applicationArguments
+    ) =>
         $"\".\" --target \"dotnet\" "
         + $"--targetargs \"{TestProjectInfo.AppDllName}{applicationArguments}\" "
         + $"--output {TestProjectInfo.CoverageReportPath} "
