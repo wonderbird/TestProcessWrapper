@@ -14,7 +14,7 @@ namespace TestProcessWrapper.Acceptance.Tests.Features
         [Fact]
         public void SmokeTest()
         {
-            var processWrapper = new TestProcessWrapper(
+            using var processWrapper = new TestProcessWrapper(
                 "TestProcessWrapper.LongLived.Application",
                 false,
                 BuildConfiguration.Debug

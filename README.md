@@ -27,13 +27,14 @@
 
 ## Overview
 
-Launch and control `dotnet` processes wrapped into the [coverlet](https://github.com/coverlet-coverage/coverlet) code
-coverage analyzer.
+Launch and control `dotnet` processes optionally wrapped into the
+[coverlet](https://github.com/coverlet-coverage/coverlet) code coverage analyzer.
 
-The class `TestProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests. The
-class captures the messages written to the `Console` and to `Console.Error`. It allows to terminate the process gracefully
-and forcefully. One of the processes can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet)
-command line tool in order to calculate code coverage.
+The class `TestProcessWrapper` is intended to launch one ore more `dotnet` processes for performing acceptance tests.
+The class captures the messages written to the `Console` and to `Console.Error`. It allows to terminate the process
+gracefully and forcefully. If multiple processes of the same executable (DLL) are running simultaneously, then one of
+them can be wrapped by the [coverlet](https://github.com/coverlet-coverage/coverlet) command line tool in order to
+calculate code coverage.
 
 Example processes are given in this repository:
 
@@ -42,18 +43,34 @@ Example processes are given in this repository:
 
 **Important**
 
-The tested process must report its process ID on the console. An example is
-[TestProcessWrapper.LongLived.Application/LogApplicationInfoService.cs](./TestProcessWrapper.LongLived.Application/LogApplicationInfoService.cs).
+- The tested process must report its process ID on the console. An example is
+[TestProcessWrapper.ShortLived.Application/Program.cs](./TestProcessWrapper.ShortLived.Application/Program.cs).
+
+- Ensure that **only one executable (DLL) is wrapped into 
+  coverlet at a time**. Run instrumented integration tests sequentially.
+  Otherwise the coverage results will be wrong. When using [specflow with xUnit](https://docs.specflow.org/projects/specflow/en/latest/Integrations/xUnit.html), enforce sequential execution by a
+  [specflow.json file like this](https://github.com/wonderbird/malimo/blob/main/malimo.Acceptance.Tests/specflow.json).
 
 **Usage Examples**
 
 The most simple use is described by the acceptance test [SmokeTests.cs](TestProcessWrapper.Acceptance.Tests/Features/SmokeTests.cs).
 
-You can find detailed usage examples in the [Acceptance Test Suite (BDD)](TestProcessWrapper.Acceptance.Tests). If you'd like to have easy to read HTML documentation, then generate [LivingDoc](https://docs.specflow.org/projects/getting-started/en/latest/gettingstartedrider/Step8r.html) as described in the corresponding section [Create Feature Documentation (LivingDoc)](#create-feature-documentation-livingdoc) below.
+You can find detailed usage examples in the [Acceptance Test Suite (BDD)](TestProcessWrapper.Acceptance.Tests). If you'd
+like to have easy to read HTML documentation, then generate
+[LivingDoc](https://docs.specflow.org/projects/getting-started/en/latest/gettingstartedrider/Step8r.html) as described
+in the corresponding section [Create Feature Documentation (LivingDoc)](#create-feature-documentation-livingdoc) below.
 
-If you don't need LivingDoc, first read a [Gherkin](https://specflow.org/learn/gherkin/) `.feature` file from the [Features](TestProcessWrapper.Acceptance.Tests/Features) folder. It explains why each feature exists and which use scenarios are addressed.
-Then read the corresponding `*StepDefinition.cs` file in the [Steps](TestProcessWrapper.Acceptance.Tests/Steps) folder. It shows how the test steps from the feature file (given, when, then) are actually implemented.
-Note, that some frequently used steps are implemented in the [Common](TestProcessWrapper.Acceptance.Tests/Steps/Common) folder.
+Next, read a [Gherkin](https://specflow.org/learn/gherkin/) `.feature` file from the
+[Features](TestProcessWrapper.Acceptance.Tests/Features) folder. It explains why each feature exists and which use
+scenarios are addressed. Then read the corresponding `*StepDefinitions.cs` file in the
+[Steps](TestProcessWrapper.Acceptance.Tests/Steps) folder. It shows how the test steps from the feature file (given,
+when, then) are actually implemented. Note, that some frequently used steps are implemented in the
+[Common](TestProcessWrapper.Acceptance.Tests/Steps/Common) folder.
+
+Further information can be seen in the following GitHub repositories use TestProcessWrapper:
+                            
+- [wonderbird / malimo](https://github.com/wonderbird/malimo)
+- [wonderbirds-katas / rabbitmq](https://github.com/wonderbirds-katas/kata-rabbitmq)
 
 ## Attention
 
@@ -149,6 +166,7 @@ open TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
 ##### Fix Static Code Analysis Warnings
 
 ... fix static code analysis warnings reported by [SonarLint](https://www.sonarsource.com/products/sonarlint/)
+and by [CodeClimate](https://codeclimate.com/github/wonderbird/TestProcessWrapper/issues).
 
 ##### Apply Code Formatting Rules
 
