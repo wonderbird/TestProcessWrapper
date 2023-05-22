@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
-## [6.1.322-alpha] - 2023-05-22
+## [6.1.325-alpha] - 2023-05-22
 
 This release brings only cosmetic changes to documentation and tests.
 
@@ -16,6 +16,7 @@ This release brings only cosmetic changes to documentation and tests.
 - Emphasise running coverlet wrapped processes sequentially (README.md)
 - Correctly dispose TestProcessWrapper in smoke test
 - Minor code style fix
+- Upgrade dependencies: coverlet.msbuild-6.0.0
 
 ## [6.1.320-alpha] - 2023-05-20
 
