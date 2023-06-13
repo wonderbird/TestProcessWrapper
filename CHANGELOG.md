@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
+## [Unreleased]
+
+### Added
+
+- Add support for net6.0 (while keeping support for net7.0)
+
+### Changed
+
+- Upgrade dependencies: Microsoft.NET.Test.Sdk 17.6.2
+
 ## [6.1.325-alpha] - 2023-05-22
 
 This release brings only cosmetic changes to documentation and tests.

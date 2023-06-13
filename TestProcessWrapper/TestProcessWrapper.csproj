@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <PackageId>Boos.TestProcessWrapper</PackageId>
         <Version>0.0.0-alpha</Version>
         <title>TestProcessWrapper</title>
