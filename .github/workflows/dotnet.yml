@@ -3,13 +3,13 @@ name: .NET
 on:
   workflow_dispatch:
   push:
-    branches: main
+    branches: [main]
   pull_request:
-    branches: main
+    branches: [main]
 
 env:
   RETENTION_DAYS: 5
-  packageVersionPrefix: ${{ '6.1.' }}
+  packageVersionPrefix: ${{ '6.2.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
   packageVersionSuffixForMainBranch: ${{ '-alpha' }}
 
