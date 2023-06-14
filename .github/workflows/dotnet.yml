@@ -55,10 +55,6 @@ jobs:
         run: |
           dotnet pack TestProcessWrapper/TestProcessWrapper.csproj /p:PackageVersion=${{ env.packageVersion }}
           echo "packageVersion=${{ env.packageVersion }}" > TestProcessWrapper/bin/Debug/VERSION.txt
-
-      - name: Test NuGet package
-        run: ./smoketest.sh
-        working-directory: TestProcessWrapper.Nupkg.Tests
         
       - name: Generate coverage reports
         run: reportgenerator "-reports:TestProcessWrapper.Acceptance.Tests/TestResults/*.xml;TestProcessWrapper.Unit.Tests/TestResults/*.xml" \
@@ -90,12 +86,52 @@ jobs:
           name: LivingDoc
           path: TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
 
+  smoketest:
+    runs-on: ubuntu-latest
+    name: Test NuGet package
+
+    needs: build-and-test
+    
+    strategy:
+      matrix:
+        dotnet-version:
+          - 6.x
+          - 7.x
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup environment variables (main branch)
+        if: github.ref == 'refs/heads/main'
+        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForMainBranch }}" >> $GITHUB_ENV
+
+      - name: Setup environment variables (feature branch)
+        if: github.ref != 'refs/heads/main'
+        run: echo "packageVersion=${{ env.packageVersionPrefix }}${{ github.run_number }}${{ env.packageVersionSuffixForFeatureBranch }}" >> $GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Download nuget package
+        uses: actions/download-artifact@v3
+        with:
+          name: nuget-package
+          path: ./TestProcessWrapper/bin/Debug
+          # Downloading the nuget package to this path allows to run the ./smoketest.sh script on your
+          # local development machine without changes
+
+      - name: Test NuGet package
+        run: ./smoketest.sh
+        working-directory: TestProcessWrapper.Nupkg.Tests
+  
   publish-reports:
     runs-on: ubuntu-latest
     name: Publish coverage reports
     if: github.ref == 'refs/heads/main'
     
-    needs: build-and-test
+    needs: smoketest
     
     steps:
       # the repository is required by codeclimate-action
@@ -124,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish NuGet package
     
-    needs: build-and-test
+    needs: smoketest
 
     steps:
       - name: Download NuGet package

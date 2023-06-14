@@ -15,14 +15,14 @@ namespace TestProcessWrapper.Acceptance.Tests.Features
         public void SmokeTest()
         {
             using var processWrapper = new TestProcessWrapper(
-                "TestProcessWrapper.LongLived.Application",
+                "TestProcessWrapper.ShortLived.Application",
                 false,
                 BuildConfiguration.Debug
             );
             processWrapper.Start();
             processWrapper.ShutdownGracefully();
             processWrapper.ForceTermination();
-            Assert.Contains("STOP", processWrapper.RecordedOutput);
+            Assert.Contains("Shut down", processWrapper.RecordedOutput);
         }
     }
 }
