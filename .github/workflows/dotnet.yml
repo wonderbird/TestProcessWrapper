@@ -94,9 +94,9 @@ jobs:
     
     strategy:
       matrix:
-        dotnet-version:
-          - 6.x
-          - 7.x
+        dotnet:
+          - { setupVersion: 6.x, binFolder: net6.0 }
+          - { setupVersion: 7.x, binFolder: net7.0 }
 
     steps:
       - uses: actions/checkout@v3
@@ -112,7 +112,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: ${{ matrix.dotnet.setupVersion }}
 
       - name: Download nuget package
         uses: actions/download-artifact@v3
@@ -123,7 +123,7 @@ jobs:
           # local development machine without changes
 
       - name: Test NuGet package
-        run: ./smoketest.sh
+        run: ./smoketest.sh "${{ matrix.dotnet.binFolder }}"
         working-directory: TestProcessWrapper.Nupkg.Tests
   
   publish-reports:

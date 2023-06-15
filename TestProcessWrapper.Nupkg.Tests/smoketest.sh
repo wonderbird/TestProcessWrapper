@@ -2,7 +2,19 @@
 #
 # Smoke test: Does the created NuGet Package work?
 #
+# USAGE: ./smoketest.sh FRAMEWORK_VERSION
+#
+# The parameter FRAMEWORK_VERSION ($1) can be either "net6.0" or "net7.0".
+#
 set -euf
+
+#####
+# Parse parameters
+#####
+
+framework_version=$1
+echo "***** Testing the nuget package for the framework version \"$framework_version\"" 
+echo
 
 #####
 # Arrange
@@ -20,8 +32,7 @@ rm -vf NuGet.config
 dotnet nuget locals all --clear
 echo
 
-echo "***** Configure .NET framework version: net6.0"
-export framework_version="net6.0"
+echo "***** Configure .NET framework version: \"$framework_version\""
 cp -v "${framework_version}-global.json" global.json
 echo
 
