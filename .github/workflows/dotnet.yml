@@ -87,16 +87,18 @@ jobs:
           path: TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
 
   smoketest:
-    runs-on: ubuntu-latest
     name: Test NuGet package
 
     needs: build-and-test
     
     strategy:
       matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
         dotnet:
           - { setupVersion: 6.x, binFolder: net6.0 }
           - { setupVersion: 7.x, binFolder: net7.0 }
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
