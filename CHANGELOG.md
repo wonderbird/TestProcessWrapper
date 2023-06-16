@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
-## [Unreleased]
+## [6.2.347-alpha] - 2023-06-16
 
 ### Added
 
@@ -15,7 +15,10 @@ Every release is published as nuget package [Boos.TestProcessWrapper](https://ww
 
 ### Changed
 
-- Upgrade dependencies: Microsoft.NET.Test.Sdk 17.6.2
+- Upgrade dependencies
+  - Microsoft.NET.Test.Sdk 17.6.2
+  - Microsoft.Extensions.Logging.Abstractions 7.0.1
+  - Microsoft.CodeAnalysis.NetAnalyzers 7.0.3
 
 ## [6.1.325-alpha] - 2023-05-22
 
