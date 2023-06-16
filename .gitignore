@@ -1,3 +1,7 @@
+# Temporarily copied files and projects for smoke test
+/TestProcessWrapper.Nupkg.Tests/global.json
+/TestProcessWrapper.Nupkg.Tests/TestProcessWrapper.ShortLived.Application/
+
 # SonarLint plugin
 sonarlint/
 

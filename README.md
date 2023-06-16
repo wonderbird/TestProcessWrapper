@@ -138,6 +138,23 @@ open TestProcessWrapper.Acceptance.Tests/TestResults/report/index.html
 The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
 when debugging issues popping up in the build pipeline.
 
+#### Run the Smoke Tests
+
+In the ci pipeline, the smoke tests verify compatibility with all supported .net framework versions.
+
+To run the smoke tests locally, issue the following console commands:
+
+```shell
+# build the nuget package with version 0.0.0
+dotnet pack TestProcessWrapper/TestProcessWrapper.csproj
+
+# run the smoke tests
+cd TestProcessWrapper.Nupkg.Tests
+./smoketest.sh "net7.0"
+```
+
+You can replace the "net7.0" parameter with "net6.0", if you want to test that version of the .net framework.
+
 #### Create Feature Documentation (LivingDoc)
 
 As this project uses SpecFlow for acceptance tests, you can generate an HTML overview of all features including the test status as follows:

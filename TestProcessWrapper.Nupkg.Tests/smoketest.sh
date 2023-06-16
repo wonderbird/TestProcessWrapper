@@ -2,6 +2,19 @@
 #
 # Smoke test: Does the created NuGet Package work?
 #
+# USAGE: ./smoketest.sh FRAMEWORK_VERSION
+#
+# The parameter FRAMEWORK_VERSION ($1) can be either "net6.0" or "net7.0".
+#
+set -euf
+
+#####
+# Parse parameters
+#####
+
+framework_version=$1
+echo "***** Testing the nuget package for the framework version \"$framework_version\"" 
+echo
 
 #####
 # Arrange
@@ -9,18 +22,33 @@
 
 echo "***** Cleaning up previous test run"
 rm -vrf ./SmokeTest.Test
-rm -vrf ./TestProcessWrapper.LongLived.Application
+rm -vrf ./TestProcessWrapper.ShortLived.Application
 rm -vf ./SmokeTest.sln
+rm -vf ./global.json
 echo
 
 echo "***** Clear local nuget cache"
-rm -v NuGet.config
+rm -vf NuGet.config
 dotnet nuget locals all --clear
 echo
 
-echo "***** Copying test application used by smoke test"
-mkdir -p TestProcessWrapper.LongLived.Application/bin/Debug/net7.0
-cp -vR ../TestProcessWrapper.LongLived.Application/bin/Debug/net7.0/* TestProcessWrapper.LongLived.Application/bin/Debug/net7.0
+echo "***** Configure .NET framework version: \"$framework_version\""
+cp -v "${framework_version}-global.json" global.json
+echo
+
+echo "***** Building test application used by smoke test"
+cp -vR "../TestProcessWrapper.ShortLived.Application" "TestProcessWrapper.ShortLived.Application"
+rm -vfr "TestProcessWrapper.ShortLived.Application/bin"
+rm -vfr "TestProcessWrapper.ShortLived.Application/obj"
+
+if [ "$(uname)" = "Darwin" ]; then
+  # on macOS, the sed -i parameter requires empty single quotes
+  sed -i '' "s/net7.0/${framework_version}/" "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"
+else
+  sed -i "s/net7.0/${framework_version}/" "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"
+fi
+
+dotnet build --configuration Debug "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"
 echo
 
 echo "***** Preparing new dotnet solution with an xunit test project"

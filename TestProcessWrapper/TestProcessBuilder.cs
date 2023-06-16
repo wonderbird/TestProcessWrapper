@@ -72,7 +72,11 @@ internal abstract class TestProcessBuilder
         BuildConfiguration buildConfiguration
     )
     {
-        var binFolder = Path.Combine("bin", buildConfiguration.ToString(), "net7.0");
+        #if NET7_0_OR_GREATER
+            var binFolder = Path.Combine("bin", buildConfiguration.ToString(), "net7.0");
+        #else
+            var binFolder = Path.Combine("bin", buildConfiguration.ToString(), "net6.0");
+        #endif
 
         var processStartInfo = new ProcessStartInfo(processName)
         {

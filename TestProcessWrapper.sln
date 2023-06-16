@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProcessWrapper.Nupkg.Te
 		TestProcessWrapper.Nupkg.Tests\NuGet-Local.config = TestProcessWrapper.Nupkg.Tests\NuGet-Local.config
 		TestProcessWrapper.Nupkg.Tests\smoketest.sh = TestProcessWrapper.Nupkg.Tests\smoketest.sh
 		TestProcessWrapper.Nupkg.Tests\.gitignore = TestProcessWrapper.Nupkg.Tests\.gitignore
+		TestProcessWrapper.Nupkg.Tests\net6.0-global.json = TestProcessWrapper.Nupkg.Tests\net6.0-global.json
+		TestProcessWrapper.Nupkg.Tests\net7.0-global.json = TestProcessWrapper.Nupkg.Tests\net7.0-global.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProcessWrapper.Unit.Tests", "TestProcessWrapper.Unit.Tests\TestProcessWrapper.Unit.Tests.csproj", "{7BC3300D-4599-409C-9839-A69E6E66CD7F}"
