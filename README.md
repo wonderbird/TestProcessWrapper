@@ -122,8 +122,16 @@ run the application:
 
 #### Build the Solution and Run the Acceptance Tests
 
+Note: The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
+when debugging issues popping up in the build pipeline.
+
 ```sh
-dotnet build
+# Remove build output from previous runs
+find . -iname "bin" -o -iname "obj" -exec rm -rf "{}" ";"
+
+# The acceptance tests require both a debug and a release build of the long lived application
+dotnet build --configuration Debug
+dotnet build --configuration Release --no-restore TestProcessWrapper.LongLived.Application/TestProcessWrapper.LongLived.Application.csproj
 
 # Simply run the tests
 dotnet test
@@ -134,9 +142,6 @@ rm -r TestProcessWrapper.Acceptance.Tests/TestResults && \
   reportgenerator "-reports:TestProcessWrapper.Acceptance.Tests/TestResults/*.xml" "-targetdir:TestProcessWrapper.Acceptance.Tests/TestResults/report" "-reporttypes:Html;lcov" "-title:TestProcessWrapper"
 open TestProcessWrapper.Acceptance.Tests/TestResults/report/index.html
 ```
-
-The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
-when debugging issues popping up in the build pipeline.
 
 #### Run the Smoke Tests
 

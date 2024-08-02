@@ -22,7 +22,9 @@ fi
 dotnet restore
 
 # Build
+# Note: The acceptance tests require both a debug and a release build of the long lived application
 dotnet build --configuration Debug --no-restore
+dotnet build --configuration Release --no-restore TestProcessWrapper.LongLived.Application/TestProcessWrapper.LongLived.Application.csproj
 
 # Test with coverage
 dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml'
