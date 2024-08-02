@@ -151,7 +151,7 @@ To run the smoke tests locally, issue the following console commands:
 
 ```shell
 # build the nuget package with version 0.0.0
-dotnet pack TestProcessWrapper/TestProcessWrapper.csproj
+dotnet pack --configuration Debug TestProcessWrapper/TestProcessWrapper.csproj
 
 # run the smoke tests
 cd TestProcessWrapper.Nupkg.Tests

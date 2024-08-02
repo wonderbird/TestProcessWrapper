@@ -53,7 +53,7 @@ jobs:
 
       - name: Build NuGet package
         run: |
-          dotnet pack TestProcessWrapper/TestProcessWrapper.csproj /p:PackageVersion=${{ env.packageVersion }}
+          dotnet pack --configuration Debug TestProcessWrapper/TestProcessWrapper.csproj /p:PackageVersion=${{ env.packageVersion }}
           echo "packageVersion=${{ env.packageVersion }}" > TestProcessWrapper/bin/Debug/VERSION.txt
         
       - name: Generate coverage reports
