@@ -9,11 +9,11 @@ Every release is published as nuget package [Boos.TestProcessWrapper](https://ww
 
 ## [unreleased]
 
+## [6.2.367-alpha] - 2024-08-05
+
 ### Changed
 
 - Upgrade build pipeline
-
-## [6.2.363-alpha] - 2024-08-05
 
 ### Fixed
 
