@@ -122,8 +122,16 @@ run the application:
 
 #### Build the Solution and Run the Acceptance Tests
 
+Note: The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
+when debugging issues popping up in the build pipeline.
+
 ```sh
-dotnet build
+# Remove build output from previous runs
+find . -iname "bin" -o -iname "obj" -exec rm -rf "{}" ";"
+
+# The acceptance tests require both a debug and a release build of the long lived application
+dotnet build --configuration Debug
+dotnet build --configuration Release --no-restore TestProcessWrapper.LongLived.Application/TestProcessWrapper.LongLived.Application.csproj
 
 # Simply run the tests
 dotnet test
@@ -135,9 +143,6 @@ rm -r TestProcessWrapper.Acceptance.Tests/TestResults && \
 open TestProcessWrapper.Acceptance.Tests/TestResults/report/index.html
 ```
 
-The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
-when debugging issues popping up in the build pipeline.
-
 #### Run the Smoke Tests
 
 In the ci pipeline, the smoke tests verify compatibility with all supported .net framework versions.
@@ -146,7 +151,7 @@ To run the smoke tests locally, issue the following console commands:
 
 ```shell
 # build the nuget package with version 0.0.0
-dotnet pack TestProcessWrapper/TestProcessWrapper.csproj
+dotnet pack --configuration Debug TestProcessWrapper/TestProcessWrapper.csproj
 
 # run the smoke tests
 cd TestProcessWrapper.Nupkg.Tests

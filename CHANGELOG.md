@@ -2,12 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
-## [Unreleased]
+## [6.2.363-alpha] - 2024-08-05
+
+### Fixed
+
+- Acceptance tests require release build of test application
+
+### Changed
+
+- Improve build and test documentation
+- Release debug version of the nuget package instead of release version
+
+## [6.2.350-alpha] - 2023-06-26
+
+### Changed
+
+- Upgrade dependencies
+    - Microsoft.Extensions.Logging.Abstractions 7.0.1
+    - Microsoft.CodeAnalysis.NetAnalyzers 7.0.3
+
+## [6.2.343-alpha] - 2023-06-16
 
 ### Added
 
@@ -15,7 +34,7 @@ Every release is published as nuget package [Boos.TestProcessWrapper](https://ww
 
 ### Changed
 
-- Upgrade dependencies: Microsoft.NET.Test.Sdk 17.6.2
+- Upgrade dependency: Microsoft.NET.Test.Sdk 17.6.2
 
 ## [6.1.325-alpha] - 2023-05-22
 
