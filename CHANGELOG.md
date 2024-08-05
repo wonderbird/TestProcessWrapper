@@ -15,10 +15,7 @@ Every release is published as nuget package [Boos.TestProcessWrapper](https://ww
 
 ### Changed
 
-- Upgrade dependencies
-  - Microsoft.NET.Test.Sdk 17.6.2
-  - Microsoft.Extensions.Logging.Abstractions 7.0.1
-  - Microsoft.CodeAnalysis.NetAnalyzers 7.0.3
+- Upgrade dependency: Microsoft.NET.Test.Sdk 17.6.2
 
 ## [6.1.325-alpha] - 2023-05-22
 
