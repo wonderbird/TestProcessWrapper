@@ -24,7 +24,8 @@ Every release is published as nuget package [Boos.TestProcessWrapper](https://ww
   - Moq 4.20.70
   - xunit 2.9.0
   - xunit.runner.visualstudio 2.8.2
-- Improve script extracting release notes from CHANGELOG.md
+- Nuget package contains README.md
+- Release notes are extracted properly from CHANGELOG.md
 
 ## [6.2.367-alpha] - 2024-08-05
 
