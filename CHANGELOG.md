@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
-## [unreleased]
+## [6.2.373-alpha] - 2024-08-06
+
+### Changed
+
+- Upgrade dependencies
+  - coverlet.msbuild 6.0.2
+  - MELT 0.9.0
+  - MELT.Xunit 0.9.0
+  - Microsoft.CodeAnalysis.NetAnalyzers 8.0.0
+  - Microsoft.Extensions.Hosting 8.0.0
+  - Microsoft.Extensions.Hosting.Abstractions 8.0.0
+  - Microsoft.Extensions.Logging 8.0.0
+  - Microsoft.Extensions.Logging.Abstractions 8.0.1
+  - Microsoft.NET.Test.Sdk 17.10.0
+  - Moq 4.20.70
+  - xunit 2.9.0
+  - xunit.runner.visualstudio 2.8.2
+- Nuget package contains README.md
+- Release notes are extracted properly from CHANGELOG.md
+- Run dependabot monthly instead of daily to save energy
 
 ## [6.2.367-alpha] - 2024-08-05
 
