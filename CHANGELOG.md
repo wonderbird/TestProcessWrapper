@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
+## [Unreleased]
+
+### Changed
+
+- Upgrade coveralls build action to v2
+
 ## [6.2.373-alpha] - 2024-08-06
 
 ### Changed
