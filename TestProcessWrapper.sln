@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{86E95D10-0
 		Nuget-OfficialOnly.config = Nuget-OfficialOnly.config
 		CHANGELOG.md = CHANGELOG.md
 		build\build.sh = build\build.sh
+		build\extract_latest_changelog.sh = build\extract_latest_changelog.sh
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProcessWrapper.LongLived.Application", "TestProcessWrapper.LongLived.Application\TestProcessWrapper.LongLived.Application.csproj", "{5122B0AC-FAD4-44F4-B372-C5A6AED29E22}"

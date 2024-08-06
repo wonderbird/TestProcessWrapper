@@ -19,8 +19,11 @@ BEGIN {
   number_of_parsed_version_headings = 0
 }
 {
-  if ($0 ~ /^## /) { number_of_parsed_version_headings++ }
+  # count the number of version headings
+  if ($0 ~ /^## \[[Uu]nreleased\]/) {  } # do not count the "Unreleased" section
+  else if ($0 ~ /^## /) { number_of_parsed_version_headings++ }
   
+  # print the top of the changelog until end of the recently released version
   if (number_of_parsed_version_headings < 2) { print }
 }
 EOF
