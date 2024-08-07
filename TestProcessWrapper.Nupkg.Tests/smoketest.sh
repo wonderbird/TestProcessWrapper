@@ -4,9 +4,9 @@
 #
 # USAGE: ./smoketest.sh FRAMEWORK_VERSION
 #
-# The parameter FRAMEWORK_VERSION ($1) can be either "net6.0" or "net7.0".
+# The parameter FRAMEWORK_VERSION ($1) can be either "net6.0", "net7.0" or "net8.0".
 #
-set -euf
+set -euxf
 
 #####
 # Parse parameters
@@ -43,9 +43,9 @@ rm -vfr "TestProcessWrapper.ShortLived.Application/obj"
 
 if [ "$(uname)" = "Darwin" ]; then
   # on macOS, the sed -i parameter requires empty single quotes
-  sed -i '' "s/net7.0/${framework_version}/" "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"
+  sed -i '' "s/net8.0/${framework_version}/" "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"
 else
-  sed -i "s/net7.0/${framework_version}/" "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"
+  sed -i "s/net8.0/${framework_version}/" "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"
 fi
 
 dotnet build --configuration Debug "TestProcessWrapper.ShortLived.Application/TestProcessWrapper.ShortLived.Application.csproj"

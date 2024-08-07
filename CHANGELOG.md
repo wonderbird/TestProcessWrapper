@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
-## [Unreleased]
+## [6.3.376-alpha] - 2024-08-07
+
+### Added
+
+- Add support for net8.0 while keeping support for net6.0 and net7.0
 
 ### Changed
 

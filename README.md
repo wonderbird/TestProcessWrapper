@@ -155,10 +155,10 @@ dotnet pack --configuration Debug TestProcessWrapper/TestProcessWrapper.csproj
 
 # run the smoke tests
 cd TestProcessWrapper.Nupkg.Tests
-./smoketest.sh "net7.0"
+./smoketest.sh "net8.0"
 ```
 
-You can replace the "net7.0" parameter with "net6.0", if you want to test that version of the .net framework.
+You can replace the "net8.0" with "net7.0" or "net6.0", if you want to test a different version of the .net framework.
 
 #### Create Feature Documentation (LivingDoc)
 
@@ -175,12 +175,12 @@ dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 dotnet test TestProcessWrapper.Acceptance.Tests
 
 # Generate LivingDoc
-cd TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0
+cd TestProcessWrapper.Acceptance.Tests/bin/Debug/net8.0
 livingdoc test-assembly TestProcessWrapper.Acceptance.Tests.dll -t TestExecution.json
 cd ../../../..
 
 # Open the generated HTML in a browser
-open TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
+open TestProcessWrapper.Acceptance.Tests/bin/Debug/net8.0/LivingDoc.html
 ```
 
 #### Before Creating a Pull Request ...

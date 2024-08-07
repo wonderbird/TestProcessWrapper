@@ -9,7 +9,7 @@ on:
 
 env:
   RETENTION_DAYS: 5
-  packageVersionPrefix: ${{ '6.2.' }}
+  packageVersionPrefix: ${{ '6.3.' }}
   packageVersionSuffixForFeatureBranch: ${{ '-alpha' }}
   packageVersionSuffixForMainBranch: ${{ '-alpha' }}
 
@@ -32,7 +32,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 7.x
+          dotnet-version: 8.x
 
       - name: Install dotnet global tools (coverlet, reportgenerator)
         run: |
@@ -64,7 +64,7 @@ jobs:
         
       - name: Generate SpecFlow LivingDoc
         run: livingdoc test-assembly TestProcessWrapper.Acceptance.Tests.dll -t TestExecution.json
-        working-directory: TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0
+        working-directory: TestProcessWrapper.Acceptance.Tests/bin/Debug/net8.0
 
       - name: Attach NuGet package to build artifacts
         uses: actions/upload-artifact@v4
@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: LivingDoc
-          path: TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
+          path: TestProcessWrapper.Acceptance.Tests/bin/Debug/net8.0/LivingDoc.html
 
   smoketest:
     name: Test NuGet package
@@ -97,6 +97,7 @@ jobs:
         dotnet:
           - { setupVersion: 6.x, binFolder: net6.0 }
           - { setupVersion: 7.x, binFolder: net7.0 }
+          - { setupVersion: 8.x, binFolder: net8.0 }
 
     runs-on: ${{ matrix.os }}
 
