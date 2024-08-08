@@ -40,7 +40,7 @@ To verify that this checklist is complete, perform the following checks. Add new
 == Test
 
 - [x] Verify that the target .NET SDK is installed using `dotnet --list-sdks`
-- [ ] Execute the `./build/build.sh` script
-- [ ] Run the smoke test (see README.md)
-- [ ] Load solution and build all in your IDE
-- [ ] Run all tests in your IDE
+- [x] Execute the `./build/build.sh` script
+- [x] Run the smoke test for all supported .NET versions (see README.md)
+- [x] Load solution and build all in your IDE
+- [x] Run all tests in your IDE

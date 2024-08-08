@@ -15,6 +15,9 @@ Every release is published as nuget package [Boos.TestProcessWrapper](https://ww
 
 ### Changed
 
+- Fix new .NET 8 static analysis warnings regarding performance of string operations
+  - CA1865: Use 'string.Method(char)' instead of 'string.Method(string)' for string with single char
+  - CA1862: Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
 - Upgrade coveralls build action to v2
 
 ## [6.2.373-alpha] - 2024-08-06
