@@ -1,0 +1,46 @@
+= Add Support for a New .NET Framework
+
+The following checklist contains all changes required to add support for a new .NET framework. Please uncheck all checkboxes before adding a new framework. Tick them off while performing the steps. The list is sorted by type of change, not necessarily by sequence of action.
+
+NOTE: A framework and language upgrade may bring additional or more strict static analysis checks. If you encounter new static analysis errors, then fix them in separate commits after the framework upgrade commit.
+
+== Verify completeness of checklist
+
+To verify that this checklist is complete, perform the following checks. Add newly discovered tasks to the sections below.
+
+- [x] Search all files of the repository for "net6"
+- [x] Take a look at the commits of the recently added .net framework. Use git blame and git log for one of the files listed below to find all relevant commits.
+
+== Increase the minor version number in
+
+- [x] .github/workflows/dotnet.yml
+- [x] CHANGELOG.md
+
+== Update the framework in
+
+- [x] smoketest.sh
+- [x] TestProcessWrapper.csproj
+- [x] TestProcessWrapper.Acceptance.Tests.csproj
+- [x] TestProcessWrapper.LongLived.Application.csproj
+- [x] TestProcessWrapper.ShortLived.Application.csproj
+- [x] TestProcessWrapper.Unit.Tests.csproj
+- [x] .github/workflows/dotnet.yml
+
+== Document the changes in
+
+- [x] CHANGELOG.md
+- [x] README.md
+
+== Other changes
+
+- [x] Add another net?.0-global.json to the folder TestProcessWrapper.Nupkg.Tests
+- [x] Include the new net?.0-global.json into TestProcessWrapper.sln
+- [x] Extend the TestProcessBuilder.CreateProcessStartInfo method to consider the new framework version; The constant NET8_0_OR_GREATER is a https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives[.NET language feature].
+
+== Test
+
+- [x] Verify that the target .NET SDK is installed using `dotnet --list-sdks`
+- [x] Execute the `./build/build.sh` script
+- [x] Run the smoke test for all supported .NET versions (see README.md)
+- [x] Load solution and build all in your IDE
+- [x] Run all tests in your IDE

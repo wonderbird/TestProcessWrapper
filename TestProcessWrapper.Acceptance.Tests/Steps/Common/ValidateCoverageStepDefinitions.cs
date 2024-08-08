@@ -35,8 +35,8 @@ public partial class ValidateCoverageStepDefinitions
     {
         var comparison = GetComparisonByName(comparisonString);
 
-        var clientsWithCoverlet = MultiProcessControlStepDefinitions.Clients.Where(
-            c => c.IsCoverletEnabled
+        var clientsWithCoverlet = MultiProcessControlStepDefinitions.Clients.Where(c =>
+            c.IsCoverletEnabled
         );
         foreach (var client in clientsWithCoverlet)
         {

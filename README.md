@@ -92,10 +92,14 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 
 ### Prerequisites
 
-To compile, test and run this project the latest [.NET SDK](https://dotnet.microsoft.com/download) is required on
-your machine. For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus).
-This requires [Python](https://www.python.org/). If you'd like to contribute, then please use the
-[dotnet csharpier .](https://csharpier.com/) command as described below.
+To compile, test and run this project the [.NET SDK](https://dotnet.microsoft.com/download) is required on your machine.
+The project supports .NET 6.0, .NET 7.0 and .NET 8.0.
+
+For calculating code metrics I recommend [metrix++](https://github.com/metrixplusplus/metrixplusplus).
+This requires [Python](https://www.python.org/).
+
+If you'd like to contribute, then please use the [dotnet csharpier .](https://csharpier.com/) command as described
+below.
 
 To use the `TestProcessWrapper` library and to run the unit tests you need the following tools installed:
 
@@ -104,7 +108,7 @@ dotnet tool install --global coverlet.console --configfile NuGet-OfficialOnly.co
 dotnet tool install --global dotnet-reportgenerator-globaltool --configfile NuGet-OfficialOnly.config
 ```
 
-### Troubleshooting
+### Troubleshooting the Installation of dotnet tools
 
 If you are installing a dotnet tool for the first time, then you'll need to add the path to the dotnet tools to your
 system PATH. Please make sure that there is no "~" character in your PATH to coverlet.
@@ -124,6 +128,12 @@ run the application:
 
 Note: The script [build.sh](./build/build.sh) builds the NuGet package like the build pipeline does it. This can be helpful
 when debugging issues popping up in the build pipeline.
+
+Important: The acceptance tests require both a debug and a release build of the long lived application.
+
+```sh
+
+To build the solution and run the acceptance tests manually, issue the following console commands:
 
 ```sh
 # Remove build output from previous runs
@@ -155,14 +165,17 @@ dotnet pack --configuration Debug TestProcessWrapper/TestProcessWrapper.csproj
 
 # run the smoke tests
 cd TestProcessWrapper.Nupkg.Tests
-./smoketest.sh "net7.0"
+./smoketest.sh "net8.0"
 ```
 
-You can replace the "net7.0" parameter with "net6.0", if you want to test that version of the .net framework.
+You can replace the "net8.0" with "net7.0" or "net6.0", if you want to test a different version of the .net framework.
 
 #### Create Feature Documentation (LivingDoc)
 
-As this project uses SpecFlow for acceptance tests, you can generate an HTML overview of all features including the test status as follows:
+As this project uses SpecFlow for acceptance tests, you can generate an HTML overview of all features including the test
+status as follows.
+
+Note: Despite the warnings, the commands produce correct documentation when using .NET 8.
 
 ```shell
 # Prerequisite: Install the LivingDoc CLI once
@@ -175,12 +188,12 @@ dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI
 dotnet test TestProcessWrapper.Acceptance.Tests
 
 # Generate LivingDoc
-cd TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0
+cd TestProcessWrapper.Acceptance.Tests/bin/Debug/net8.0
 livingdoc test-assembly TestProcessWrapper.Acceptance.Tests.dll -t TestExecution.json
 cd ../../../..
 
 # Open the generated HTML in a browser
-open TestProcessWrapper.Acceptance.Tests/bin/Debug/net7.0/LivingDoc.html
+open TestProcessWrapper.Acceptance.Tests/bin/Debug/net8.0/LivingDoc.html
 ```
 
 #### Before Creating a Pull Request ...

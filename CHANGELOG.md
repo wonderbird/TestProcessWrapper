@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Every release is published as nuget package [Boos.TestProcessWrapper](https://www.nuget.org/packages/Boos.TestProcessWrapper/).
 
+## [6.3.376-alpha] - 2024-08-07
+
+### Added
+
+- Add support for net8.0 while keeping support for net6.0 and net7.0
+
+### Changed
+
+- Fix new .NET 8 static analysis warnings regarding performance of string operations
+  - CA1865: Use 'string.Method(char)' instead of 'string.Method(string)' for string with single char
+  - CA1862: Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
+- Upgrade coveralls build action to v2
+
 ## [6.2.373-alpha] - 2024-08-06
 
 ### Changed

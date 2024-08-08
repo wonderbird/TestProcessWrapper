@@ -1,4 +1,4 @@
-using System.Globalization;
+using System;
 using TechTalk.SpecFlow;
 
 namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
@@ -8,13 +8,13 @@ namespace TestProcessWrapper.Acceptance.Tests.Steps.Common
     {
         [StepArgumentTransformation(@"(enabled|disabled)")]
         public static bool TransformHumanReadableBooleanSwitchExpression(string expression) =>
-            "ENABLED" == expression.ToUpper(CultureInfo.CurrentCulture);
+            expression.Equals("enabled", StringComparison.OrdinalIgnoreCase);
 
         [StepArgumentTransformation(@"(Debug|Release)")]
         public static BuildConfiguration TransformHumanReadableBuildConfiguration(
             string buildConfiguration
         ) =>
-            "RELEASE" == buildConfiguration.ToUpperInvariant()
+            buildConfiguration.Equals("Release", StringComparison.OrdinalIgnoreCase)
                 ? BuildConfiguration.Release
                 : BuildConfiguration.Debug;
     }
