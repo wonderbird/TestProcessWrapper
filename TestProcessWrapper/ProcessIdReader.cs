@@ -23,10 +23,7 @@ internal class ProcessIdReader
         }
 
         var processIdStartIndex = processOutput.IndexOf("Process ID", StringComparison.Ordinal);
-        var newLineAfterProcessIdIndex = processOutput.IndexOf(
-            '\n',
-            processIdStartIndex
-        );
+        var newLineAfterProcessIdIndex = processOutput.IndexOf('\n', processIdStartIndex);
         var processIdNumberOfDigits = newLineAfterProcessIdIndex - processIdStartIndex - 10;
         var processIdString = processOutput.Substring(
             processIdStartIndex + 10,

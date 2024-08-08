@@ -17,13 +17,12 @@ public class TestProcessWrapperTest
 
         _testProcessBuilderFactory = new Mock<ITestProcessBuilderFactory>();
         _testProcessBuilderFactory
-            .Setup(
-                x =>
-                    x.CreateBuilder(
-                        It.IsAny<string>(),
-                        It.IsAny<BuildConfiguration>(),
-                        It.IsAny<bool>()
-                    )
+            .Setup(x =>
+                x.CreateBuilder(
+                    It.IsAny<string>(),
+                    It.IsAny<BuildConfiguration>(),
+                    It.IsAny<bool>()
+                )
             )
             .Returns(testProcessBuilder.Object);
 
