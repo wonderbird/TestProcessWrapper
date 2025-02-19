@@ -80,8 +80,11 @@ If you use `coverlet` with two or more instances of the same application, `cover
 
 ## Development and Support Standard
 
-I am developing during my spare time and use this project for learning purposes. Please assume that I will need some
-days to answer your questions. Please keep this in mind when using this project in a production environment.
+I have stopped supporting this project. Debugging tests using the TestProcessWrapper is difficult. In addition, 
+it makes the test infrastructure complicated and fragile. I recommend to use the IHost interface directly. An example
+is given in [save-energy/src/SaveEnergy.Specs/Steps/SaveEnergyStepDefinition.cs](https://github.com/wonderbird/save-energy/blob/main/src/SaveEnergy.Specs/Steps/SaveEnergyStepDefinition.cs).
+More information: T. Dykstra, “Integration tests in ASP.NET Core.” Accessed: Nov. 9, 2024. Available:
+https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0
 
 ## Thanks
 
